@@ -38,16 +38,22 @@ export function getEmployee(id: string) {
       throw e
     }
   });
+  return {loading, employee, retry} as const
+};
 
+export function getBuilds(region: string, project: string) {
+  const api = useApi(codeStarApiRef);
+  var builds;
   useAsync(async () => {
+    console.log("pulling build data ...")
     const creds = await api.generateCredentials()
-    console.log("test >>> ");
-    const buildIds = await api.getBuildIds({region: "us-west-2", project: "hello-world", creds});
+    const buildIds = await api.getBuildIds({region: region, project: project, creds});
     if (buildIds.ids == undefined) {
       return
     }
-    console.log(api.getBuilds({region: "us-west-2", ids: buildIds.ids, creds}));
+    builds = await api.getBuilds({region: "us-west-2", ids: buildIds.ids, creds});
+    console.log(builds)
   });
 
-  return {loading, employee, retry} as const
+  return builds
 };

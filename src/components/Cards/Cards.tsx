@@ -1,6 +1,6 @@
 import { LinearProgress } from '@material-ui/core';
 import React from 'react';
-import { getEmployee } from '../useBuilds';
+import { getEmployee, getBuilds } from '../useBuilds';
 import {
   InfoCard,
   InfoCardVariants,
@@ -38,6 +38,7 @@ export const LatestRunCard = ({
   variant?: InfoCardVariants;
 }) => {
     const {loading, employee} = getEmployee("2")
+    getBuilds("us-west-2", "hello-world")
   var error = null
   return (
     <InfoCard title={`Latest status for User ${!employee ? "undefined" : employee.data.first_name}`} variant={variant}>
