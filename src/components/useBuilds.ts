@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {useAsyncRetry} from 'react-use';
+import {useAsync, useAsyncRetry} from 'react-use';
 import {codeStarApiRef} from '../api';
 import {errorApiRef, useApi} from '@backstage/core-plugin-api';
 // import {SPINNAKER_ANNOTATION} from '../constants';
@@ -38,5 +38,16 @@ export function getEmployee(id: string) {
       throw e
     }
   });
+
+  useAsync(async () => {
+    const creds = await api.generateCredentials()
+    console.log("test >>> ");
+    const buildIds = await api.getBuildIds({region: "us-west-2", project: "hello-world", creds});
+    if (buildIds.ids == undefined) {
+      return
+    }
+    console.log(api.getBuilds({region: "us-west-2", ids: buildIds.ids, creds}));
+  });
+
   return {loading, employee, retry} as const
 };

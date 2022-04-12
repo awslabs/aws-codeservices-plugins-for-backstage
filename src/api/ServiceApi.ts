@@ -19,6 +19,9 @@ import {
   DiscoveryApi,
   IdentityApi,
 } from '@backstage/core-plugin-api';
+import {CodeBuildClient} from "@aws-sdk/client-codebuild";
+import {ListBuildsForProjectCommand, ListBuildsForProjectCommandOutput} from "@aws-sdk/client-codebuild";
+import {BatchGetBuildsCommand, BatchGetBuildsCommandOutput} from "@aws-sdk/client-codebuild";
 
 export const codeStarApiRef = createApiRef<CodeStarApi>({
   id: 'plugin.codestar.service2',
@@ -36,8 +39,18 @@ export interface EmployeeData {
   last_name: string;
 };
 
+export interface Credentials {
+  AccessKeyId: string;
+  SecretAccessKey: string;
+  SessionToken: string;
+  Expiration: string;
+};
+
 export interface CodeStarApi {
   getEmployee(options: {id: string}): Promise<Employee>;
+  getBuildIds(options: {region: string, project: string, creds: Credentials}): Promise<ListBuildsForProjectCommandOutput>;
+  getBuilds(options: {region: string, ids: string[], creds: Credentials}): Promise<BatchGetBuildsCommandOutput>;
+  generateCredentials(): Promise<Credentials>;
 };
 
 export class CodeStarClient implements CodeStarApi {
@@ -64,5 +77,39 @@ export class CodeStarClient implements CodeStarApi {
       throw new Error("failed to fetch")
     }
     return await response.json()
+  }
+
+  async generateCredentials(): Promise<Credentials> {
+    const url = `${await this.discoveryApi.getBaseUrl(
+      'aws',
+    )}/credentials`;
+    const reqBody = JSON.stringify({RoleArn: 'arn:aws:iam::461868971318:role/admin'});
+    return await (await fetch(url, {method: 'POST', body: reqBody})).json();
+  }
+
+  async getBuildIds({region, project, creds}: {region: string, project: string, creds: Credentials}): Promise<ListBuildsForProjectCommandOutput> {
+    const client = new CodeBuildClient({
+      region: region,
+      credentials: {
+        accessKeyId: creds.AccessKeyId,
+        secretAccessKey: creds.SecretAccessKey,
+        sessionToken: creds.SessionToken
+      }
+    });
+    const command = new ListBuildsForProjectCommand({projectName: project});
+    return await client.send(command)
+  }
+
+  async getBuilds({region, ids, creds}: {region: string, ids: string[], creds: Credentials}): Promise<BatchGetBuildsCommandOutput> {
+    const client = new CodeBuildClient({
+      region: region,
+      credentials: {
+        accessKeyId: creds.AccessKeyId,
+        secretAccessKey: creds.SecretAccessKey,
+        sessionToken: creds.SessionToken
+      }
+    });
+    const command = new BatchGetBuildsCommand({ids: ids});
+    return await client.send(command)
   }
 };

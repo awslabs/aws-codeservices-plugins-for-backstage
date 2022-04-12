@@ -37,7 +37,7 @@ export const LatestRunCard = ({
   branch: string;
   variant?: InfoCardVariants;
 }) => {
-  const {loading, employee} = getEmployee("2")
+    const {loading, employee} = getEmployee("2")
   var error = null
   return (
     <InfoCard title={`Latest status for User ${!employee ? "undefined" : employee.data.first_name}`} variant={variant}>
