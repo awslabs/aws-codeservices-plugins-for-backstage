@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Box, Typography} from '@material-ui/core';
+import {Box, Link, Typography} from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
 /* import { generatePath, Link as RouterLink } from 'react-router-dom'; */
 import { RunStatus } from '../Status';
@@ -26,11 +26,14 @@ const generatedColumns: TableColumn[] = [
   {
     title: 'Id',
     field: 'id',
+
     render: (row: Partial<DeploymentInfo>) => {
       return (
-        <>
-          {row.deploymentId}
-        </>
+         <> <Link
+              href={"https://" + "us-west-2" + ".console.aws.amazon.com/codesuite/codedeploy/deployments/" + row.deploymentId + "?" + "us-west-2" }
+              target="_blank">
+            {row.deploymentId}
+          </Link></>
       );
     },
   },
@@ -72,10 +75,10 @@ const generatedColumns: TableColumn[] = [
     title: 'Duration',
     field: 'duration',
     render: (row: Partial<DeploymentInfo>) => {
-      if (row.completeTime != undefined && row.startTime != undefined) {
+      if (row.completeTime != undefined && row.createTime != undefined) {
         return (
           <>
-            {(row.completeTime.getTime() - row.startTime.getTime()) / 1000} Seconds
+            {(row.completeTime.getTime() - row.createTime.getTime()) / 1000} Seconds
           </>
         );
       } else {
