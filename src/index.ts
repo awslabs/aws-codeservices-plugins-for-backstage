@@ -18,9 +18,11 @@ export {
   codeStarPlugin,
   codeStarPlugin as plugin,
   EntityLatestEmployeeRunCard,
+  DeployEntityLatestEmployeeRunCard,
   EntityCodeStarContent,
 } from './plugin';
 export {LatestRunCard} from './components/Cards';
+export {DeployLatestRunCard} from './components/Cards';
 export {
   isCodeStarAvailable,
   Router,

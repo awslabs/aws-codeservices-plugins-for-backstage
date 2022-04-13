@@ -49,3 +49,31 @@ export function getBuilds() {
   var buildOutput = builds?.builds;
   return {loading, buildOutput, retry} as const
 };
+
+export function getDeployments() {
+  const api = useApi(codeStarApiRef);
+  const errorApi = useApi(errorApiRef);
+  const {
+    loading,
+    value: deployments,
+    retry,
+  } = useAsyncRetry(async () => {
+    try {
+      console.log("pulling build data ...")
+      const creds = await api.generateCredentials()
+      const output = await api.getDeploymentIds({region: "us-west-2", appName: "hello-world", deploymentGroupName: "hello-world-group", creds});
+      if (output.deployments == undefined) {
+        return
+      }
+      var deployments = await api.getDeployments({region: "us-west-2", ids: output.deployments, creds});
+      console.log(deployments)
+      return deployments
+    } catch (e) {
+      errorApi.post(e)
+      throw e
+    }
+  });
+
+  var deploymentsInfo = deployments?.deploymentsInfo;
+  return {loading, deploymentsInfo, retry} as const
+};

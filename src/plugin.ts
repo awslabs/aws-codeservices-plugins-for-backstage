@@ -65,3 +65,11 @@ export const EntityLatestEmployeeRunCard = codeStarPlugin.provide(
     },
   }),
 );
+
+export const DeployEntityLatestEmployeeRunCard = codeStarPlugin.provide(
+  createComponentExtension({
+    component: {
+      lazy: () => import('./components/Cards').then(m => m.DeployLatestRunCard),
+    },
+  }),
+);

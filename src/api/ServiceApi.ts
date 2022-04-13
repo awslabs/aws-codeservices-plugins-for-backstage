@@ -23,6 +23,10 @@ import {CodeBuildClient} from "@aws-sdk/client-codebuild";
 import {ListBuildsForProjectCommand, ListBuildsForProjectCommandOutput} from "@aws-sdk/client-codebuild";
 import {BatchGetBuildsCommand, BatchGetBuildsCommandOutput} from "@aws-sdk/client-codebuild";
 
+import {CodeDeployClient} from "@aws-sdk/client-codedeploy";
+import {ListDeploymentsCommand, ListDeploymentsCommandOutput} from "@aws-sdk/client-codedeploy";
+import {BatchGetDeploymentsCommand, BatchGetDeploymentsCommandOutput} from "@aws-sdk/client-codedeploy";
+
 export const codeStarApiRef = createApiRef<CodeStarApi>({
   id: 'plugin.codestar.service2',
   description: 'Used by the CodeStar plugin to make requests',
@@ -38,6 +42,10 @@ export interface Credentials {
 export interface CodeStarApi {
   getBuildIds(options: {region: string, project: string, creds: Credentials}): Promise<ListBuildsForProjectCommandOutput>;
   getBuilds(options: {region: string, ids: string[], creds: Credentials}): Promise<BatchGetBuildsCommandOutput>;
+
+  getDeploymentIds(options: {region: string, appName: string, deploymentGroupName: string, creds: Credentials}): Promise<ListDeploymentsCommandOutput>;
+  getDeployments(options: {region: string, ids: string[], creds: Credentials}): Promise<BatchGetDeploymentsCommandOutput>;
+
   generateCredentials(): Promise<Credentials>;
 };
 
@@ -50,22 +58,6 @@ export class CodeStarClient implements CodeStarApi {
   }) {
     this.discoveryApi = options.discoveryApi;
   }
-
-  // async getEmployee({id}: {id: string}): Promise<Employee> {
-  //   const url = `${await this.discoveryApi.getBaseUrl(
-  //     'proxy',
-  //   )}/dummy/api/users/${id}`;
-  //   console.log("url: " + url);
-
-  //   const response = await fetch(url, {
-  //     method: 'GET',
-  //   });
-
-  //   if (!response.ok) {
-  //     throw new Error("failed to fetch")
-  //   }
-  //   return await response.json()
-  // }
 
   async generateCredentials(): Promise<Credentials> {
     const url = `${await this.discoveryApi.getBaseUrl(
@@ -98,6 +90,33 @@ export class CodeStarClient implements CodeStarApi {
       }
     });
     const command = new BatchGetBuildsCommand({ids: ids});
+    console.log("serviceAPI command " + command)
+    return await client.send(command)
+  }
+
+  async getDeploymentIds({region, appName, deploymentGroupName, creds}: {region: string, appName: string, deploymentGroupName: string, creds: Credentials}): Promise<ListDeploymentsCommandOutput> {
+    const client = new CodeDeployClient({
+      region: region,
+      credentials: {
+        accessKeyId: creds.AccessKeyId,
+        secretAccessKey: creds.SecretAccessKey,
+        sessionToken: creds.SessionToken
+      }
+    });
+    const command = new ListDeploymentsCommand({applicationName: appName, deploymentGroupName: deploymentGroupName});
+    return await client.send(command)
+  }
+
+  async getDeployments({region, ids, creds}: {region: string, ids: string[], creds: Credentials}): Promise<BatchGetDeploymentsCommandOutput> {
+    const client = new CodeDeployClient({
+      region: region,
+      credentials: {
+        accessKeyId: creds.AccessKeyId,
+        secretAccessKey: creds.SecretAccessKey,
+        sessionToken: creds.SessionToken
+      }
+    });
+    const command = new BatchGetDeploymentsCommand({deploymentIds: ids});
     console.log("serviceAPI command " + command)
     return await client.send(command)
   }
