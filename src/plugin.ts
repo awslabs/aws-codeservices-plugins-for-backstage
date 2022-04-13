@@ -19,6 +19,7 @@ import {
   createComponentExtension,
   createPlugin,
   createRouteRef,
+  createRoutableExtension,
   discoveryApiRef,
   identityApiRef,
 } from '@backstage/core-plugin-api';
@@ -27,6 +28,12 @@ import {CodeStarClient, codeStarApiRef} from './api';
 export const rootRouteRef = createRouteRef({
   path: '',
   title: 'CodeStar',
+});
+
+export const buildRouteRef = createRouteRef({
+  path: 'build/:jobFullName/:buildNumber',
+  params: ['jobFullName', 'buildNumber'],
+  title: 'CodeBuild',
 });
 
 export const codeStarPlugin = createPlugin({
@@ -43,6 +50,13 @@ export const codeStarPlugin = createPlugin({
     entityContent: rootRouteRef,
   },
 });
+
+export const EntityCodeStarContent = codeStarPlugin.provide(
+  createRoutableExtension({
+    component: () => import('./components/Router').then(m => m.Router),
+    mountPoint: rootRouteRef,
+  }),
+);
 
 export const EntityLatestEmployeeRunCard = codeStarPlugin.provide(
   createComponentExtension({

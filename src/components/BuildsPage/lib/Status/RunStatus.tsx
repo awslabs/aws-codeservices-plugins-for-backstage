@@ -50,7 +50,7 @@ export const RunStatus = ({
           <StatusWarning /> Unstable
         </>
       );
-    case 'failure':
+    case 'failed':
       return (
         <>
           <StatusError /> Failed
@@ -62,7 +62,7 @@ export const RunStatus = ({
           <StatusError /> Failed
         </>
       );
-    case 'success':
+    case 'succeeded':
       return (
         <>
           <StatusOK /> Completed

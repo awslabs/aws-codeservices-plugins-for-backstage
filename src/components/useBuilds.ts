@@ -15,74 +15,36 @@
  */
 import {useAsyncRetry} from 'react-use';
 import {codeStarApiRef} from '../api';
-import {useApi} from '@backstage/core-plugin-api';
+import {useApi, errorApiRef} from '@backstage/core-plugin-api';
 
 export enum ErrorType {
   CONNECTION_ERROR,
   NOT_FOUND,
 }
 
-// export function getEmployee(id: string) {
-//   const api = useApi(codeStarApiRef);
-//   const errorApi = useApi(errorApiRef);
-//   const {
-//     loading,
-//     value: employee,
-//     retry,
-//   } = useAsyncRetry(async () => {
-//     try {
-//       return api.getEmployee({id: id})
-//     } catch (e) {
-//       errorApi.post(e)
-//       throw e
-//     }
-//   });
-//   return {loading, employee, retry} as const
-// };
-
-//export function getBuilds(region: string, project: string) {
-//  const api = useApi(codeStarApiRef);
-//  var builds;
-//  builds = useAsync(async () => {
-//    console.log("...pulling build data ...")
-//    const creds = await api.generateCredentials()
-//    const buildIds = await api.getBuildIds({region: region, project: project, creds});
-//    if (buildIds.ids == undefined) {
-//      return
-//    }
-//    builds = await api.getBuilds({region: "us-east-1", ids: buildIds.ids, creds});
-//    console.log("ASYNC CALL RETURNS " + builds)
-//  });
-
-//  console.log("usebuilds " + builds)
-//  //console.log("usebuilds2 "+employee)
-//  //employee=builds
-//  //return {loading, employee} as const
-//  return builds
-//};
-
 export function getBuilds() {
   const api = useApi(codeStarApiRef);
+  const errorApi = useApi(errorApiRef);
   const {
-    // loading,
+    loading,
     value: builds,
-    // retry,
+    retry,
   } = useAsyncRetry(async () => {
     try {
-      console.log("...pulling build data ...")
+      console.log("pulling build data ...")
       const creds = await api.generateCredentials()
-      const buildIds = await api.getBuildIds({region: "us-east-1", project: "java-app", creds});
+      const buildIds = await api.getBuildIds({region: "us-west-2", project: "hello-world", creds});
       if (buildIds.ids == undefined) {
         return
       }
-      return await api.getBuilds({region: "us-east-1", ids: buildIds.ids, creds});
+      return await api.getBuilds({region: "us-west-2", ids: buildIds.ids, creds});
       console.log(builds)
     } catch (e) {
+      errorApi.post(e)
       throw e
     }
   });
 
   var buildOutput = builds?.builds;
-  return buildOutput
-  // return {loading, buildOutput, retry}
-}
+  return {loading, buildOutput, retry} as const
+};

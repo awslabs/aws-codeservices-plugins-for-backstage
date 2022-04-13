@@ -18,6 +18,9 @@ import { Route, Routes } from 'react-router';
 import { rootRouteRef } from '../plugin';
 import { Entity } from '@backstage/catalog-model';
 
+export const isCodeStarAvailable = () =>
+  true;
+
 type Props = {
   /** @deprecated The entity is now grabbed from context instead */
   entity?: Entity;
