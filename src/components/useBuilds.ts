@@ -75,5 +75,5 @@ export function getDeployments() {
   });
 
   var deploymentsInfo = deployments?.deploymentsInfo;
-  return {loading, deploymentsInfo, retry} as const
+  return {loadingd: loading, deploymentsInfo, retryd: retry} as const
 };

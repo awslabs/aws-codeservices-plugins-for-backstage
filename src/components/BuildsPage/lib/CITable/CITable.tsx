@@ -23,10 +23,12 @@ import CloseIcon from '@material-ui/icons/Close';
 /* import { generatePath, Link as RouterLink } from 'react-router-dom'; */
 import { RunStatus } from '../Status';
 import { getBuilds } from '../../../useBuilds';
+import { getDeployments } from '../../../useBuilds';
 /* import { buildRouteRef } from '../../../../plugin'; */
 import { Table, TableColumn } from '@backstage/core-components';
 /* import {Exception } from '../../../../api/ServiceApi'; */
 import {Build} from "@aws-sdk/client-codebuild";
+import {DeployCITableView} from './DeployCITable';
 
 const generatedColumns: TableColumn[] = [
   {
@@ -177,13 +179,25 @@ export const CITableView = ({
 
 export const CITable = () => {
   const {loading, buildOutput, retry} = getBuilds();
+  const {loadingd, deploymentsInfo, retryd} = getDeployments();
 
   return (
-    <CITableView
-      loading={loading}
-      builds={buildOutput}
-      retry={retry}
-    />
+    <>
+      <Grid item sm={12}>
+        <CITableView
+          loading={loading}
+          builds={buildOutput}
+          retry={retry}
+        />
+      </Grid>
+      <Grid item sm={12}>
+        <DeployCITableView
+          loading={loadingd}
+          deployments={deploymentsInfo}
+          retry={retryd}
+        />
+      </Grid>
+    </>
   );
 };
 

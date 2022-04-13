@@ -14,3 +14,4 @@
  * limitations under the License.
  */
 export {CITable} from './CITable';
+export {DeployCITable} from './DeployCITable';
