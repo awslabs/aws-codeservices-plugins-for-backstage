@@ -16,7 +16,6 @@
 import {useAsync, useAsyncRetry} from 'react-use';
 import {codeStarApiRef} from '../api';
 import {errorApiRef, useApi} from '@backstage/core-plugin-api';
-// import {SPINNAKER_ANNOTATION} from '../constants';
 
 export enum ErrorType {
   CONNECTION_ERROR,
@@ -44,16 +43,20 @@ export function getEmployee(id: string) {
 export function getBuilds(region: string, project: string) {
   const api = useApi(codeStarApiRef);
   var builds;
-  useAsync(async () => {
-    console.log("pulling build data ...")
+  builds= useAsync(async () => {
+    console.log("...pulling build data ...")
     const creds = await api.generateCredentials()
     const buildIds = await api.getBuildIds({region: region, project: project, creds});
     if (buildIds.ids == undefined) {
       return
     }
-    builds = await api.getBuilds({region: "us-west-2", ids: buildIds.ids, creds});
-    console.log(builds)
+    builds = await api.getBuilds({region: "us-east-1", ids: buildIds.ids, creds});
+    console.log("ASYNC CALL RETURNS "+builds)
   });
-
+  
+  console.log("usebuilds "+builds)
+  //console.log("usebuilds2 "+employee)
+  //employee=builds
+  //return {loading, employee} as const
   return builds
 };

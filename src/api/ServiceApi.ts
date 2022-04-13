@@ -29,14 +29,12 @@ export const codeStarApiRef = createApiRef<CodeStarApi>({
 });
 
 export interface Employee {
-  data: EmployeeData;
+  builds: Array<EmployeeData1>;
 };
 
-export interface EmployeeData {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
+export interface EmployeeData1 {
+  buildStatus: string;
+  arn: string;
 };
 
 export interface Credentials {
@@ -83,7 +81,7 @@ export class CodeStarClient implements CodeStarApi {
     const url = `${await this.discoveryApi.getBaseUrl(
       'aws',
     )}/credentials`;
-    const reqBody = JSON.stringify({RoleArn: 'arn:aws:iam::461868971318:role/admin'});
+    const reqBody = JSON.stringify({RoleArn: 'arn:aws:iam::865119719287:role/adminNov'});
     return await (await fetch(url, {method: 'POST', body: reqBody})).json();
   }
 
@@ -110,6 +108,7 @@ export class CodeStarClient implements CodeStarApi {
       }
     });
     const command = new BatchGetBuildsCommand({ids: ids});
+    console.log("serviceAPI command "+command)
     return await client.send(command)
   }
 };

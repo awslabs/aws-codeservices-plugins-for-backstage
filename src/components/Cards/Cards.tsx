@@ -1,6 +1,6 @@
 import { LinearProgress } from '@material-ui/core';
 import React from 'react';
-import { getEmployee, getBuilds } from '../useBuilds';
+import {  getBuilds } from '../useBuilds';
 import {
   InfoCard,
   InfoCardVariants,
@@ -18,11 +18,10 @@ const WidgetContent = ({
   branch: string;
 }) => {
   if (loading) return <LinearProgress />;
-
+  console.log("Cards Employee "+employee)
   const rows = new Map<string, any>()
-  rows.set("firstName", employee?.data.first_name)
-  rows.set("lastName", employee?.data.last_name)
-  rows.set("email", employee?.data.email)
+  rows.set("Status", employee?.builds[0]?.buildStatus)
+  rows.set("Build", employee?.builds[0]?.arn)
   return (
     <StructuredMetadataTable
       metadata = {Object.fromEntries(rows)}
@@ -37,11 +36,13 @@ export const LatestRunCard = ({
   branch: string;
   variant?: InfoCardVariants;
 }) => {
-    const {loading, employee} = getEmployee("2")
-    getBuilds("us-west-2", "hello-world")
+    console.log("before ")
+     var builds =  getBuilds("us-east-1", "java-app")
+    console.log("is this coming here " )
+    console.log(builds)
   var error = null
   return (
-    <InfoCard title={`Latest status for User ${!employee ? "undefined" : employee.data.first_name}`} variant={variant}>
+    <InfoCard title={`Latest status for User ${!builds ? "undefined" : builds}`} variant={variant}>
       {!error ? (
         <WidgetContent
           employee={employee}
