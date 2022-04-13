@@ -29,17 +29,6 @@ import {DeployCITableView} from './DeployCITable';
 
 const generatedColumns: TableColumn[] = [
   {
-    title: 'Number',
-    field: 'number',
-    render: (row: Partial<Build>) => {
-      return (
-        <>
-          {row.buildNumber}
-        </>
-      );
-    },
-  },
-  {
     title: 'Builds',
     field: 'name',
     highlight: true,
@@ -60,6 +49,17 @@ const generatedColumns: TableColumn[] = [
         console.log("else looop....");
         return (<> {row.id} </>);
       }
+    },
+  },
+  {
+    title: 'Number',
+    field: 'number',
+    render: (row: Partial<Build>) => {
+      return (
+        <>
+          {row.buildNumber}
+        </>
+      );
     },
   },
   {
