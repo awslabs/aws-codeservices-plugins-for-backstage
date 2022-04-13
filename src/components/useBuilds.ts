@@ -59,7 +59,7 @@ export function getDeployments() {
     retry,
   } = useAsyncRetry(async () => {
     try {
-      console.log("pulling build data ...")
+      console.log("pulling deployment  data ...")
       const creds = await api.generateCredentials()
       const output = await api.getDeploymentIds({region: "us-west-2", appName: "hello-world", deploymentGroupName: "hello-world-group", creds});
       if (output.deployments == undefined) {
