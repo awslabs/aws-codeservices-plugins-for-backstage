@@ -38,7 +38,7 @@ export const RunStatus = ({
           <StatusPending /> Queued
         </>
       );
-    case 'running':
+    case 'in_progress':
       return (
         <>
           <StatusRunning /> In progress
@@ -74,7 +74,7 @@ export const RunStatus = ({
           <StatusOK /> Completed
         </>
       );
-    case 'aborted':
+    case 'stopped':
       return (
         <>
           <StatusAborted /> Aborted
