@@ -44,17 +44,20 @@ const generatedColumns: TableColumn[] = [
     field: 'name',
     highlight: true,
     render: (row: Partial<Build>) => {
-      if (!row.id || !row.projectName) {
+      console.log("row.arn = ...",row.arn);
+      if (row.id != undefined) {
         const arn = row.arn?.split(':');
-        if (arn == undefined || arn.length < 7) {
+        console.log("Array of Arn is",arn);
+        if (arn == undefined) {
           return (<> {row.id} </>)
         }
         return (
-          <Link href= {"https://"+arn[3]+".console.aws.amazon.com/codesuite/codebuild/"+arn[4]+"/"+arn[5].replace('build','projects')+"/"+arn[5]+":"+arn[6]} target="_blank" >
+          <Link href={"https://"+arn[3]+".console.aws.amazon.com/codesuite/codebuild/"+arn[4]+"/"+arn[5].replace('build','projects')+"/"+arn[5]+":"+arn[6]} target="_blank" >
             {row.id}
           </Link>
         );
       } else {
+        console.log("else looop....");
         return (<> {row.id} </>);
       }
     },
