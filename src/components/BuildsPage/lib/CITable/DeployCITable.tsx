@@ -18,7 +18,6 @@ import { Box, Typography} from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
 /* import { generatePath, Link as RouterLink } from 'react-router-dom'; */
 import { RunStatus } from '../Status';
-import { getDeployments } from '../../../useBuilds';
 /* import { buildRouteRef } from '../../../../plugin'; */
 import { Table, TableColumn } from '@backstage/core-components';
 /* import {Exception } from '../../../../api/ServiceApi'; */
