@@ -30,6 +30,17 @@ import {Build} from "@aws-sdk/client-codebuild";
 
 const generatedColumns: TableColumn[] = [
   {
+    title: 'Number',
+    field: 'number',
+    render: (row: Partial<Build>) => {
+      return (
+        <>
+          {row.buildNumber}
+        </>
+      );
+    },
+  },
+  {
     title: 'Builds',
     field: 'name',
     highlight: true,
@@ -59,6 +70,17 @@ const generatedColumns: TableColumn[] = [
     },
   },
   {
+    title: 'Submitted',
+    field: 'submitter',
+    render: (row: Partial<Build>) => {
+      return (
+        <>
+          {row.initiator}
+        </>
+      );
+    },
+  },
+  {
     title: 'Status',
     field: 'status',
     render: (row: Partial<Build>) => {
@@ -67,6 +89,21 @@ const generatedColumns: TableColumn[] = [
           <RunStatus status={row.buildStatus?.toLowerCase()} />
         </Box>
       );
+    },
+  },
+  {
+    title: 'Duration',
+    field: 'duration',
+    render: (row: Partial<Build>) => {
+      if (row.endTime != undefined && row.startTime != undefined) {
+        return (
+          <>
+            {(row.endTime.getTime() - row.startTime.getTime()) / 1000} Sec
+          </>
+        );
+      } else {
+        return(<></>);
+      }
     },
   },
   /* { */
@@ -130,7 +167,7 @@ export const CITableView = ({
       title={
         <Box display="flex" alignItems="center">
           <Box mr={2} />
-          <Typography variant="h6">Spinnaker Pipelines</Typography>
+          <Typography variant="h6">CodeBuild Data</Typography>
         </Box>
       }
       columns={generatedColumns}

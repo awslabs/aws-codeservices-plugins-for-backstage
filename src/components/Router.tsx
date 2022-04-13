@@ -16,6 +16,7 @@
 import React from 'react';
 import { Route, Routes } from 'react-router';
 import { rootRouteRef } from '../plugin';
+import { CITable } from './BuildsPage/lib/CITable';
 import { Entity } from '@backstage/catalog-model';
 
 export const isCodeStarAvailable = () =>
@@ -29,7 +30,7 @@ type Props = {
 export const Router = (_props: Props) => {
   return (
     <Routes>
-      <Route path={`/${rootRouteRef.path}`}  />
+      <Route path={`/${rootRouteRef.path}`} element={<CITable />}  />
     </Routes>
   );
 };

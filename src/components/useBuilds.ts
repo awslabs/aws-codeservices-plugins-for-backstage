@@ -37,8 +37,9 @@ export function getBuilds() {
       if (buildIds.ids == undefined) {
         return
       }
-      return await api.getBuilds({region: "us-west-2", ids: buildIds.ids, creds});
+      var builds = await api.getBuilds({region: "us-west-2", ids: buildIds.ids, creds});
       console.log(builds)
+      return builds
     } catch (e) {
       errorApi.post(e)
       throw e
