@@ -70,7 +70,7 @@ const generatedColumns: TableColumn[] = [
     },
   },
   {
-    title: 'Submitted',
+    title: 'Submitter',
     field: 'submitter',
     render: (row: Partial<Build>) => {
       return (
@@ -98,7 +98,7 @@ const generatedColumns: TableColumn[] = [
       if (row.endTime != undefined && row.startTime != undefined) {
         return (
           <>
-            {(row.endTime.getTime() - row.startTime.getTime()) / 1000} Sec
+            {(row.endTime.getTime() - row.startTime.getTime()) / 1000} Seconds
           </>
         );
       } else {
