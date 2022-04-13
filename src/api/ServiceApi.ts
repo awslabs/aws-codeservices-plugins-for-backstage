@@ -28,15 +28,6 @@ export const codeStarApiRef = createApiRef<CodeStarApi>({
   description: 'Used by the CodeStar plugin to make requests',
 });
 
-export interface Employee {
-  builds: Array<EmployeeData1>;
-};
-
-export interface EmployeeData1 {
-  buildStatus: string;
-  arn: string;
-};
-
 export interface Credentials {
   AccessKeyId: string;
   SecretAccessKey: string;
@@ -45,7 +36,6 @@ export interface Credentials {
 };
 
 export interface CodeStarApi {
-  getEmployee(options: {id: string}): Promise<Employee>;
   getBuildIds(options: {region: string, project: string, creds: Credentials}): Promise<ListBuildsForProjectCommandOutput>;
   getBuilds(options: {region: string, ids: string[], creds: Credentials}): Promise<BatchGetBuildsCommandOutput>;
   generateCredentials(): Promise<Credentials>;
@@ -61,21 +51,21 @@ export class CodeStarClient implements CodeStarApi {
     this.discoveryApi = options.discoveryApi;
   }
 
-  async getEmployee({id}: {id: string}): Promise<Employee> {
-    const url = `${await this.discoveryApi.getBaseUrl(
-      'proxy',
-    )}/dummy/api/users/${id}`;
-    console.log("url: " + url);
+  // async getEmployee({id}: {id: string}): Promise<Employee> {
+  //   const url = `${await this.discoveryApi.getBaseUrl(
+  //     'proxy',
+  //   )}/dummy/api/users/${id}`;
+  //   console.log("url: " + url);
 
-    const response = await fetch(url, {
-      method: 'GET',
-    });
+  //   const response = await fetch(url, {
+  //     method: 'GET',
+  //   });
 
-    if (!response.ok) {
-      throw new Error("failed to fetch")
-    }
-    return await response.json()
-  }
+  //   if (!response.ok) {
+  //     throw new Error("failed to fetch")
+  //   }
+  //   return await response.json()
+  // }
 
   async generateCredentials(): Promise<Credentials> {
     const url = `${await this.discoveryApi.getBaseUrl(
@@ -108,7 +98,7 @@ export class CodeStarClient implements CodeStarApi {
       }
     });
     const command = new BatchGetBuildsCommand({ids: ids});
-    console.log("serviceAPI command "+command)
+    console.log("serviceAPI command " + command)
     return await client.send(command)
   }
 };
