@@ -20,21 +20,29 @@ const WidgetContent = ({
   /* if (loading) return <LinearProgress />; */
   const rows = new Map<string, any>()
   if (builds != null && builds.length > 0) {
-    rows.set("Status",<>
-        <RunStatus status={builds[0].buildStatus?.toLowerCase()} />
-      </>
+    rows.set("Status", <>
+          <RunStatus status={builds[0].buildStatus?.toLowerCase()}/>
+        </>
     )
-    rows.set("Build", builds[0].arn)
-    var ar = builds[0]?.arn?.split(':');
-    if (ar != undefined) {
-      rows.set("URL",
-        <Link
-          href= {"https://"+ar[3]+".console.aws.amazon.com/codesuite/codebuild/"+ar[4]+"/"+ar[5].replace('build','projects')+"/"+ar[5]+":"+ar[6]}
-          target = "_blank"
-        >
-          Build Link
-        </Link>
+
+    let id = builds[0]?.id?.split(':');
+    let ar = builds[0]?.arn?.split(':');
+    console.log("ar is", ar);
+    if (ar != undefined && id != undefined) {
+      rows.set("Build Id",
+          <Link
+              href={"https://" + ar[3] + ".console.aws.amazon.com/codesuite/codebuild/" + ar[4] + "/" + ar[5].replace('build', 'projects') + "/" + ar[5] + ":" + ar[6]}
+              target="_blank"
+          >
+            {id}
+          </Link>
       )
+    }
+    let buildTime = builds[0]?.endTime;
+    if (buildTime != undefined) {
+      console.log("build time", buildTime);
+      // make this duration or something later.
+      rows.set("Completed",  buildTime.toDateString() + ":" + buildTime.toTimeString());
     }
   }
   return (
@@ -72,24 +80,33 @@ const DeployWidgetContent = ({
 }) => {
   /* if (loading) return <LinearProgress />; */
   const rows = new Map<string, any>()
+  console.log(deploymentInfo);
   if (deploymentInfo != undefined) {
     rows.set("Status",<>
         <RunStatus status={deploymentInfo.status?.toLowerCase()} />
       </>
     )
-    rows.set("Build", deploymentInfo.deploymentId)
-    rows.set("Creator", deploymentInfo.creator)
-    /* var ar = builds[0]?.arn?.split(':'); */
-    /* if (ar != undefined) { */
-    /*   rows.set("URL", */
-    /*     <Link */
-    /*       href= {"https://"+ar[3]+".console.aws.amazon.com/codesuite/codebuild/"+ar[4]+"/"+ar[5].replace('build','projects')+"/"+ar[5]+":"+ar[6]} */
-    /*       target = "_blank" */
-    /*     > */
-    /*       Build Link */
-    /*     </Link> */
-    /*   ) */
-    /* } */
+    console.log ("deploymentInfo",deploymentInfo);
+    let id = deploymentInfo?.deploymentId;
+    let region = "us-west-2";
+    console.log("id is", id);
+    if (id != undefined) {
+      rows.set("Deploy Id",
+          <Link
+              href={"https://" + region + ".console.aws.amazon.com/codesuite/codedeploy/deployments/" + id + "?" + region }
+              target="_blank"
+          >
+            {id}
+          </Link>
+      )
+    }
+    let buildTime = deploymentInfo?.completeTime;
+    if (buildTime != undefined) {
+      console.log("Deploy Time", buildTime);
+      // make this duration or something later.
+      rows.set("Completed", buildTime.toDateString() + ":" + buildTime.toTimeString());
+    }
+
   }
   return (
     <StructuredMetadataTable
