@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {useAsync} from 'react-use';
+import {useAsyncRetry} from 'react-use';
 import {codeStarApiRef} from '../api';
 import {useApi} from '@backstage/core-plugin-api';
 
@@ -40,23 +40,49 @@ export enum ErrorType {
 //   return {loading, employee, retry} as const
 // };
 
-export function getBuilds(region: string, project: string) {
+//export function getBuilds(region: string, project: string) {
+//  const api = useApi(codeStarApiRef);
+//  var builds;
+//  builds = useAsync(async () => {
+//    console.log("...pulling build data ...")
+//    const creds = await api.generateCredentials()
+//    const buildIds = await api.getBuildIds({region: region, project: project, creds});
+//    if (buildIds.ids == undefined) {
+//      return
+//    }
+//    builds = await api.getBuilds({region: "us-east-1", ids: buildIds.ids, creds});
+//    console.log("ASYNC CALL RETURNS " + builds)
+//  });
+
+//  console.log("usebuilds " + builds)
+//  //console.log("usebuilds2 "+employee)
+//  //employee=builds
+//  //return {loading, employee} as const
+//  return builds
+//};
+
+export function getBuilds() {
   const api = useApi(codeStarApiRef);
-  var builds;
-  builds = useAsync(async () => {
-    console.log("...pulling build data ...")
-    const creds = await api.generateCredentials()
-    const buildIds = await api.getBuildIds({region: region, project: project, creds});
-    if (buildIds.ids == undefined) {
-      return
+  const {
+    // loading,
+    value: builds,
+    // retry,
+  } = useAsyncRetry(async () => {
+    try {
+      console.log("pulling build data ...")
+      const creds = await api.generateCredentials()
+      const buildIds = await api.getBuildIds({region: "us-west-2", project: "hello-world", creds});
+      if (buildIds.ids == undefined) {
+        return
+      }
+      return await api.getBuilds({region: "us-west-2", ids: buildIds.ids, creds});
+      console.log(builds)
+    } catch (e) {
+      throw e
     }
-    builds = await api.getBuilds({region: "us-east-1", ids: buildIds.ids, creds});
-    console.log("ASYNC CALL RETURNS " + builds)
   });
 
-  console.log("usebuilds " + builds)
-  //console.log("usebuilds2 "+employee)
-  //employee=builds
-  //return {loading, employee} as const
-  return builds
-};
+  var buildOutput = builds?.builds;
+  return buildOutput
+  // return {loading, buildOutput, retry}
+}

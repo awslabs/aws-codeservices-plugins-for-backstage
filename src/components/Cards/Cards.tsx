@@ -16,8 +16,10 @@ const WidgetContent = ({
 }) => {
   /* if (loading) return <LinearProgress />; */
   const rows = new Map<string, any>()
-  rows.set("Status",builds?[0]?.buildStatus)
-  rows.set("Build", builds?[0].arn)
+  if (builds != null) {
+    rows.set("Status",builds[0].buildStatus)
+    rows.set("Build", builds[0].arn)
+  }
   return (
     <StructuredMetadataTable
       metadata = {Object.fromEntries(rows)}
@@ -31,14 +33,13 @@ export const LatestRunCard = ({
   branch: string;
   variant?: InfoCardVariants;
 }) => {
-  var builds =  getBuilds("us-east-1", "java-app")
+  var builds =  getBuilds()
   var error = null
   return (
     <InfoCard title={`Latest status for User ${!builds ? "undefined" : builds}`} variant={variant}>
       {!error ? (
         <WidgetContent
           builds={builds}
-          loading={loading}
         />
       ) : ( "" )}
     </InfoCard>
