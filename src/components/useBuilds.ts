@@ -69,13 +69,13 @@ export function getBuilds() {
     // retry,
   } = useAsyncRetry(async () => {
     try {
-      console.log("pulling build data ...")
+      console.log("...pulling build data ...")
       const creds = await api.generateCredentials()
-      const buildIds = await api.getBuildIds({region: "us-west-2", project: "hello-world", creds});
+      const buildIds = await api.getBuildIds({region: "us-east-1", project: "java-app", creds});
       if (buildIds.ids == undefined) {
         return
       }
-      return await api.getBuilds({region: "us-west-2", ids: buildIds.ids, creds});
+      return await api.getBuilds({region: "us-east-1", ids: buildIds.ids, creds});
       console.log(builds)
     } catch (e) {
       throw e
