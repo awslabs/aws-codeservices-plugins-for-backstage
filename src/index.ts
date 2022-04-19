@@ -23,6 +23,7 @@ export {
 } from './plugin';
 export {LatestRunCard} from './components/Cards';
 export {DeployLatestRunCard} from './components/Cards';
+export {PipelineRunCard} from './components/Cards';
 export {
   isCodeStarAvailable,
   isCodeStarAvailable as isPluginApplicableToEntity,

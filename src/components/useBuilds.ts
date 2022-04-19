@@ -19,6 +19,7 @@ import {useApi} from '@backstage/core-plugin-api';
 import {useEntity} from '@backstage/plugin-catalog-react';
 import {REGION_ANNOTATION, BUILD_PROJECT_ANNOTATION, IAM_ROLE_ANNOTATION} from '../constants';
 import {DEPLOY_APPLICATION_ANNOTATION, DEPLOY_GROUP_NAME_ANNOTATION} from '../constants';
+import {PIPELINE_NAME_ANNOTATION} from '../constants';
 
 export enum ErrorType {
   CONNECTION_ERROR,
@@ -88,4 +89,34 @@ export function getDeployments() {
 
   var deploymentsInfo = deployments?.deploymentsInfo;
   return {loadingd: loading, deploymentsInfo, retryd: retry} as const
+};
+
+
+export function getPipelineState() {
+  const api = useApi(codeStarApiRef);
+  const {entity} = useEntity();
+  const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
+  const pipelineName = entity?.metadata.annotations?.[PIPELINE_NAME_ANNOTATION] ?? '';
+  const iamRole = entity?.metadata.annotations?.[IAM_ROLE_ANNOTATION] ?? '';
+  // const errorApi = useApi(errorApiRef);
+  const {
+    loading,
+    value: pipelineInfo,
+    retry
+  } = useAsyncRetry(async () => {
+    try {
+      console.log("pulling pipeline data ...")
+      const creds = await api.generateCredentials({iamRole: iamRole})
+      const pipelineInfo = await api.getPipelineState({region: region, name: pipelineName, creds});
+      if (pipelineInfo?.stageStates == undefined) {
+        return
+      }
+      console.log("Pipeline is", pipelineInfo.stageStates);
+      return pipelineInfo;
+    } catch (e) {
+      // errorApi.post(e)
+      throw e
+    }
+  });
+  return {loading, pipelineInfo, retry} as const;
 };

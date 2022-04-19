@@ -15,3 +15,4 @@
  */
 export {LatestRunCard} from './Cards';
 export {DeployLatestRunCard} from './Cards';
+export {PipelineRunCard} from './Cards';

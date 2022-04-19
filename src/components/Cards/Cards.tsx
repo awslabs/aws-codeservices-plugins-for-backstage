@@ -1,6 +1,6 @@
 import { Link } from '@material-ui/core';
 import React from 'react';
-import {  getBuilds } from '../useBuilds';
+import {  getBuilds, getPipelineState } from '../useBuilds';
 import {  getDeployments } from '../useBuilds';
 import {
   InfoCard,
@@ -11,6 +11,8 @@ import {
 import { Build }  from "@aws-sdk/client-codebuild";
 import { DeploymentInfo }  from "@aws-sdk/client-codedeploy";
 import { RunStatus } from '../BuildsPage/lib/Status';
+import { GetPipelineStateOutput } from "@aws-sdk/client-codepipeline";
+
 
 const WidgetContent = ({
   builds,
@@ -133,6 +135,48 @@ export const DeployLatestRunCard = ({
           deploymentInfo={deploymentsInfo[0]}
         />
       ) : ( "" )}
+    </InfoCard>
+  );
+};
+
+
+const PipelineWidgetContent = ({
+    pipelineInfo,
+  }: {
+    pipelineInfo?: GetPipelineStateOutput,
+}) => {
+  /* if (loading) return <LinearProgress />; */
+  const rows = new Map<string, any>()
+  console.log(pipelineInfo);
+   rows.set("Status",<>
+        <RunStatus status={pipelineInfo?.pipelineName} />
+      </>
+    )
+    return (
+    <StructuredMetadataTable
+      metadata = {Object.fromEntries(rows)}
+    />
+    );
+};
+
+
+export const  PipelineRunCard = ({
+  variant,
+}: {
+  variant?: InfoCardVariants;
+}) => {
+  const { pipelineInfo }   = getPipelineState() ?? []
+  var error = null
+  if (pipelineInfo == undefined ) {
+    error = "Problem"
+  }
+  return (
+    <InfoCard title={`Latest Pipeline Status`} variant={variant}>
+        {!error && pipelineInfo != undefined ? ( 
+          <PipelineWidgetContent
+             pipelineInfo={pipelineInfo}
+            />
+        ) : ("")}
     </InfoCard>
   );
 };
