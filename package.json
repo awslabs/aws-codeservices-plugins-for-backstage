@@ -51,7 +51,7 @@
     "react-use": "^17.2.4"
   },
   "devDependencies": {
-    "@backstage/cli": "^0.7.7",
+    "@backstage/cli": "^0.16.0",
     "@backstage/core-app-api": "^0.1.7",
     "@backstage/dev-utils": "^0.2.5",
     "@backstage/test-utils": "^0.1.16",
