@@ -25,7 +25,12 @@ export {LatestRunCard} from './components/Cards';
 export {DeployLatestRunCard} from './components/Cards';
 export {
   isCodeStarAvailable,
+  isCodeStarAvailable as isPluginApplicableToEntity,
   Router,
 } from './components/Router';
-export {CODE_STAR_ANNOTATION} from './constants';
 export * from './api';
+
+import {
+  isCodeStarAvailable,
+} from './components/Router';
+console.log("isCodeStarAvailable: ", isCodeStarAvailable)

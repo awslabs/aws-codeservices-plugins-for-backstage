@@ -13,4 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const CODE_STAR_ANNOTATION = 'spinnaker.io/application';
+export const REGION_ANNOTATION = 'code.aws.com/region'
+export const IAM_ROLE_ANNOTATION = 'code.aws.com/iam-role'
+export const BUILD_PROJECT_ANNOTATION = 'code.aws.com/build-project'
+export const DEPLOY_APPLICATION_ANNOTATION = 'code.aws.com/deploy-application'
+export const DEPLOY_GROUP_NAME_ANNOTATION = 'code.aws.com/deploy-group-name'
+export const PIPELINE_NAME_ANNOTATION = 'code.aws.com/pipeline-name'

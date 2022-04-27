@@ -15,7 +15,10 @@
  */
 import {useAsyncRetry} from 'react-use';
 import {codeStarApiRef} from '../api';
-import {useApi, errorApiRef} from '@backstage/core-plugin-api';
+import {useApi} from '@backstage/core-plugin-api';
+import {useEntity} from '@backstage/plugin-catalog-react';
+import {REGION_ANNOTATION, BUILD_PROJECT_ANNOTATION, IAM_ROLE_ANNOTATION} from '../constants';
+import {DEPLOY_APPLICATION_ANNOTATION, DEPLOY_GROUP_NAME_ANNOTATION} from '../constants';
 
 export enum ErrorType {
   CONNECTION_ERROR,
@@ -23,8 +26,12 @@ export enum ErrorType {
 }
 
 export function getBuilds() {
+  const {entity} = useEntity();
   const api = useApi(codeStarApiRef);
-  const errorApi = useApi(errorApiRef);
+  const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
+  const project = entity?.metadata.annotations?.[BUILD_PROJECT_ANNOTATION] ?? '';
+  const iamRole = entity?.metadata.annotations?.[IAM_ROLE_ANNOTATION] ?? '';
+  // const errorApi = useApi(errorApiRef);
   const {
     loading,
     value: builds,
@@ -32,16 +39,16 @@ export function getBuilds() {
   } = useAsyncRetry(async () => {
     try {
       console.log("pulling build data ...")
-      const creds = await api.generateCredentials()
-      const buildIds = await api.getBuildIds({region: "us-west-2", project: "hello-world", creds});
+      const creds = await api.generateCredentials({iamRole: iamRole})
+      const buildIds = await api.getBuildIds({region: region, project: project, creds});
       if (buildIds.ids == undefined) {
         return
       }
-      var builds = await api.getBuilds({region: "us-west-2", ids: buildIds.ids, creds});
+      var builds = await api.getBuilds({region: region, ids: buildIds.ids, creds});
       console.log(builds)
       return builds
     } catch (e) {
-      errorApi.post(e)
+      // errorApi.post(e)
       throw e
     }
   });
@@ -52,7 +59,12 @@ export function getBuilds() {
 
 export function getDeployments() {
   const api = useApi(codeStarApiRef);
-  const errorApi = useApi(errorApiRef);
+  const {entity} = useEntity();
+  const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
+  const application = entity?.metadata.annotations?.[DEPLOY_APPLICATION_ANNOTATION] ?? '';
+  const groupName = entity?.metadata.annotations?.[DEPLOY_GROUP_NAME_ANNOTATION] ?? '';
+  const iamRole = entity?.metadata.annotations?.[IAM_ROLE_ANNOTATION] ?? '';
+  // const errorApi = useApi(errorApiRef);
   const {
     loading,
     value: deployments,
@@ -60,16 +72,16 @@ export function getDeployments() {
   } = useAsyncRetry(async () => {
     try {
       console.log("pulling deployment  data ...")
-      const creds = await api.generateCredentials()
-      const output = await api.getDeploymentIds({region: "us-west-2", appName: "hello-world", deploymentGroupName: "hello-world-group", creds});
+      const creds = await api.generateCredentials({iamRole: iamRole})
+      const output = await api.getDeploymentIds({region: region, appName: application, deploymentGroupName: groupName, creds});
       if (output.deployments == undefined) {
         return
       }
-      var deployments = await api.getDeployments({region: "us-west-2", ids: output.deployments, creds});
+      var deployments = await api.getDeployments({region: region, ids: output.deployments, creds});
       console.log(deployments)
       return deployments
     } catch (e) {
-      errorApi.post(e)
+      // errorApi.post(e)
       throw e
     }
   });

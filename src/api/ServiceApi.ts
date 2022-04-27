@@ -46,7 +46,7 @@ export interface CodeStarApi {
   getDeploymentIds(options: {region: string, appName: string, deploymentGroupName: string, creds: Credentials}): Promise<ListDeploymentsCommandOutput>;
   getDeployments(options: {region: string, ids: string[], creds: Credentials}): Promise<BatchGetDeploymentsCommandOutput>;
 
-  generateCredentials(): Promise<Credentials>;
+  generateCredentials(options: {iamRole: string}): Promise<Credentials>;
 };
 
 export class CodeStarClient implements CodeStarApi {
@@ -59,11 +59,11 @@ export class CodeStarClient implements CodeStarApi {
     this.discoveryApi = options.discoveryApi;
   }
 
-  async generateCredentials(): Promise<Credentials> {
+  async generateCredentials({iamRole}: {iamRole: string}): Promise<Credentials> {
     const url = `${await this.discoveryApi.getBaseUrl(
       'aws',
     )}/credentials`;
-    const reqBody = JSON.stringify({RoleArn: 'arn:aws:iam::865119719287:role/adminNov'});
+    const reqBody = JSON.stringify({RoleArn: iamRole});
     return await (await fetch(url, {method: 'POST', body: reqBody})).json();
   }
 

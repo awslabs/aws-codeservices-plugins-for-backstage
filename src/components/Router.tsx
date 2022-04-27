@@ -16,11 +16,16 @@
 import React from 'react';
 import { Route, Routes } from 'react-router';
 import { rootRouteRef } from '../plugin';
+import { useEntity } from '@backstage/plugin-catalog-react';
 import { CITable } from './BuildsPage/lib/CITable';
 import { Entity } from '@backstage/catalog-model';
+import {REGION_ANNOTATION} from '../constants';
+import { MissingAnnotationEmptyState } from '@backstage/core-components';
 
-export const isCodeStarAvailable = () =>
-  true;
+export const isCodeStarAvailable = (entity: Entity) => {
+  console.log(entity);
+  return Boolean(entity.metadata.annotations?.[REGION_ANNOTATION]);
+}
 
 type Props = {
   /** @deprecated The entity is now grabbed from context instead */
@@ -28,6 +33,11 @@ type Props = {
 };
 
 export const Router = (_props: Props) => {
+  const { entity } = useEntity();
+  if (!isCodeStarAvailable(entity)) {
+    return <MissingAnnotationEmptyState annotation={REGION_ANNOTATION} />;
+  }
+
   return (
     <Routes>
       <Route path={`/${rootRouteRef.path}`} element={<CITable />}  />

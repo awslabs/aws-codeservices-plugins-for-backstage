@@ -68,12 +68,6 @@ export const RunStatus = ({
           <StatusOK /> Completed
         </>
       );
-    case 'succeeded':
-      return (
-        <>
-          <StatusOK /> Completed
-        </>
-      );
     case 'stopped':
       return (
         <>
