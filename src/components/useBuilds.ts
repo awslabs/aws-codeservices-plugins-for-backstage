@@ -55,7 +55,7 @@ export function getBuilds() {
   });
 
   var buildOutput = builds?.builds;
-  return {loading, buildOutput, retry} as const
+  return {loading, buildOutput, region, retry} as const
 };
 
 export function getDeployments() {
@@ -88,7 +88,7 @@ export function getDeployments() {
   });
 
   var deploymentsInfo = deployments?.deploymentsInfo;
-  return {loadingd: loading, deploymentsInfo, retryd: retry} as const
+  return {loadingd: loading, deploymentsInfo, region: region, retryd: retry} as const
 };
 
 
@@ -112,11 +112,11 @@ export function getPipelineState() {
         return
       }
       console.log("Pipeline is", pipelineInfo.stageStates);
-      return pipelineInfo;
+      return pipelineInfo
     } catch (e) {
       // errorApi.post(e)
       throw e
     }
   });
-  return {loading, pipelineInfo, retry} as const;
+  return {loading, pipelineInfo, region, retry} as const;
 };
