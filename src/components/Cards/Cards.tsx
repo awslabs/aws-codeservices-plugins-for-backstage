@@ -147,16 +147,27 @@ const PipelineWidgetContent = ({
 }) => {
   /* if (loading) return <LinearProgress />; */
   const rows = new Map<string, any>()
-  console.log(pipelineInfo);
-   rows.set("Status",<>
-        <RunStatus status={pipelineInfo?.pipelineName} />
-      </>
-    )
-    return (
+  if(pipelineInfo != undefined && pipelineInfo.stageStates != undefined) {
+    console.log("cardinto...",pipelineInfo);
+    for (const element of pipelineInfo.stageStates) {
+      if (element.actionStates == undefined || element.actionStates.length <= 0) continue;
+      rows.set(element.stageName || "undefined" ,
+           <>
+             <Link
+                 href={ element.actionStates[0].entityUrl }
+                 target="_blank"
+             >
+               {element.actionStates[0].latestExecution?.actionExecutionId}
+             </Link><br/> <RunStatus status={element.latestExecution?.status} />
+           </>
+       )
+    }
+  }
+  return (
     <StructuredMetadataTable
       metadata = {Object.fromEntries(rows)}
     />
-    );
+  );
 };
 
 
