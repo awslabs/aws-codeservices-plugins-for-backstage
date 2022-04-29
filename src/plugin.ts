@@ -26,14 +26,7 @@ import {
 import {CodeStarClient, codeStarApiRef} from './api';
 
 export const rootRouteRef = createRouteRef({
-  path: '',
-  title: 'CodeStar',
-});
-
-export const buildRouteRef = createRouteRef({
-  path: 'build/:jobFullName/:buildNumber',
-  params: ['jobFullName', 'buildNumber'],
-  title: 'CodeBuild',
+  id: 'CodeStar',
 });
 
 export const codeStarPlugin = createPlugin({
@@ -53,6 +46,7 @@ export const codeStarPlugin = createPlugin({
 
 export const EntityCodeStarContent = codeStarPlugin.provide(
   createRoutableExtension({
+    name: "codeStarContent",
     component: () => import('./components/Router').then(m => m.Router),
     mountPoint: rootRouteRef,
   }),
@@ -60,6 +54,7 @@ export const EntityCodeStarContent = codeStarPlugin.provide(
 
 export const EntityLatestEmployeeRunCard = codeStarPlugin.provide(
   createComponentExtension({
+    name: "buildCard",
     component: {
       lazy: () => import('./components/Cards').then(m => m.LatestRunCard),
     },
@@ -68,6 +63,7 @@ export const EntityLatestEmployeeRunCard = codeStarPlugin.provide(
 
 export const DeployEntityLatestEmployeeRunCard = codeStarPlugin.provide(
   createComponentExtension({
+    name: "deployCard",
     component: {
       lazy: () => import('./components/Cards').then(m => m.DeployLatestRunCard),
     },
@@ -76,6 +72,7 @@ export const DeployEntityLatestEmployeeRunCard = codeStarPlugin.provide(
 
 export const PipelineRunCard = codeStarPlugin.provide(
   createComponentExtension({
+    name: "pipelineCard",
     component: {
       lazy: () => import('./components/Cards').then(m => m.PipelineRunCard),
     },

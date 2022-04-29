@@ -21,16 +21,17 @@ import { CITable } from './BuildsPage/lib/CITable';
 import { Entity } from '@backstage/catalog-model';
 import {REGION_ANNOTATION} from '../constants';
 import { MissingAnnotationEmptyState } from '@backstage/core-components';
+import { useEffect } from 'react';
+import { useLocalStorage } from 'react-use';
+import { codeStarApiRef } from '../api';
+import { LatestRunCard } from './Cards/Cards';
 
 export const isCodeStarAvailable = (entity: Entity) => {
   console.log(entity);
   return Boolean(entity.metadata.annotations?.[REGION_ANNOTATION]);
 }
 
-type Props = {
-  /** @deprecated The entity is now grabbed from context instead */
-  entity?: Entity;
-};
+type Props = { entity: Entity };
 
 export const Router = (_props: Props) => {
   const { entity } = useEntity();
@@ -40,7 +41,44 @@ export const Router = (_props: Props) => {
 
   return (
     <Routes>
-      <Route path={`/${rootRouteRef.path}`} element={<CITable />}  />
+      <Route path={`/${rootRouteRef}`} element={<CITable />}  />
     </Routes>
+  );
+};
+
+export type Settings = {
+  entity: Entity;
+};
+
+export const StateContext = React.createContext<
+  [Settings, React.Dispatch<Settings>]
+>([] as any);
+const STORAGE_KEY = `${codeStarApiRef.id}.settings`;
+
+export const ContextProvider: React.FC<Props> = ({ entity, children }) => {
+  const [settings, setSettings] = useLocalStorage(STORAGE_KEY, { entity });
+  if (settings === undefined) {
+    throw new Error('Firebase functions plugin settings is undefined');
+  }
+
+  useEffect(() => {
+    if (settings.entity !== entity) {
+      setSettings({ entity });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [entity]);
+
+  return (
+    <StateContext.Provider value={[settings, setSettings]}>
+      <>{children}</>
+    </StateContext.Provider>
+  );
+};
+
+export const Widget: React.FC<Props> = ({ entity }) => {
+  return (
+    <ContextProvider entity={entity}>
+      <LatestRunCard />
+    </ContextProvider>
   );
 };

@@ -31,7 +31,6 @@ import {CodePipelineClient, GetPipelineStateCommand, GetPipelineStateOutput} fro
 
 export const codeStarApiRef = createApiRef<CodeStarApi>({
   id: 'plugin.codestar.service2',
-  description: 'Used by the CodeStar plugin to make requests',
 });
 
 export interface Credentials {

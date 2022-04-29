@@ -1,4 +1,3 @@
-export {}
 /*
  * Copyright 2020 The Backstage Authors
  *
@@ -15,85 +14,90 @@ export {}
  * limitations under the License.
  */
 
-/* import React from 'react'; */
-/* import { renderInTestApp } from '@backstage/test-utils'; */
-/* import { LatestRunCard } from './Cards'; */
-/* import { EntityProvider } from '@backstage/plugin-catalog-react'; */
-/* import { JenkinsApi, jenkinsApiRef } from '../../api'; */
-/* import { ApiProvider, ApiRegistry } from '@backstage/core-app-api'; */
-/* import { Project } from '../../api/JenkinsApi'; */
+import React from 'react';
+import { render } from '@testing-library/react';
+import {
+  errorApiRef,
+  configApiRef,
+  AnyApiRef,
+} from '@backstage/core-plugin-api';
+import { rest } from 'msw';
+import {
+  setupRequestMockHandlers,
+  wrapInTestApp,
+  TestApiProvider,
+} from '@backstage/test-utils';
+import { setupServer } from 'msw/node';
+import { EntityProvider } from '@backstage/plugin-catalog-react';
+import {
+  CodeStarApi,
+  codeStarApiRef,
+  Credentials
+} from '../../api';
+import { entityMock, buildsResponseMock, credsMock } from '../../mocks/mocks';
+import {Widget} from '../Router';
 
-/* describe('<LatestRunCard />', () => { */
-/*   const entity = { */
-/*     apiVersion: 'v1', */
-/*     kind: 'Component', */
-/*     metadata: { */
-/*       name: 'software', */
-/*       description: 'This is the description', */
-/*       annotations: { JENKINS_ANNOTATION: 'jenkins' }, */
-/*     }, */
-/*   }; */
+const errorApiMock = { post: jest.fn(), error$: jest.fn() };
 
-/*   const jenkinsApi: Partial<JenkinsApi> = { */
-/*     getProjects: () => */
-/*       Promise.resolve([ */
-/*         { lastBuild: { timestamp: 0, status: 'success' } }, */
-/*       ] as Project[]), */
-/*   }; */
+const config = {
+  getString: (_: string) => undefined,
+};
 
-/*   it('should show success status of latest build', async () => { */
-/*     const apis = ApiRegistry.from([[jenkinsApiRef, jenkinsApi]]); */
 
-/*     const { getByText } = await renderInTestApp( */
-/*       <ApiProvider apis={apis}> */
-/*         <EntityProvider entity={entity}> */
-/*           <LatestRunCard branch="master" /> */
-/*         </EntityProvider> */
-/*       </ApiProvider>, */
-/*     ); */
+class CodeStarClientFake implements CodeStarApi {
+  async generateCredentials(_ : {iamRole: string}): Promise<Credentials> {
+    return new Promise((resolve, _) => { resolve(credsMock) } )
+  }
 
-/*     expect(getByText('Completed')).toBeInTheDocument(); */
-/*   }); */
+  async getBuildIds(_ : {region: string, project: string, creds: Credentials}): Promise<any> {
+    return new Promise((resolve, _) => { resolve({ids: []}) })
+  }
 
-/*   it('should show the appropriate error in case of a connection error', async () => { */
-/*     const jenkinsApiWithError: Partial<JenkinsApi> = { */
-/*       getProjects: () => Promise.reject(new Error('Unauthorized')), */
-/*     }; */
+  async getBuilds(_: {region: string, ids: string[], creds: Credentials}): Promise<any> {
+    return new Promise((resolve, _) => { resolve(buildsResponseMock) })
+  }
 
-/*     const apis = ApiRegistry.from([[jenkinsApiRef, jenkinsApiWithError]]); */
+  async getDeploymentIds(_: {region: string, appName: string, deploymentGroupName: string, creds: Credentials}): Promise<any>{
+  }
 
-/*     const { getByText } = await renderInTestApp( */
-/*       <ApiProvider apis={apis}> */
-/*         <EntityProvider entity={entity}> */
-/*           <LatestRunCard branch="master" /> */
-/*         </EntityProvider> */
-/*       </ApiProvider>, */
-/*     ); */
+  async getDeployments(_: {region: string, ids: string[], creds: Credentials}): Promise<any> {}
+  async getPipelineState(_: {region: string, name: string, creds: Credentials}): Promise<any> {}
+}
 
-/*     expect(getByText("Error: Can't connect to Jenkins")).toBeInTheDocument(); */
-/*     expect(getByText('Unauthorized')).toBeInTheDocument(); */
-/*   }); */
+const apis: [AnyApiRef, Partial<unknown>][] = [
+  [configApiRef, config],
+  [errorApiRef, errorApiMock],
+  [codeStarApiRef, new CodeStarClientFake()],
+];
 
-/*   it('should show the appropriate error in case Jenkins project is not found', async () => { */
-/*     const jenkinsApiWithError: Partial<JenkinsApi> = { */
-/*       getProjects: () => */
-/*         Promise.reject({ */
-/*           notFound: true, */
-/*           message: 'jenkins-project not found', */
-/*         }), */
-/*     }; */
+describe('LatestRunCard', () => {
+  const worker = setupServer();
+  setupRequestMockHandlers(worker);
 
-/*     const apis = ApiRegistry.from([[jenkinsApiRef, jenkinsApiWithError]]); */
+  beforeEach(() => {
+    // jest.resetAllMocks();
+    worker.use(
+      rest.post(
+        'http://exampleapi.com/credentials',
+        (_, res, ctx) => res(ctx.json(credsMock)),
+      ),
+    );
+  });
 
-/*     const { getByText } = await renderInTestApp( */
-/*       <ApiProvider apis={apis}> */
-/*         <EntityProvider entity={entity}> */
-/*           <LatestRunCard branch="master" /> */
-/*         </EntityProvider> */
-/*       </ApiProvider>, */
-/*     ); */
+  it('should display widget with data', async () => {
+    const rendered = render(
+      wrapInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={entityMock}>
+            <Widget entity={entityMock} />
+          </EntityProvider>
+        </TestApiProvider>,
+      ),
+    );
+    expect(
+      await rendered.findByText(buildsResponseMock.builds[0].id),
+    ).toBeInTheDocument();
+  });
+});
 
-/*     expect(getByText("Error: Can't find Jenkins project")).toBeInTheDocument(); */
-/*     expect(getByText('jenkins-project not found')).toBeInTheDocument(); */
-/*   }); */
-/* }); */
+

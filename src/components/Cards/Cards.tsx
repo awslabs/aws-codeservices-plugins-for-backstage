@@ -29,7 +29,6 @@ const WidgetContent = ({
 
     let id = builds[0]?.id?.split(':');
     let ar = builds[0]?.arn?.split(':');
-    console.log("ar is", ar);
     if (ar != undefined && id != undefined) {
       rows.set("Build Id",
           <Link
@@ -44,7 +43,9 @@ const WidgetContent = ({
     if (buildTime != undefined) {
       console.log("build time", buildTime);
       // make this duration or something later.
-      rows.set("Completed",  buildTime.toDateString() + ":" + buildTime.toTimeString());
+      if (buildTime instanceof Date) {
+        rows.set("Completed",  buildTime.toDateString() + ":" + buildTime.toTimeString());
+      }
     }
   }
   return (
@@ -57,7 +58,6 @@ const WidgetContent = ({
 export const LatestRunCard = ({
   variant,
 }: {
-  branch: string;
   variant?: InfoCardVariants;
 }) => {
   const { buildOutput } =  getBuilds() ?? []

@@ -28,6 +28,7 @@ export {
   isCodeStarAvailable,
   isCodeStarAvailable as isPluginApplicableToEntity,
   Router,
+  Widget,
 } from './components/Router';
 export * from './api';
 
