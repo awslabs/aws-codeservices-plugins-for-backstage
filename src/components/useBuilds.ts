@@ -39,7 +39,6 @@ export function getBuilds() {
     retry,
   } = useAsyncRetry(async () => {
     try {
-      console.log("pulling build data ....")
       const creds = await api.generateCredentials({iamRole: iamRole})
       const buildIds = await api.getBuildIds({region: region, project: project, creds});
       if (buildIds.ids == undefined) {
@@ -53,7 +52,7 @@ export function getBuilds() {
   });
 
   var buildOutput = builds?.builds;
-  return {loading, buildOutput, retry} as const
+  return {loading, buildOutput, region, retry} as const
 };
 
 export function getDeployments() {
@@ -70,14 +69,12 @@ export function getDeployments() {
     retry,
   } = useAsyncRetry(async () => {
     try {
-      console.log("pulling deployment  data ...")
       const creds = await api.generateCredentials({iamRole: iamRole})
       const output = await api.getDeploymentIds({region: region, appName: application, deploymentGroupName: groupName, creds});
       if (output.deployments == undefined) {
         return
       }
       var deployments = await api.getDeployments({region: region, ids: output.deployments, creds});
-      console.log(deployments)
       return deployments
     } catch (e) {
       // errorApi.post(e)
@@ -86,7 +83,7 @@ export function getDeployments() {
   });
 
   var deploymentsInfo = deployments?.deploymentsInfo;
-  return {loadingd: loading, deploymentsInfo, retryd: retry} as const
+  return {loadingd: loading, deploymentsInfo, region: region, retryd: retry} as const
 };
 
 
@@ -103,18 +100,18 @@ export function getPipelineState() {
     retry
   } = useAsyncRetry(async () => {
     try {
-      console.log("pulling pipeline data ...")
       const creds = await api.generateCredentials({iamRole: iamRole})
       const pipelineInfo = await api.getPipelineState({region: region, name: pipelineName, creds});
       if (pipelineInfo?.stageStates == undefined) {
         return
       }
-      console.log("Pipeline is", pipelineInfo.stageStates);
-      return pipelineInfo;
+      return pipelineInfo
     } catch (e) {
       // errorApi.post(e)
       throw e
     }
   });
-  return {loading, pipelineInfo, retry} as const;
+  const loadingPipeline = loading;
+  const retryPipeline = retry;
+  return {loadingPipeline, pipelineInfo, region, retryPipeline} as const;
 };
