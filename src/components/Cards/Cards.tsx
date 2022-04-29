@@ -29,7 +29,7 @@ const WidgetContent = ({
 
     let id = builds[0]?.id?.split(':');
     let ar = builds[0]?.arn?.split(':');
-    console.log("ar is", ar);
+
     if (ar != undefined && id != undefined) {
       rows.set("Build Id",
           <Link
@@ -42,7 +42,7 @@ const WidgetContent = ({
     }
     let buildTime = builds[0]?.endTime;
     if (buildTime != undefined) {
-      console.log("build time", buildTime);
+
       // make this duration or something later.
       rows.set("Completed",  buildTime.toDateString() + ":" + buildTime.toTimeString());
     }
@@ -83,13 +83,11 @@ const DeployWidgetContent = ({
 }) => {
   /* if (loading) return <LinearProgress />; */
   const rows = new Map<string, any>()
-  console.log(deploymentInfo);
   if (deploymentInfo != undefined) {
     rows.set("Status",<>
         <RunStatus status={deploymentInfo.status?.toLowerCase()} />
       </>
     )
-    console.log ("deploymentInfo",deploymentInfo);
     let id = deploymentInfo?.deploymentId;
     if (id != undefined) {
       rows.set("Deploy Id",
@@ -103,7 +101,6 @@ const DeployWidgetContent = ({
     }
     let buildTime = deploymentInfo?.completeTime;
     if (buildTime != undefined) {
-      console.log("Deploy Time", buildTime);
       // make this duration or something later.
       rows.set("Completed", buildTime.toDateString() + ":" + buildTime.toTimeString());
     }
@@ -141,7 +138,7 @@ export const DeployLatestRunCard = ({
 
 
 const PipelineWidgetContent = ({
-    pipelineInfo, region
+    pipelineInfo
   }: {
     pipelineInfo?: GetPipelineStateOutput,
     region?: string,
@@ -149,16 +146,8 @@ const PipelineWidgetContent = ({
   /* if (loading) return <LinearProgress />; */
   const rows = new Map<string, any>()
   if(pipelineInfo != undefined && pipelineInfo.stageStates != undefined) {
-    console.log("pipeline name " + pipelineInfo.pipelineName)
-    rows.set(pipelineInfo.pipelineName || "undefined",
-        <Link href={"https://" + region + ".console.aws.amazon.com/codesuite/codepipeline/pipelines/" + pipelineInfo.pipelineName + "/view?" + region }
-              target="_blank"
-        > Pipeline</Link>
-    )
-    console.log("cardinto...",pipelineInfo);
     for (const element of pipelineInfo.stageStates) {
       if (element.actionStates == undefined || element.actionStates.length <= 0) continue;
-      console.log("elementinfo...",element);
       rows.set(element.stageName || "undefined" ,
            <>
              <Link
@@ -190,10 +179,11 @@ export const  PipelineRunCard = ({
     error = "Problem"
   }
   return (
-    <InfoCard title={`Latest Pipeline Status`} variant={variant}>
+    <InfoCard title={ <Link href={"https://" + region + ".console.aws.amazon.com/codesuite/codepipeline/pipelines/" + pipelineInfo?.pipelineName + "/view?" + region }
+              target="_blank"> {pipelineInfo?.pipelineName} </Link>} variant={variant}>
         {!error && pipelineInfo != undefined ? ( 
           <PipelineWidgetContent
-             pipelineInfo={pipelineInfo}
+             pipelineInfo={pipelineInfo} 
              region={region}
             />
         ) : ("")}

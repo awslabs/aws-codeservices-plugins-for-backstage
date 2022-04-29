@@ -39,14 +39,12 @@ export function getBuilds() {
     retry,
   } = useAsyncRetry(async () => {
     try {
-      console.log("pulling build data ...")
       const creds = await api.generateCredentials({iamRole: iamRole})
       const buildIds = await api.getBuildIds({region: region, project: project, creds});
       if (buildIds.ids == undefined) {
         return
       }
       var builds = await api.getBuilds({region: region, ids: buildIds.ids, creds});
-      console.log(builds)
       return builds
     } catch (e) {
       // errorApi.post(e)
@@ -72,14 +70,12 @@ export function getDeployments() {
     retry,
   } = useAsyncRetry(async () => {
     try {
-      console.log("pulling deployment  data ...")
       const creds = await api.generateCredentials({iamRole: iamRole})
       const output = await api.getDeploymentIds({region: region, appName: application, deploymentGroupName: groupName, creds});
       if (output.deployments == undefined) {
         return
       }
       var deployments = await api.getDeployments({region: region, ids: output.deployments, creds});
-      console.log(deployments)
       return deployments
     } catch (e) {
       // errorApi.post(e)
@@ -105,18 +101,18 @@ export function getPipelineState() {
     retry
   } = useAsyncRetry(async () => {
     try {
-      console.log("pulling pipeline data ...")
       const creds = await api.generateCredentials({iamRole: iamRole})
       const pipelineInfo = await api.getPipelineState({region: region, name: pipelineName, creds});
       if (pipelineInfo?.stageStates == undefined) {
         return
       }
-      console.log("Pipeline is", pipelineInfo.stageStates);
       return pipelineInfo
     } catch (e) {
       // errorApi.post(e)
       throw e
     }
   });
-  return {loading, pipelineInfo, region, retry} as const;
+  const loadingPipeline = loading;
+  const retryPipeline = retry;
+  return {loadingPipeline, pipelineInfo, region, retryPipeline} as const;
 };

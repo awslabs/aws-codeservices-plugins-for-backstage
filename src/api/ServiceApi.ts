@@ -93,7 +93,6 @@ export class CodeStarClient implements CodeStarApi {
       }
     });
     const command = new BatchGetBuildsCommand({ids: ids});
-    console.log("serviceAPI command " + command)
     return await client.send(command)
   }
 
@@ -120,7 +119,6 @@ export class CodeStarClient implements CodeStarApi {
       }
     });
     const command = new BatchGetDeploymentsCommand({deploymentIds: ids});
-    console.log("serviceAPI command " + command);
     return await client.send(command);
   }
 
@@ -135,7 +133,6 @@ export class CodeStarClient implements CodeStarApi {
     });
 
     const command = new GetPipelineStateCommand({name: name});
-    console.log("serviceAPI command CodePipeline" + command)
     return await client.send(command);
   }
 

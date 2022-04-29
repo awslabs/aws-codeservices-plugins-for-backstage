@@ -19,13 +19,13 @@ import { Link } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import RetryIcon from '@material-ui/icons/Replay';
 import { RunStatus } from '../Status';
-import { getBuilds } from '../../../useBuilds';
-import { getDeployments } from '../../../useBuilds';
+import { getBuilds, getDeployments, getPipelineState } from '../../../useBuilds';
 /* import { buildRouteRef } from '../../../../plugin'; */
 import { Table, TableColumn } from '@backstage/core-components';
 /* import {Exception } from '../../../../api/ServiceApi'; */
 import {Build} from "@aws-sdk/client-codebuild";
 import {DeployCITableView} from './DeployCITable';
+import {PipeLineCITable} from './PipeLineCITable';
 
 const generatedColumns: TableColumn[] = [
   {
@@ -33,10 +33,8 @@ const generatedColumns: TableColumn[] = [
     field: 'name',
     highlight: true,
     render: (row: Partial<Build>) => {
-      console.log("row.arn = ...",row.arn);
       if (row.id != undefined) {
         const arn = row.arn?.split(':');
-        console.log("Array of Arn is",arn);
         if (arn == undefined) {
           return (<> {row.id} </>)
         }
@@ -46,7 +44,6 @@ const generatedColumns: TableColumn[] = [
           </Link>
         );
       } else {
-        console.log("else looop....");
         return (<> {row.id} </>);
       }
     },
@@ -138,9 +135,18 @@ export const CITableView = ({
 export const CITable = () => {
   const {loading, buildOutput, retry} = getBuilds();
   const {loadingd, deploymentsInfo, retryd} = getDeployments();
+  const {loadingPipeline,  pipelineInfo, region, retryPipeline} = getPipelineState();
 
   return (
     <>
+      <Grid item sm={12}>
+        <PipeLineCITable
+           loading={loadingPipeline}
+           region={region}
+           pipelineInfo={pipelineInfo}
+           retry={retryPipeline}
+        />
+      </Grid>
       <Grid item sm={12}>
         <CITableView
           loading={loading}
