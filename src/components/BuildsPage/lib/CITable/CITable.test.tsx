@@ -33,9 +33,9 @@ import {
   CodeStarApi,
   codeStarApiRef,
   Credentials
-} from '../../api';
-import { entityMock, buildsResponseMock, credsMock, deployResponseMock, pipelineResponseMock } from '../../mocks/mocks';
-import {BuildWidget, DeployWidget, PipelineWidget} from '../Router';
+} from '../../../../api';
+import { entityMock, buildsResponseMock, credsMock, deployResponseMock, pipelineResponseMock } from '../../../../mocks/mocks';
+import {CodeStar} from '../../../Router';
 
 const errorApiMock = { post: jest.fn(), error$: jest.fn() };
 
@@ -54,7 +54,7 @@ class CodeStarClientFake implements CodeStarApi {
   }
 
   async getBuilds(_: {region: string, ids: string[], creds: Credentials}): Promise<any> {
-    return new Promise((resolve, _) => { resolve(buildsResponseMock) })
+    return new Promise((resolve, _) => { resolve({loading:[], buildsResponseMock, retry:""}) })
   }
 
   async getDeploymentIds(_: {region: string, appName: string, deploymentGroupName: string, creds: Credentials}): Promise<any>{
@@ -75,7 +75,7 @@ const apis: [AnyApiRef, Partial<unknown>][] = [
   [codeStarApiRef, new CodeStarClientFake()],
 ];
 
-describe('BuildLatestRunCard', () => {
+describe('CITable', () => {
   const worker = setupServer();
   setupRequestMockHandlers(worker);
 
@@ -89,74 +89,12 @@ describe('BuildLatestRunCard', () => {
     );
   });
 
-  it('should display widget with Build data', async () => {
+  it('should display widget with CITable data', async () => {
     const rendered = render(
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityMock}>
-            <BuildWidget entity={entityMock} />
-          </EntityProvider>
-        </TestApiProvider>,
-      ),
-    );
-    expect(
-      await rendered.findByText(buildsResponseMock.builds[0].id),
-    ).toBeInTheDocument();
-  });
-});
-
-
-
-describe('DeployLatestRunCard', () => {
-  const worker = setupServer();
-  setupRequestMockHandlers(worker);
-
-  beforeEach(() => {
-    // jest.resetAllMocks();
-    worker.use(
-      rest.post(
-        'http://exampleapi.com/credentials',
-        (_, res, ctx) => res(ctx.json(credsMock)),
-      ),
-    );
-  });
-
-  it('should display widget with Deployment data', async () => {
-    const rendered = render(
-      wrapInTestApp(
-        <TestApiProvider apis={apis}>
-          <EntityProvider entity={entityMock}>
-            <DeployWidget entity={entityMock} />
-          </EntityProvider>
-        </TestApiProvider>,
-      ),
-    );
-    expect(
-      await rendered.findByText(deployResponseMock.deploymentsInfo[0].deploymentId),
-    ).toBeInTheDocument();
-  });
-});
-
-describe('PipelineRunCard', () => {
-  const worker = setupServer();
-  setupRequestMockHandlers(worker);
-
-  beforeEach(() => {
-    // jest.resetAllMocks();
-    worker.use(
-      rest.post(
-        'http://exampleapi.com/credentials',
-        (_, res, ctx) => res(ctx.json(credsMock)),
-      ),
-    );
-  });
-
-  it('should display widget with Pipeline data', async () => {
-    const rendered = render(
-      wrapInTestApp(
-        <TestApiProvider apis={apis}>
-          <EntityProvider entity={entityMock}>
-            <PipelineWidget entity={entityMock} />
+            <CodeStar entity={entityMock} />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -166,4 +104,5 @@ describe('PipelineRunCard', () => {
     ).toBeInTheDocument();
   });
 });
+
 

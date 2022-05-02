@@ -76,12 +76,14 @@ const generatedColumns: TableColumn[] = [
     field: 'duration',
     render: (row: Partial<DeploymentInfo>) => {
       if (row.completeTime != undefined && row.createTime != undefined) {
+        if ( row.completeTime instanceof Date && row.createTime instanceof Date) {
         return (
           <>
             {(row.completeTime.getTime() - row.createTime.getTime()) / 1000} Seconds
           </>
         );
-      } else {
+      } 
+    }else {
         return(<></>);
       }
     },

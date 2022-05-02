@@ -35,4 +35,3 @@ export * from './api';
 import {
   isCodeStarAvailable,
 } from './components/Router';
-//console.log("isCodeStarAvailable: ", isCodeStarAvailable)

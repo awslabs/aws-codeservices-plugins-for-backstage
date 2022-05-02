@@ -73,7 +73,7 @@ export const ContextProvider: React.FC<Props> = ({ entity, children }) => {
   );
 };
 
-export const Widget: React.FC<Props> = ({ entity }) => {
+export const BuildWidget: React.FC<Props> = ({ entity }) => {
   return (
     <ContextProvider entity={entity}>
       <BuildLatestRunCard />
