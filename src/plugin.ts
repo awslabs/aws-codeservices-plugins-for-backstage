@@ -52,7 +52,7 @@ export const EntityCodeStarContent = codeStarPlugin.provide(
   }),
 );
 
-export const EntityLatestEmployeeRunCard = codeStarPlugin.provide(
+export const EntityLatestBuildRunCard = codeStarPlugin.provide(
   createComponentExtension({
     name: "buildCard",
     component: {

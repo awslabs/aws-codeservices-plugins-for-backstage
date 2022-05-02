@@ -17,7 +17,7 @@
 export {
   codeStarPlugin,
   codeStarPlugin as plugin,
-  EntityLatestEmployeeRunCard,
+  EntityLatestBuildRunCard,
   DeployEntityLatestEmployeeRunCard,
   EntityCodeStarContent,
 } from './plugin';

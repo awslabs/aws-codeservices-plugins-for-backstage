@@ -20,7 +20,6 @@ import Grid from '@material-ui/core/Grid';
 import RetryIcon from '@material-ui/icons/Replay';
 import { RunStatus } from '../Status';
 import { getBuilds, getDeployments, getPipelineState } from '../../../useBuilds';
-/* import { buildRouteRef } from '../../../../plugin'; */
 import { Table, TableColumn } from '@backstage/core-components';
 /* import {Exception } from '../../../../api/ServiceApi'; */
 import {Build} from "@aws-sdk/client-codebuild";

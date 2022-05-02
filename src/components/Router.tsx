@@ -15,7 +15,6 @@
  */
 import React from 'react';
 import { Route, Routes } from 'react-router';
-import { rootRouteRef } from '../plugin';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { CITable } from './BuildsPage/lib/CITable';
 import { Entity } from '@backstage/catalog-model';
@@ -41,7 +40,7 @@ export const Router = (_props: Props) => {
 
   return (
     <Routes>
-      <Route path={`/${rootRouteRef}`} element={<CITable />}  />
+      <Route path="/" element={<CodeStar entity={entity}/>}  />
     </Routes>
   );
 };
@@ -79,6 +78,14 @@ export const Widget: React.FC<Props> = ({ entity }) => {
   return (
     <ContextProvider entity={entity}>
       <LatestRunCard />
+    </ContextProvider>
+  );
+};
+
+export const CodeStar: React.FC<Props> = ({ entity }) => {
+  return (
+    <ContextProvider entity={entity}>
+      <CITable />
     </ContextProvider>
   );
 };
