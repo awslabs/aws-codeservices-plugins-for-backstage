@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+// eslint-disable-next-line notice/notice
 import '@testing-library/jest-dom';
-import "cross-fetch/polyfill";
 
 // @ts-ignore
-window.HTMLCanvasElement.prototype.getContext = () => {}
+// window.HTMLCanvasElement.prototype.getContext = () => {}
