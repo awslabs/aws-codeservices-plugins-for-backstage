@@ -56,7 +56,7 @@ export const EntityLatestBuildRunCard = codeStarPlugin.provide(
   createComponentExtension({
     name: "buildCard",
     component: {
-      lazy: () => import('./components/Cards').then(m => m.LatestRunCard),
+      lazy: () => import('./components/Cards').then(m => m.BuildLatestRunCard),
     },
   }),
 );

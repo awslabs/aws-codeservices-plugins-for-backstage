@@ -13,6 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export {LatestRunCard} from './Cards';
+export {BuildLatestRunCard} from './Cards';
 export {DeployLatestRunCard} from './Cards';
 export {PipelineRunCard} from './Cards';

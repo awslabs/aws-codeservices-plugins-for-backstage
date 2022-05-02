@@ -414,3 +414,89 @@ export const buildsResponseMock = {
   ],
   buildsNotFound: []
 }
+
+
+export const deployResponseMock = {
+  $metadata: {
+    httpStatusCode: 200,
+    requestId: "d886f56f-d4a4-4g99-964c-93befbdf51aa",
+    attempts: 1,
+    totalRetryDelay: 0
+  },
+  deploymentsInfo: [
+      {
+          applicationName: "java-app-deploy",
+          deploymentGroupName: "java-app-deploy",
+          deploymentConfigName: "CodeDeployDefault.LambdaAllAtOnce",
+          deploymentId: "2-3XYZ56C",
+          revision: {
+              revisionType: "S3",
+              s3Location: {
+                  bucket: "bucket-name",
+                  key: "folder/object.json",
+                  bundleType: "JSON"
+              }
+          },
+          status: "Failed",
+          errorInformation: {
+              code: "INVALID_REVISION",
+              message: "The AppSpec file cannot be located in the specified S3 bucket. Verify your AppSpec file is present and that the name and key value pair specified for your S3 bucket are correct. The S3 bucket must be in your current region"
+          },
+          createTime: "2022-04-13T12:09:00.080000-05:00",
+          completeTime: "2022-04-13T21:39:21.365Z",
+          creator: "user",
+          ignoreApplicationStopFailures: false,
+          updateOutdatedInstancesOnly: false,
+          rollbackInfo: {},
+          deploymentStyle: {
+              deploymentType: "BLUE_GREEN",
+              deploymentOption: "WITH_TRAFFIC_CONTROL"
+          },
+          instanceTerminationWaitTimeStarted: false,
+          fileExistsBehavior: "DISALLOW",
+          deploymentStatusMessages: [],
+          computePlatform: "Lambda"
+      }
+  ]
+}
+
+export const pipelineResponseMock = {
+  created: 1446137312.204,
+  pipelineName: "MyFirstPipeline",
+  pipelineVersion: 1,
+  stageStates: [
+   {
+     actionStates: [
+       {
+         actionName: "Source",
+         entityUrl: "https://console.aws.amazon.com/s3/home?#",
+         latestExecution: {
+           lastStatusChange: 1446137358.328,
+           status: "Succeeded"
+         }
+       }
+     ],
+     stageName: "Source"
+   },
+   {
+     actionStates: [
+       {
+         actionName: "CodePipelineDemoFleet",
+         entityUrl: "https://console.aws.amazon.com/codedeploy/home?#/applications/CodePipelineDemoApplication/deployment-groups/CodePipelineDemoFleet",
+         latestExecution: {
+           externalExecutionId: "d-EXAMPLE",
+           externalExecutionUrl: "https://console.aws.amazon.com/codedeploy/home?#/deployments/d-EXAMPLE",
+           lastStatusChange: 1446137493.131,
+           status: "Succeeded",
+           summary: "Deployment Succeeded"
+         }
+       }
+     ],
+     inboundTransitionState: {
+       enabled: true
+     },
+     stageName: "Beta"
+   }
+  ],
+  updated: 1446137312.204
+ }

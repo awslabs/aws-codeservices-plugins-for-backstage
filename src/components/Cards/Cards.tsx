@@ -55,7 +55,7 @@ const WidgetContent = ({
   );
 };
 
-export const LatestRunCard = ({
+export const BuildLatestRunCard = ({
   variant,
 }: {
   variant?: InfoCardVariants;
@@ -101,10 +101,11 @@ const DeployWidgetContent = ({
     }
     let buildTime = deploymentInfo?.completeTime;
     if (buildTime != undefined) {
+      if (buildTime instanceof Date) {
       // make this duration or something later.
       rows.set("Completed", buildTime.toDateString() + ":" + buildTime.toTimeString());
     }
-
+  }
   }
   return (
     <StructuredMetadataTable

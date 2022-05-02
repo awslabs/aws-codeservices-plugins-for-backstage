@@ -21,7 +21,7 @@ export {
   DeployEntityLatestEmployeeRunCard,
   EntityCodeStarContent,
 } from './plugin';
-export {LatestRunCard} from './components/Cards';
+export {BuildLatestRunCard} from './components/Cards';
 export {DeployLatestRunCard} from './components/Cards';
 export {PipelineRunCard} from './components/Cards';
 export {
@@ -35,4 +35,4 @@ export * from './api';
 import {
   isCodeStarAvailable,
 } from './components/Router';
-console.log("isCodeStarAvailable: ", isCodeStarAvailable)
+//console.log("isCodeStarAvailable: ", isCodeStarAvailable)

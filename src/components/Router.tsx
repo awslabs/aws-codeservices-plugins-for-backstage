@@ -23,10 +23,9 @@ import { MissingAnnotationEmptyState } from '@backstage/core-components';
 import { useEffect } from 'react';
 import { useLocalStorage } from 'react-use';
 import { codeStarApiRef } from '../api';
-import { LatestRunCard } from './Cards/Cards';
+import { BuildLatestRunCard, DeployLatestRunCard, PipelineRunCard } from './Cards/Cards';
 
 export const isCodeStarAvailable = (entity: Entity) => {
-  console.log(entity);
   return Boolean(entity.metadata.annotations?.[REGION_ANNOTATION]);
 }
 
@@ -77,7 +76,25 @@ export const ContextProvider: React.FC<Props> = ({ entity, children }) => {
 export const Widget: React.FC<Props> = ({ entity }) => {
   return (
     <ContextProvider entity={entity}>
-      <LatestRunCard />
+      <BuildLatestRunCard />
+    </ContextProvider>
+  );
+};
+
+
+export const DeployWidget: React.FC<Props> = ({ entity }) => {
+  return (
+    <ContextProvider entity={entity}>
+      <DeployLatestRunCard />
+    </ContextProvider>
+  );
+};
+
+
+export const PipelineWidget: React.FC<Props> = ({ entity }) => {
+  return (
+    <ContextProvider entity={entity}>
+      <PipelineRunCard />
     </ContextProvider>
   );
 };

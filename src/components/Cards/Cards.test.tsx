@@ -34,8 +34,8 @@ import {
   codeStarApiRef,
   Credentials
 } from '../../api';
-import { entityMock, buildsResponseMock, credsMock } from '../../mocks/mocks';
-import {Widget} from '../Router';
+import { entityMock, buildsResponseMock, credsMock, deployResponseMock, pipelineResponseMock } from '../../mocks/mocks';
+import {Widget, DeployWidget, PipelineWidget} from '../Router';
 
 const errorApiMock = { post: jest.fn(), error$: jest.fn() };
 
@@ -58,10 +58,15 @@ class CodeStarClientFake implements CodeStarApi {
   }
 
   async getDeploymentIds(_: {region: string, appName: string, deploymentGroupName: string, creds: Credentials}): Promise<any>{
+    return new Promise((resolve, _) => { resolve({deployments: []}) })
   }
 
-  async getDeployments(_: {region: string, ids: string[], creds: Credentials}): Promise<any> {}
-  async getPipelineState(_: {region: string, name: string, creds: Credentials}): Promise<any> {}
+  async getDeployments(_: {region: string, ids: string[], creds: Credentials}): Promise<any> {
+    return new Promise((resolve, _) => { resolve(deployResponseMock,"us-west-2") })
+  }
+  async getPipelineState(_: {region: string, name: string, creds: Credentials}): Promise<any> {
+    return new Promise((resolve, _) => { resolve(pipelineResponseMock,"us-west-2") })
+  }
 }
 
 const apis: [AnyApiRef, Partial<unknown>][] = [
@@ -70,7 +75,7 @@ const apis: [AnyApiRef, Partial<unknown>][] = [
   [codeStarApiRef, new CodeStarClientFake()],
 ];
 
-describe('LatestRunCard', () => {
+describe('BuildLatestRunCard', () => {
   const worker = setupServer();
   setupRequestMockHandlers(worker);
 
@@ -100,4 +105,65 @@ describe('LatestRunCard', () => {
   });
 });
 
+
+
+describe('DeployLatestRunCard', () => {
+  const worker = setupServer();
+  setupRequestMockHandlers(worker);
+
+  beforeEach(() => {
+    // jest.resetAllMocks();
+    worker.use(
+      rest.post(
+        'http://exampleapi.com/credentials',
+        (_, res, ctx) => res(ctx.json(credsMock)),
+      ),
+    );
+  });
+
+  it('should display widget with Deployment data', async () => {
+    const rendered = render(
+      wrapInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={entityMock}>
+            <DeployWidget entity={entityMock} />
+          </EntityProvider>
+        </TestApiProvider>,
+      ),
+    );
+    expect(
+      await rendered.findByText(deployResponseMock.deploymentsInfo[0].deploymentId),
+    ).toBeInTheDocument();
+  });
+});
+
+describe('PipelineRunCard', () => {
+  const worker = setupServer();
+  setupRequestMockHandlers(worker);
+
+  beforeEach(() => {
+    // jest.resetAllMocks();
+    worker.use(
+      rest.post(
+        'http://exampleapi.com/credentials',
+        (_, res, ctx) => res(ctx.json(credsMock)),
+      ),
+    );
+  });
+
+  it('should display widget with Pipeline data', async () => {
+    const rendered = render(
+      wrapInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={entityMock}>
+            <PipelineWidget entity={entityMock} />
+          </EntityProvider>
+        </TestApiProvider>,
+      ),
+    );
+    expect(
+      await rendered.findByText(pipelineResponseMock.pipelineName),
+    ).toBeInTheDocument();
+  });
+});
 
