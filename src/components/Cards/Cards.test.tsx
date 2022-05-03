@@ -29,13 +29,10 @@ import {
 } from '@backstage/test-utils';
 import { setupServer } from 'msw/node';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
-import {
-  CodeStarApi,
-  codeStarApiRef,
-  Credentials
-} from '../../api';
+import {codeStarApiRef} from '../../api';
 import { entityMock, buildsResponseMock, credsMock, deployResponseMock, pipelineResponseMock } from '../../mocks/mocks';
 import {BuildWidget, DeployWidget, PipelineWidget} from '../Router';
+import {MockCodeStarClient} from '../../mocks/MockCodeStarClient'
 
 const errorApiMock = { post: jest.fn(), error$: jest.fn() };
 
@@ -44,35 +41,10 @@ const config = {
 };
 
 
-class CodeStarClientFake implements CodeStarApi {
-  async generateCredentials(_ : {iamRole: string}): Promise<Credentials> {
-    return new Promise((resolve, _) => { resolve(credsMock) } )
-  }
-
-  async getBuildIds(_ : {region: string, project: string, creds: Credentials}): Promise<any> {
-    return new Promise((resolve, _) => { resolve({ids: []}) })
-  }
-
-  async getBuilds(_: {region: string, ids: string[], creds: Credentials}): Promise<any> {
-    return new Promise((resolve, _) => { resolve(buildsResponseMock) })
-  }
-
-  async getDeploymentIds(_: {region: string, appName: string, deploymentGroupName: string, creds: Credentials}): Promise<any>{
-    return new Promise((resolve, _) => { resolve({deployments: []}) })
-  }
-
-  async getDeployments(_: {region: string, ids: string[], creds: Credentials}): Promise<any> {
-    return new Promise((resolve, _) => { resolve(deployResponseMock,"us-west-2") })
-  }
-  async getPipelineState(_: {region: string, name: string, creds: Credentials}): Promise<any> {
-    return new Promise((resolve, _) => { resolve(pipelineResponseMock,"us-west-2") })
-  }
-}
-
 const apis: [AnyApiRef, Partial<unknown>][] = [
   [configApiRef, config],
   [errorApiRef, errorApiMock],
-  [codeStarApiRef, new CodeStarClientFake()],
+  [codeStarApiRef, new MockCodeStarClient()],
 ];
 
 describe('BuildLatestRunCard', () => {
