@@ -32,7 +32,7 @@ import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {codeStarApiRef} from '../../api';
 import { entityMock, buildsResponseMock, credsMock, deployResponseMock, pipelineResponseMock } from '../../mocks/mocks';
 import {BuildWidget, DeployWidget, PipelineWidget} from '../Router';
-import {MockCodeStarClient} from '../../mocks/MockCodeStarClient'
+import { MockCodeStarClientBuild} from '../../mocks/MockCodeStarClientBuild'
 
 const errorApiMock = { post: jest.fn(), error$: jest.fn() };
 
@@ -44,7 +44,7 @@ const config = {
 const apis: [AnyApiRef, Partial<unknown>][] = [
   [configApiRef, config],
   [errorApiRef, errorApiMock],
-  [codeStarApiRef, new MockCodeStarClient()],
+  [codeStarApiRef, new MockCodeStarClientBuild()],
 ];
 
 describe('BuildLatestRunCard', () => {
