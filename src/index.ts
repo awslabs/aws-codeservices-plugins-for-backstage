@@ -28,10 +28,6 @@ export {
   isCodeStarAvailable,
   isCodeStarAvailable as isPluginApplicableToEntity,
   Router,
-  Widget,
+  BuildWidget,
 } from './components/Router';
 export * from './api';
-
-import {
-  isCodeStarAvailable,
-} from './components/Router';

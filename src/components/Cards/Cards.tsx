@@ -117,7 +117,6 @@ const DeployWidgetContent = ({
 export const DeployLatestRunCard = ({
   variant,
 }: {
-  branch: string;
   variant?: InfoCardVariants;
 }) => {
   const { deploymentsInfo,region } =  getDeployments() ?? []

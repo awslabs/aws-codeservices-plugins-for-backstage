@@ -30,11 +30,9 @@ import {
 import { setupServer } from 'msw/node';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {
-  CodeStarApi,
   codeStarApiRef,
-  Credentials
 } from '../../../../api';
-import { entityMock, buildsResponseMock, credsMock, deployResponseMock, pipelineResponseMock } from '../../../../mocks/mocks';
+import { entityMock, credsMock, pipelineResponseMock } from '../../../../mocks/mocks';
 import {CodeStar} from '../../../Router';
 import {MockCodeStarClient} from '../../../../mocks/MockCodeStarClient'
 
@@ -71,7 +69,7 @@ describe('CITable', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityMock}>
-            <CodeStar entity={entityMock} />
+            <CodeStar entity={entityMock} children={null}/>
           </EntityProvider>
         </TestApiProvider>,
       ),

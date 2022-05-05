@@ -32,7 +32,7 @@ import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {codeStarApiRef} from '../../api';
 import { entityMock, buildsResponseMock, credsMock, deployResponseMock, pipelineResponseMock } from '../../mocks/mocks';
 import {BuildWidget, DeployWidget, PipelineWidget} from '../Router';
-import { MockCodeStarClientBuild} from '../../mocks/MockCodeStarClientBuild'
+import { MockCodeStarClient} from '../../mocks/MockCodeStarClient'
 
 const errorApiMock = { post: jest.fn(), error$: jest.fn() };
 
@@ -44,7 +44,7 @@ const config = {
 const apis: [AnyApiRef, Partial<unknown>][] = [
   [configApiRef, config],
   [errorApiRef, errorApiMock],
-  [codeStarApiRef, new MockCodeStarClientBuild()],
+  [codeStarApiRef, new MockCodeStarClient()],
 ];
 
 describe('BuildLatestRunCard', () => {
@@ -66,7 +66,7 @@ describe('BuildLatestRunCard', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityMock}>
-            <BuildWidget entity={entityMock} />
+            <BuildWidget entity={entityMock} children={null} />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -98,7 +98,7 @@ describe('DeployLatestRunCard', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityMock}>
-            <DeployWidget entity={entityMock} />
+            <DeployWidget entity={entityMock}  children={null} />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -128,7 +128,7 @@ describe('PipelineRunCard', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityMock}>
-            <PipelineWidget entity={entityMock} />
+            <PipelineWidget entity={entityMock}  children={null} />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -138,4 +138,3 @@ describe('PipelineRunCard', () => {
     ).toBeInTheDocument();
   });
 });
-

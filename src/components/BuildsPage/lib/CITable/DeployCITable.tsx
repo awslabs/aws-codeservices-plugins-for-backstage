@@ -82,7 +82,8 @@ const generatedColumns: TableColumn[] = [
             {(row.completeTime.getTime() - row.createTime.getTime()) / 1000} Seconds
           </>
         );
-      } 
+      }
+      return (<></>)
     }else {
         return(<></>);
       }

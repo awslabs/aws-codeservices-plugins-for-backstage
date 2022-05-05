@@ -29,7 +29,7 @@ export const isCodeStarAvailable = (entity: Entity) => {
   return Boolean(entity.metadata.annotations?.[REGION_ANNOTATION]);
 }
 
-type Props = { entity: Entity };
+type Props = { entity: Entity, children: any };
 
 export const Router = (_props: Props) => {
   const { entity } = useEntity();
@@ -39,7 +39,7 @@ export const Router = (_props: Props) => {
 
   return (
     <Routes>
-      <Route path="/" element={<CodeStar entity={entity}/>}  />
+      <Route path="/" element={<CodeStar entity={entity} children={null}/>}  />
     </Routes>
   );
 };
@@ -101,7 +101,7 @@ export const PipelineWidget: React.FC<Props> = ({ entity }) => {
 
 export const CodeStar: React.FC<Props> = ({ entity }) => {
   return (
-    <ContextProvider entity={entity}>
+    <ContextProvider entity={entity} >
       <CITable />
     </ContextProvider>
   );

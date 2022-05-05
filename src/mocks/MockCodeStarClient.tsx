@@ -23,9 +23,9 @@ export class MockCodeStarClient implements CodeStarApi {
   }
 
   async getDeployments(_: {region: string, ids: string[], creds: Credentials}): Promise<any> {
-    return new Promise((resolve, _) => { resolve(deployResponseMock,"us-west-2") })
+    return new Promise((resolve, _) => { resolve(deployResponseMock) })
   }
   async getPipelineState(_: {region: string, name: string, creds: Credentials}): Promise<any> {
-    return new Promise((resolve, _) => { resolve(pipelineResponseMock,"us-west-2") })
+    return new Promise((resolve, _) => { resolve(pipelineResponseMock) })
   }
 }
