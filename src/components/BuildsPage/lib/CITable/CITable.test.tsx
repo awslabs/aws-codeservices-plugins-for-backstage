@@ -32,7 +32,7 @@ import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {
   codeStarApiRef,
 } from '../../../../api';
-import { entityMock, credsMock, pipelineResponseMock } from '../../../../mocks/mocks';
+import { entityMock, credsMock, buildsResponseMock } from '../../../../mocks/mocks';
 import {CodeStar} from '../../../Router';
 import {MockCodeStarClient} from '../../../../mocks/MockCodeStarClient'
 
@@ -75,7 +75,7 @@ describe('CITable', () => {
       ),
     );
     expect(
-      await rendered.findByText(pipelineResponseMock.pipelineName),
+      await rendered.findByText(buildsResponseMock.builds[0].id),
     ).toBeInTheDocument();
   });
 });

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import {Box, Link, Typography} from '@material-ui/core';
+import {Box, Typography} from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
 import { RunStatus } from '../Status';
 import { Table, TableColumn } from '@backstage/core-components';
@@ -46,11 +46,11 @@ const generatedColumns: TableColumn[] = [
       if (row.actionStates != null) {
         return (
              <>
-             <Link
+             <a
                  href={row.actionStates[0].entityUrl }
                  target="_blank">
                 {row.actionStates[0].latestExecution?.actionExecutionId}
-             </Link>
+             </a>
              </>
         );
       }
@@ -85,7 +85,7 @@ export const PipeLineCITable = ({
   pipelineInfo,
   region,
   retry,
-}: Props) => { 
+}: Props) => {
     return (
       <Table
         isLoading={loading}
@@ -101,9 +101,9 @@ export const PipeLineCITable = ({
         title={
           <Box display="flex" alignItems="center">
             <Box mr={2} />
-            <Typography variant="h6">CodePipeline: &nbsp; 
-              <Link href={"https://" + region + ".console.aws.amazon.com/codesuite/codepipeline/pipelines/" + pipelineInfo?.pipelineName + "/view?" + region }
-              target="_blank">{pipelineInfo?.pipelineName}</Link>
+            <Typography variant="h6">CodePipeline: &nbsp;
+              <a href={"https://" + region + ".console.aws.amazon.com/codesuite/codepipeline/pipelines/" + pipelineInfo?.pipelineName + "/view?" + region }
+              target="_blank">{pipelineInfo?.pipelineName}</a>
             </Typography>
           </Box>
         }
@@ -111,5 +111,4 @@ export const PipeLineCITable = ({
       />
     );
   };
-  
 

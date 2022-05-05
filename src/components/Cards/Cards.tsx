@@ -1,4 +1,3 @@
-import { Link } from '@material-ui/core';
 import React from 'react';
 import {  getBuilds, getPipelineState } from '../useBuilds';
 import {  getDeployments } from '../useBuilds';
@@ -31,12 +30,12 @@ const WidgetContent = ({
     let ar = builds[0]?.arn?.split(':');
     if (ar != undefined && id != undefined) {
       rows.set("Build Id",
-          <Link
+          <a
               href={"https://" + ar[3] + ".console.aws.amazon.com/codesuite/codebuild/" + ar[4] + "/" + ar[5].replace('build', 'projects') + "/" + ar[5] + ":" + ar[6]}
               target="_blank"
           >
             {id}
-          </Link>
+          </a>
       )
     }
     let buildTime = builds[0]?.endTime;
@@ -91,12 +90,12 @@ const DeployWidgetContent = ({
     let id = deploymentInfo?.deploymentId;
     if (id != undefined) {
       rows.set("Deploy Id",
-          <Link
+          <a
               href={"https://" + region + ".console.aws.amazon.com/codesuite/codedeploy/deployments/" + id + "?" + region }
               target="_blank"
           >
             {id}
-          </Link>
+          </a>
       )
     }
     let buildTime = deploymentInfo?.completeTime;
@@ -150,11 +149,11 @@ const PipelineWidgetContent = ({
       if (element.actionStates == undefined || element.actionStates.length <= 0) continue;
       rows.set(element.stageName || "undefined" ,
            <>
-             <Link
+             <a
                  href={element.actionStates[0].entityUrl }
                  target="_blank">
             {element.actionStates[0].latestExecution?.actionExecutionId}
-             </Link>
+             </a>
             <div><RunStatus status={element.latestExecution?.status} /></div>
             </>
        )
@@ -179,8 +178,8 @@ export const  PipelineRunCard = ({
     error = "Problem"
   }
   return (
-    <InfoCard title={ <Link href={"https://" + region + ".console.aws.amazon.com/codesuite/codepipeline/pipelines/" + pipelineInfo?.pipelineName + "/view?" + region }
-              target="_blank"> {pipelineInfo?.pipelineName} </Link>} variant={variant}>
+    <InfoCard title={ <a href={"https://" + region + ".console.aws.amazon.com/codesuite/codepipeline/pipelines/" + pipelineInfo?.pipelineName + "/view?" + region }
+              target="_blank"> {pipelineInfo?.pipelineName} </a>} variant={variant}>
         {!error && pipelineInfo != undefined ? ( 
           <PipelineWidgetContent
              pipelineInfo={pipelineInfo} 

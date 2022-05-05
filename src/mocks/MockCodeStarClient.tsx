@@ -15,7 +15,7 @@ export class MockCodeStarClient implements CodeStarApi {
   }
 
   async getBuilds(_: {region: string, ids: string[], creds: Credentials}): Promise<any> {
-    return new Promise((resolve, _) => { resolve({loading:[], buildsResponseMock, retry:""}) })
+    return new Promise((resolve, _) => { resolve(buildsResponseMock) })
   }
 
   async getDeploymentIds(_: {region: string, appName: string, deploymentGroupName: string, creds: Credentials}): Promise<any>{
