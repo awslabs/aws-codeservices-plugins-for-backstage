@@ -29,7 +29,7 @@ import {
 - Find the section for `cicdContent` in the `EntityPage.tsx` file and add the
   following snippet:
 
-  ```tsx
+```tsx
 const cicdContent = (
    <EntitySwitch>
         <EntitySwitch.Case if={isCodeStarAvailable}>
@@ -37,7 +37,7 @@ const cicdContent = (
         </EntitySwitch.Case>
   </EntitySwitch>
 );
-  ```
+```
 
 - Find the section for `cicdCard` in the `EntityPage.tsx` file. If it does not exist, find `errorContnet`
 in the page and add the snippet below, right above it.
@@ -69,7 +69,7 @@ metadata:
 
 **Optional Annotations**
 
-You an enable a subset or all of the following components:
+You can enable a subset or all of the following components:
 - to integrate with CodeBuild:
 ```yaml
 metadata:
