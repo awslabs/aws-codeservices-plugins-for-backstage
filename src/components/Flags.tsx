@@ -4,10 +4,12 @@ import {
   DEPLOY_APPLICATION_ANNOTATION,
   DEPLOY_GROUP_NAME_ANNOTATION,
   PIPELINE_NAME_ANNOTATION,
+  IAM_ROLE_ANNOTATION,
   REGION_ANNOTATION} from '../constants';
 
 export const isCodeStarAvailable = (entity: Entity) => {
-  return Boolean(entity.metadata.annotations?.[REGION_ANNOTATION]);
+  return Boolean(entity.metadata.annotations?.[REGION_ANNOTATION]) &&
+         Boolean(entity.metadata.annotations?.[IAM_ROLE_ANNOTATION]);
 }
 
 export const isBuildAvailable = (entity: Entity) => {
