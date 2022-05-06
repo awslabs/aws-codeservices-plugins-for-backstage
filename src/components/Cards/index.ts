@@ -15,4 +15,5 @@
  */
 export {BuildLatestRunCard} from './Cards';
 export {DeployLatestRunCard} from './Cards';
-export {PipelineRunCard} from './Cards';
+export {PipelineLatestRunCard} from './Cards';
+export {CodeStarCards} from './Cards';

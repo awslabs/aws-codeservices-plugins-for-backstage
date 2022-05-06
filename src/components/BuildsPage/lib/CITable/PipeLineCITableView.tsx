@@ -80,7 +80,7 @@ type Props = {
   pipelineInfo?: GetPipelineStateOutput;
 };
 
-export const PipeLineCITable = ({
+export const PipeLineCITableView = ({
   loading,
   pipelineInfo,
   region,

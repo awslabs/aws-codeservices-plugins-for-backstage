@@ -52,7 +52,7 @@ export const EntityCodeStarContent = codeStarPlugin.provide(
   }),
 );
 
-export const EntityLatestBuildRunCard = codeStarPlugin.provide(
+export const BuildLatestRunCard = codeStarPlugin.provide(
   createComponentExtension({
     name: "buildCard",
     component: {
@@ -61,7 +61,7 @@ export const EntityLatestBuildRunCard = codeStarPlugin.provide(
   }),
 );
 
-export const DeployEntityLatestEmployeeRunCard = codeStarPlugin.provide(
+export const DeployLatestRunCard = codeStarPlugin.provide(
   createComponentExtension({
     name: "deployCard",
     component: {
@@ -70,11 +70,11 @@ export const DeployEntityLatestEmployeeRunCard = codeStarPlugin.provide(
   }),
 );
 
-export const PipelineRunCard = codeStarPlugin.provide(
+export const PipelineLatestRunCard = codeStarPlugin.provide(
   createComponentExtension({
     name: "pipelineCard",
     component: {
-      lazy: () => import('./components/Cards').then(m => m.PipelineRunCard),
+      lazy: () => import('./components/Cards').then(m => m.PipelineLatestRunCard),
     },
   }),
 );

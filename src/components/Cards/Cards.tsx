@@ -11,6 +11,9 @@ import { Build }  from "@aws-sdk/client-codebuild";
 import { DeploymentInfo }  from "@aws-sdk/client-codedeploy";
 import { RunStatus } from '../BuildsPage/lib/Status';
 import { GetPipelineStateOutput } from "@aws-sdk/client-codepipeline";
+import { isBuildAvailable, isDeployAvailable, isPipelineAvailable } from '../Flags';
+import { useEntity } from '@backstage/plugin-catalog-react';
+import { Grid }  from "@material-ui/core"
 
 
 const WidgetContent = ({
@@ -75,7 +78,7 @@ export const BuildLatestRunCard = ({
 /* ---------------------------------------- */
 
 const DeployWidgetContent = ({
-  deploymentInfo,region 
+  deploymentInfo,region
 }: {
   deploymentInfo?: DeploymentInfo,
   region: string
@@ -167,7 +170,7 @@ const PipelineWidgetContent = ({
 };
 
 
-export const  PipelineRunCard = ({
+export const  PipelineLatestRunCard = ({
   variant,
 }: {
   variant?: InfoCardVariants;
@@ -180,12 +183,39 @@ export const  PipelineRunCard = ({
   return (
     <InfoCard title={ <a href={"https://" + region + ".console.aws.amazon.com/codesuite/codepipeline/pipelines/" + pipelineInfo?.pipelineName + "/view?" + region }
               target="_blank"> {pipelineInfo?.pipelineName} </a>} variant={variant}>
-        {!error && pipelineInfo != undefined ? ( 
+        {!error && pipelineInfo != undefined ? (
           <PipelineWidgetContent
-             pipelineInfo={pipelineInfo} 
+             pipelineInfo={pipelineInfo}
              region={region}
             />
         ) : ("")}
     </InfoCard>
+  );
+};
+
+export const CodeStarCards = ({
+  variant,
+}: {
+  variant?: InfoCardVariants;
+}) => {
+  const { entity } = useEntity();
+  return(
+    <>
+      { isPipelineAvailable(entity) &&
+        <Grid item sm={4}>
+          <PipelineLatestRunCard variant={variant} />
+        </Grid>
+      }
+      { isBuildAvailable(entity) &&
+        <Grid item sm={4}>
+          <BuildLatestRunCard variant={variant} />
+        </Grid>
+      }
+      { isDeployAvailable(entity) &&
+        <Grid item sm={4}>
+          <DeployLatestRunCard variant={variant} />
+        </Grid>
+      }
+    </>
   );
 };

@@ -14,152 +14,51 @@
  * limitations under the License.
  */
 import React from 'react';
-import { Box, Typography} from '@material-ui/core';
-import { Link } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
-import RetryIcon from '@material-ui/icons/Replay';
-import { RunStatus } from '../Status';
 import { getBuilds, getDeployments, getPipelineState } from '../../../useBuilds';
-import { Table, TableColumn } from '@backstage/core-components';
 /* import {Exception } from '../../../../api/ServiceApi'; */
-import {Build} from "@aws-sdk/client-codebuild";
-import {DeployCITableView} from './DeployCITable';
-import {PipeLineCITable} from './PipeLineCITable';
-
-const generatedColumns: TableColumn[] = [
-  {
-    title: 'Builds',
-    field: 'name',
-    highlight: true,
-    render: (row: Partial<Build>) => {
-      if (row.id != undefined) {
-        const arn = row.arn?.split(':');
-        if (arn == undefined) {
-          return (<> {row.id} </>)
-        }
-        return (
-          <Link href={"https://"+arn[3]+".console.aws.amazon.com/codesuite/codebuild/"+arn[4]+"/"+arn[5].replace('build','projects')+"/"+arn[5]+":"+arn[6]} target="_blank" >
-            {row.id}
-          </Link>
-        );
-      } else {
-        return (<> {row.id} </>);
-      }
-    },
-  },
-  {
-    title: 'Number',
-    field: 'number',
-    render: (row: Partial<Build>) => {
-      return (
-        <>
-          {row.buildNumber}
-        </>
-      );
-    },
-  },
-  {
-    title: 'Submitter',
-    field: 'submitter',
-    render: (row: Partial<Build>) => {
-      return (
-        <>
-          {row.initiator}
-        </>
-      );
-    },
-  },
-  {
-    title: 'Status',
-    field: 'status',
-    render: (row: Partial<Build>) => {
-      return (
-        <Box display="flex" alignItems="center">
-          <RunStatus status={row.buildStatus?.toLowerCase()} />
-        </Box>
-      );
-    },
-  },
-  {
-    title: 'Duration',
-    field: 'duration',
-    render: (row: Partial<Build>) => {
-      if (row.endTime != undefined && row.startTime != undefined) {
-        return (
-          <>
-            {(row.endTime.getTime() - row.startTime.getTime()) / 1000} Seconds
-          </>
-        );
-      } else {
-        return(<></>);
-      }
-    },
-  },
-];
-
-type Props = {
-  loading: boolean;
-  retry: () => void;
-  builds?: Build[];
-};
-
-export const CITableView = ({
-  loading,
-  builds,
-  retry,
-}: Props) => {
-  return (
-    <Table
-      isLoading={loading}
-      actions={[
-        {
-          icon: () => <RetryIcon />,
-          tooltip: 'Refresh Data',
-          isFreeAction: true,
-          onClick: () => retry(),
-        },
-      ]}
-      data={builds ?? []}
-      title={
-        <Box display="flex" alignItems="center">
-          <Box mr={2} />
-          <Typography variant="h6">CodeBuild Data</Typography>
-        </Box>
-      }
-      columns={generatedColumns}
-    />
-  );
-};
+import {BuildCITableView} from './BuildCITableView';
+import {DeployCITableView} from './DeployCITableView';
+import {PipeLineCITableView} from './PipeLineCITableView';
+import {isBuildAvailable, isDeployAvailable, isPipelineAvailable} from '../../../Flags';
+import { useEntity } from '@backstage/plugin-catalog-react';
 
 export const CITable = () => {
   const {loading, buildOutput, retry} = getBuilds();
   const {loadingd, deploymentsInfo, retryd} = getDeployments();
   const {loadingPipeline,  pipelineInfo, region, retryPipeline} = getPipelineState();
+  const { entity } = useEntity();
 
   return (
     <>
-      <Grid item sm={12}>
-        <PipeLineCITable
-           loading={loadingPipeline}
-           region={region}
-           pipelineInfo={pipelineInfo}
-           retry={retryPipeline}
-        />
-      </Grid>
-      <Grid item sm={12}>
-        <CITableView
-          loading={loading}
-          builds={buildOutput}
-          retry={retry}
-        />
-      </Grid>
-      <Grid item sm={12}>
-        <DeployCITableView
-          loading={loadingd}
-          deployments={deploymentsInfo}
-          retry={retryd}
-        />
-      </Grid>
+      { isPipelineAvailable(entity) &&
+        <Grid item sm={12}>
+          <PipeLineCITableView
+             loading={loadingPipeline}
+             region={region}
+             pipelineInfo={pipelineInfo}
+             retry={retryPipeline}
+          />
+        </Grid>
+      }
+      { isBuildAvailable(entity) &&
+        <Grid item sm={12}>
+          <BuildCITableView
+            loading={loading}
+            builds={buildOutput}
+            retry={retry}
+          />
+        </Grid>
+      }
+      { isDeployAvailable(entity) &&
+        <Grid item sm={12}>
+          <DeployCITableView
+            loading={loadingd}
+            deployments={deploymentsInfo}
+            retry={retryd}
+          />
+        </Grid>
+      }
     </>
   );
 };

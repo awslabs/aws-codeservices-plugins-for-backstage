@@ -17,17 +17,17 @@
 export {
   codeStarPlugin,
   codeStarPlugin as plugin,
-  EntityLatestBuildRunCard,
-  DeployEntityLatestEmployeeRunCard,
   EntityCodeStarContent,
 } from './plugin';
 export {BuildLatestRunCard} from './components/Cards';
 export {DeployLatestRunCard} from './components/Cards';
-export {PipelineRunCard} from './components/Cards';
+export {PipelineLatestRunCard} from './components/Cards';
+export {CodeStarCards} from './components/Cards';
 export {
   isCodeStarAvailable,
   isCodeStarAvailable as isPluginApplicableToEntity,
+} from './components/Flags';
+export {
   Router,
-  BuildWidget,
 } from './components/Router';
 export * from './api';
