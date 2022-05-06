@@ -30,7 +30,8 @@ import {
 import { setupServer } from 'msw/node';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {codeStarApiRef} from '../../api';
-import { entityMock, buildsResponseMock, credsMock, deployResponseMock, pipelineResponseMock } from '../../mocks/mocks';
+import { entityBuildMock, entityDeployMock, entityPipelineMock } from '../../mocks/mocks';
+import { buildsResponseMock, credsMock, deployResponseMock, pipelineResponseMock } from '../../mocks/mocks';
 import {BuildWidget, DeployWidget, PipelineWidget} from '../Router';
 import { MockCodeStarClient} from '../../mocks/MockCodeStarClient'
 
@@ -65,8 +66,8 @@ describe('BuildLatestRunCard', () => {
     const rendered = render(
       wrapInTestApp(
         <TestApiProvider apis={apis}>
-          <EntityProvider entity={entityMock}>
-            <BuildWidget entity={entityMock} children={null} />
+          <EntityProvider entity={entityBuildMock}>
+            <BuildWidget entity={entityBuildMock} children={null} />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -74,6 +75,21 @@ describe('BuildLatestRunCard', () => {
     expect(
       await rendered.findByText(buildsResponseMock.builds[0].id),
     ).toBeInTheDocument();
+  });
+
+  it('should not display widget with build data', async () => {
+    const rendered = render(
+      wrapInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={entityPipelineMock}>
+            <BuildWidget entity={entityPipelineMock} children={null} />
+          </EntityProvider>
+        </TestApiProvider>,
+      ),
+    );
+    await expect(
+      rendered.findByText(pipelineResponseMock.pipelineName),
+    ).rejects.toThrow();
   });
 });
 
@@ -97,8 +113,8 @@ describe('DeployLatestRunCard', () => {
     const rendered = render(
       wrapInTestApp(
         <TestApiProvider apis={apis}>
-          <EntityProvider entity={entityMock}>
-            <DeployWidget entity={entityMock}  children={null} />
+          <EntityProvider entity={entityDeployMock}>
+            <DeployWidget entity={entityDeployMock}  children={null} />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -106,6 +122,21 @@ describe('DeployLatestRunCard', () => {
     expect(
       await rendered.findByText(deployResponseMock.deploymentsInfo[0].deploymentId),
     ).toBeInTheDocument();
+  });
+
+  it('should not display widget with deploy data', async () => {
+    const rendered = render(
+      wrapInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={entityBuildMock}>
+            <DeployWidget entity={entityBuildMock}  children={null} />
+          </EntityProvider>
+        </TestApiProvider>,
+      ),
+    );
+    await expect(
+      rendered.findByText(pipelineResponseMock.pipelineName),
+    ).rejects.toThrow();
   });
 });
 
@@ -127,8 +158,8 @@ describe('PipelineRunCard', () => {
     const rendered = render(
       wrapInTestApp(
         <TestApiProvider apis={apis}>
-          <EntityProvider entity={entityMock}>
-            <PipelineWidget entity={entityMock}  children={null} />
+          <EntityProvider entity={entityPipelineMock }>
+            <PipelineWidget entity={entityPipelineMock }  children={null} />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -136,5 +167,20 @@ describe('PipelineRunCard', () => {
     expect(
       await rendered.findByText(pipelineResponseMock.pipelineName),
     ).toBeInTheDocument();
+  });
+
+  it('should not display widget with Pipeline data', async () => {
+    const rendered = render(
+      wrapInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={entityDeployMock}>
+            <PipelineWidget entity={entityDeployMock}  children={null} />
+          </EntityProvider>
+        </TestApiProvider>,
+      ),
+    );
+    await expect(
+      rendered.findByText(pipelineResponseMock.pipelineName),
+    ).rejects.toThrow();
   });
 });

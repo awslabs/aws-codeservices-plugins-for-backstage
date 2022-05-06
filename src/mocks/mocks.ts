@@ -1,18 +1,53 @@
-export const entityMock = {
+export const entityBuildMock = {
   metadata: {
     namespace: 'default',
     annotations: {
-      'backstage.io/managed-by-location':
-        'url:https://github.com/mcalus3/sample-service/blob/master/backstage2.yaml',
-      'cloud.google.com/function-ids':
-        'projects/backstage-test-project/locations/us-central1/functions/helloMarek',
-      'travis-ci.com/repo-slug': 'RoadieHQ/sample-service',
+      'code.aws.com/region': 'us-west-2',
+      'code.aws.com/iam-role': 'some-arn',
+      'code.aws.com/build-project': 'hello-world'
     },
     name: 'sample-service',
-    description:
-      'A service for testing Backstage functionality. For example, we can trigger errors\non the sample-service, these are sent to Sentry, then we can view them in the \nBackstage plugin for Sentry.\n',
-    uid: '59f02dec-056a-4b8a-aed8-7f05f7e120f0',
-    etag: 'ODkwZjcyZDktZDBhNi00MGIxLWI1MDYtMzZiYjA0ZjJhNmU3',
+    generation: 1,
+  },
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'Component',
+  spec: {
+    type: 'service',
+    owner: 'david@roadie.io',
+    lifecycle: 'experimental',
+  },
+};
+
+export const entityDeployMock = {
+  metadata: {
+    namespace: 'default',
+    annotations: {
+      'code.aws.com/region': 'us-west-2',
+      'code.aws.com/iam-role': 'some-arn',
+      'code.aws.com/deploy-application': 'hello-world',
+      'code.aws.com/deploy-group-name': 'hello-world'
+    },
+    name: 'sample-service',
+    generation: 1,
+  },
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'Component',
+  spec: {
+    type: 'service',
+    owner: 'david@roadie.io',
+    lifecycle: 'experimental',
+  },
+};
+
+export const entityPipelineMock = {
+  metadata: {
+    namespace: 'default',
+    annotations: {
+      'code.aws.com/region': 'us-west-2',
+      'code.aws.com/iam-role': 'some-arn',
+      'code.aws.com/pipeline-name': 'hello-world'
+    },
+    name: 'sample-service',
     generation: 1,
   },
   apiVersion: 'backstage.io/v1alpha1',

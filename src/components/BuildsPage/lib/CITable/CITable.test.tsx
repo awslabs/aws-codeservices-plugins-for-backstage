@@ -32,7 +32,7 @@ import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {
   codeStarApiRef,
 } from '../../../../api';
-import { entityMock, credsMock, buildsResponseMock } from '../../../../mocks/mocks';
+import { entityBuildMock, credsMock, buildsResponseMock } from '../../../../mocks/mocks';
 import {CodeStar} from '../../../Router';
 import {MockCodeStarClient} from '../../../../mocks/MockCodeStarClient'
 
@@ -68,8 +68,8 @@ describe('CITable', () => {
     const rendered = render(
       wrapInTestApp(
         <TestApiProvider apis={apis}>
-          <EntityProvider entity={entityMock}>
-            <CodeStar entity={entityMock} children={null}/>
+          <EntityProvider entity={entityBuildMock}>
+            <CodeStar entity={entityBuildMock} children={null}/>
           </EntityProvider>
         </TestApiProvider>,
       ),
