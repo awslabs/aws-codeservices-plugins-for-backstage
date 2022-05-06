@@ -2,32 +2,15 @@
 
 ## Setup
 
-### Dev Environment Setup:
+### Backstage Setup
 
-- Install [Local Package
-  Publisher](https://www.npmjs.com/package/local-package-publisher)
-- node version v14.3.0+
-- npm  version 6.14.4+
-
-build the plugin by running the following 
-
-```bash
-> yarn build # builds your plugin
-> ./hack/build.sh # publishes the plugin to a local tmp folder on your machine
-```
-
-## Backstage Setup
-
-- Clone Backstage to your machine.
-
-- In your `app-conifg.yml` file, setup a proxy to your Spinnaker deployment:
-
-```yaml
-proxy:
-  '/dummy':
-     target: https://reqres.in
-     allowedMethods: ['GET', 'POST', 'PUT']
-```
+- The CodeStar plugin uses [Plugin AWS
+  Auth](https://github.com/RoadieHQ/backstage-plugin-aws-auth) from RodieHQ to
+  enable access to AWS resources via the frontend plugin. Follow the
+  configuration steps as describe on the AWS Auth plugin page to enable it for your
+  backstage deployment. _Note: it is extermely important to limit the access of
+  the role you supply to the AWS Auth plugin to the minimum set of required
+  resources. Do not use an admin role, even for testing reasons._
 
 - Update your `packages/app/src/components/catalog/EntityPage.tsx` with
 information about the Plugin Card.
@@ -37,27 +20,91 @@ imports are located.
 
 ```tsx
 import {
-  EntityLatestEmployeeRunCard,
+  CodeStarCards,
+  EntityCodeStarContent,
+  isCodeStarAvailable
 } from 'plugin-backstage-code-star';
 ```
 
-- Next, find the section for `cicdCard` and in the `EntityPage.tsx` file. If it does not exist, find `errorContnet`
+- Find the section for `cicdContent` in the `EntityPage.tsx` file and add the
+  following snippet:
+
+  ```tsx
+const cicdContent = (
+   <EntitySwitch>
+        <EntitySwitch.Case if={isCodeStarAvailable}>
+          <EntityCodeStarContent/>
+        </EntitySwitch.Case>
+  </EntitySwitch>
+);
+  ```
+
+- Find the section for `cicdCard` in the `EntityPage.tsx` file. If it does not exist, find `errorContnet`
 in the page and add the snippet below, right above it.
 
 ```tsx
 ...
 const cicdCard = (
    <EntitySwitch>
-        <EntitySwitch.Case if={isSpinnakerAvailable}>
-               <Grid item sm={6}>
-                   <EntityLatestSpinnakerRunCard variant="gridItem" />
-                </Grid>
-         </EntitySwitch.Case>
+        <EntitySwitch.Case if={isCodeStarAvailable}>
+          <CodeStarCards variant="gridItem"/>
+        </EntitySwitch.Case>
   </EntitySwitch>
 );
 ```
 
-Modify `package.json` in Backstage, and add the following snipper under
+### Configuring the Components
+
+For the plugin to be enabled for your component, you need a mix of the following
+annotations:
+
+**Required annotations**
+
+```yaml
+metadata:
+  annotations:
+    code.aws.com/region: [YOUR_REGION]
+    code.aws.com/iam-role: [YOUR_ACCOUNT]
+```
+
+**Optional Annotations**
+
+You an enable a subset or all of the following components:
+- to integrate with CodeBuild:
+```yaml
+metadata:
+  annotations:
+    ode.aws.com/build-project: [YOUR_BUILD_PROJECT]
+```
+- to integrate with CodeeDeploy:
+```yaml
+metadata:
+  annotations:
+    code.aws.com/deploy-application: [YOUR_DEPLOY_APPLICATION]
+    code.aws.com/deploy-group-name:  [YOUR_DEPLOY_GROUP_NAME]
+```
+- to integrate with CodePipeline:
+```yaml
+metadata:
+  annotations:
+    code.aws.com/pipeline-name: [YOUR_PIPELINE_NAME]
+```
+
+### Dev Environment Setup:
+
+- Install [Local Package Publisher](https://www.npmjs.com/package/local-package-publisher)
+- node version v14.3.0+
+- npm  version 6.14.4+
+
+build the plugin by running the following
+
+```bash
+> yarn build # builds your plugin
+> ./hack/build.sh # publishes the plugin to a local tmp folder on your machine
+```
+
+
+Modify `package.json` in Backstage, and add the following snippet under
 `devDependencies`:
 
 ```
@@ -66,11 +113,10 @@ Modify `package.json` in Backstage, and add the following snipper under
 
 - the value for the local plugin NPM package should be extracted from running
 `./hack/build.sh` in the plugin folder. The package is usually published to a
-folder under `/var/...`, if you are Mac user. If you are a windows user, good
-luck!
+folder under `/var/...`, if you are Mac user.
 
 
-- Run `yarn install` the plugin in your backstage core app.
+- Run `yarn install` for the plugin in your Backstage core app.
 
 - If your setup is correct, your yarn.lock file should have the snippet for the
   plugin populated for it similar to the following:
@@ -102,11 +148,10 @@ luck!
   - Navigate to the `Components` tab in backstage
   - click `Create Component`
   - click `Register Existing Component`
-  - for the URL, use
-    `https://github.com/nimakaviani/backstage-test/blob/master/component/artist-lookup.yaml`
+  - for the URL, use a test component URL
   - click `Analyze`
   - then `Import`
-  - if successful, you will see the link for `nk-artist-lookup-component`
+  - if successful, you will see the link for the imported component
   - Click on it and should navigate you to the first page of the component, with
     the card from the plugin popping up.
 
