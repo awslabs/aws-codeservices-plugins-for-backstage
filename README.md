@@ -1,5 +1,13 @@
 # Code-* Plugin for Backstage
 
+The Plugin adds cards as well as an expanded view under the CI/CD tab to your Backstage deployment so you can track status of your application's build, deploy, and pipelines in Spinnaker. Through the selection of which annotations you want to add to your component, you can also customize which integrations and which views you would like to get in your integration with Backstage.
+
+Card View:
+![card image](./pics/code-cards.png)
+
+Tab View:
+![ci/cd image](./pics/cicd-tab.png)
+
 ## Setup
 
 ### Backstage Setup
