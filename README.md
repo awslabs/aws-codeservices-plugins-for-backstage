@@ -1,6 +1,6 @@
 # Code-* Plugin for Backstage
 
-The plugin adds latest status cards as well as expanded history for CI/CD runs of your `AWS Code-*` services to your Backstage deployment. You can track the status of your application's build, deploy, and pipelines in Spinnaker. Through the selection of which annotations you want to add to your component, you can also customize which views you would like to get in your integration with Backstage.
+The plugin adds latest status cards as well as expanded history for CI/CD runs of your `AWS Code-*` services to your Backstage deployment. You can track the status of your application's build, deploy, and pipelines in `AWS Code-*`. Through the selection of which annotations you want to add to your component, you can also customize which views you would like to get in your integration with Backstage.
 
 Card Views:
 ![card image](./pics/code-cards.png)
@@ -8,7 +8,7 @@ Card Views:
 Tab Views:
 ![ci/cd image](./pics/cicd-tab.png)
 
-## Setup
+## Configuring
 
 ### Backstage Setup
 
@@ -63,10 +63,10 @@ const cicdCard = (
 
 ### Configuring the Components
 
-For the plugin to be enabled for your component, you need a mix of the following
-annotations:
+For the plugin to be enabled for your component, you need a mix of the required
+annotations and at least one of the optional set of annotations:
 
-**Required annotations**
+**Required Annotations**
 
 ```yaml
 metadata:
@@ -98,7 +98,7 @@ metadata:
     code.aws.com/pipeline-name: [YOUR_PIPELINE_NAME]
 ```
 
-### Dev Environment Setup:
+## Dev Environment Setup
 
 - Install [Local Package Publisher](https://www.npmjs.com/package/local-package-publisher)
 - node version v14.3.0+
@@ -163,6 +163,10 @@ folder under `/var/...`, if you are Mac user.
   - Click on it and should navigate you to the first page of the component, with
     the card from the plugin popping up.
 
+## Acknowledgement
 
+This plugin started as a hackathon project in an effort initiated by the following
+folks: Abel Cruz, Bridget Conncanon, Gregory Fina, Nitu Parimi, Siva
+Guruvareddiar, and Nima Kaviani.
 
 
