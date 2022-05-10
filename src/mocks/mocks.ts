@@ -495,6 +495,38 @@ export const deployResponseMock = {
   ]
 }
 
+export const pipelineRunsResponseMock = {
+  '$metadata': {
+    httpStatusCode: 200,
+    requestId: '2829ff6e-09d3-46d3-9170-591f6a99d90e',
+    extendedRequestId: undefined,
+    cfId: undefined,
+    attempts: 1,
+    totalRetryDelay: 0
+  },
+  nextToken: undefined,
+  pipelineExecutionSummaries: [
+    {
+      lastUpdateTime: "2022-05-03T00:52:45.631Z",
+      pipelineExecutionId: 'e6c91a02-d844-4663-ad62-b719608f8fc5',
+      sourceRevisions: [Array],
+      startTime: "2022-05-03T00:51:35.229Z",
+      status: 'Failed',
+      stopTrigger: undefined,
+      trigger: [Object]
+    },
+    {
+      lastUpdateTime: "2022-04-15T17:55:04.950Z",
+      pipelineExecutionId: '17baba6f-22f6-4f6d-8d37-96321a35f77e',
+      sourceRevisions: [Array],
+      startTime: "2022-04-15T17:45:51.244Z",
+      status: 'Failed',
+      stopTrigger: undefined,
+      trigger: [Object]
+    }
+  ]
+};
+
 export const pipelineResponseMock = {
   created: 1446137312.204,
   pipelineName: "MyFirstPipeline",

@@ -27,6 +27,7 @@ import {CodeDeployClient} from "@aws-sdk/client-codedeploy";
 import {ListDeploymentsCommand, ListDeploymentsCommandOutput} from "@aws-sdk/client-codedeploy";
 import {BatchGetDeploymentsCommand, BatchGetDeploymentsCommandOutput} from "@aws-sdk/client-codedeploy";
 import {CodePipelineClient, GetPipelineStateCommand, GetPipelineStateOutput} from "@aws-sdk/client-codepipeline";
+import {ListPipelineExecutionsCommand, ListPipelineExecutionsCommandOutput} from "@aws-sdk/client-codepipeline";
 
 
 export const codeStarApiRef = createApiRef<CodeStarApi>({
@@ -47,6 +48,7 @@ export interface CodeStarApi {
   getDeploymentIds(options: {region: string, appName: string, deploymentGroupName: string, creds: Credentials}): Promise<ListDeploymentsCommandOutput>;
   getDeployments(options: {region: string, ids: string[], creds: Credentials}): Promise<BatchGetDeploymentsCommandOutput>;
   getPipelineState(options: {region: string, name: string, creds: Credentials}): Promise<GetPipelineStateOutput>
+  getPipelineRuns(options: {region: string, name: string, creds: Credentials}): Promise<ListPipelineExecutionsCommandOutput>
 
   generateCredentials(options: {iamRole: string}): Promise<Credentials>;
 };
@@ -135,4 +137,16 @@ export class CodeStarClient implements CodeStarApi {
     return await client.send(command);
   }
 
+  async getPipelineRuns({region, name, creds}: {region: string, name: string, creds: Credentials}): Promise<ListPipelineExecutionsCommandOutput> {
+    const client = new CodePipelineClient({
+      region: region,
+      credentials: {
+        accessKeyId: creds.AccessKeyId,
+        secretAccessKey: creds.SecretAccessKey,
+        sessionToken: creds.SessionToken
+      }
+    });
+    const command = new ListPipelineExecutionsCommand({pipelineName: name});
+    return await client.send(command);
+  }
 };

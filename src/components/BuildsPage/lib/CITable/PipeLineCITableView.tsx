@@ -14,45 +14,42 @@
  * limitations under the License.
  */
 import React from 'react';
-import {Box, Typography} from '@material-ui/core';
+import {Box, Typography, Link} from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
 import { RunStatus } from '../Status';
 import { Table, TableColumn } from '@backstage/core-components';
-import {GetPipelineStateOutput, StageState} from "@aws-sdk/client-codepipeline";
-
-
+import { PipelineExecutionSummary } from "@aws-sdk/client-codepipeline";
+import {useEntity} from '@backstage/plugin-catalog-react';
+import {REGION_ANNOTATION} from '../../../../constants';
 
 const generatedColumns: TableColumn[] = [
   {
-    title: 'State',
-    field: 'State',
+    title: 'Pipeline',
+    field: 'Pipeline',
 
-    render: (row: Partial<StageState>) => {
-      if (row !== undefined) {
+    render: (row: Partial<PipelineExecutionSummary>) => {
+      console.log(row)
+      if (row.pipelineExecutionId !== undefined) {
+          const {entity} = useEntity();
+          const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
           return (
-             <>
-                {row.stageName}
-             </> 
-            );
+            <>
+              <Link href={"https://" + region + ".console.aws.amazon.com/codesuite/codepipeline/pipelines/" +  "Hello-world-pipeline" + "/executions/" + row.pipelineExecutionId + "/timeline?region=" + region} target="_blank">
+                {row.pipelineExecutionId}
+              </Link>
+            </>
+          );
       }
       else return(<></>);
     },
   },
   {
-    title: 'Id',
+    title: 'Last Run',
     field: '',
     highlight: true,
-    render: (row: Partial<StageState>) => {
-      if (row.actionStates != null) {
-        return (
-             <>
-             <a
-                 href={row.actionStates[0].entityUrl }
-                 target="_blank">
-                {row.actionStates[0].latestExecution?.actionExecutionId}
-             </a>
-             </>
-        );
+    render: (row: Partial<PipelineExecutionSummary>) => {
+       if (row.lastUpdateTime != null) {
+        return (<p>{row.lastUpdateTime.toLocaleString()}</p>)
       }
       else return(<></>);
     },
@@ -60,12 +57,36 @@ const generatedColumns: TableColumn[] = [
   {
     title: 'Status',
     field: 'status',
-    render: (row: Partial<StageState>) => {
-      if (row.actionStates != null) {
+    render: (row: Partial<PipelineExecutionSummary>) => {
+      if (row.status != null) {
         return (
           <Box display="flex" alignItems="center">
-             <RunStatus status={row?.actionStates[0]?.latestExecution?.status} />
+            <RunStatus status={row?.status}/>
           </Box>
+        );
+      }
+      else return(<></>);
+    },
+  },
+  {
+    title: 'Trigger Type',
+    field: 'trigger type',
+    render: (row: Partial<PipelineExecutionSummary>) => {
+      if (row.trigger != null) {
+        return (
+          <>{row.trigger.triggerType}</>
+        );
+      }
+      else return(<></>);
+    },
+  },
+  {
+    title: 'Trigger Detail',
+    field: 'trigger detail',
+    render: (row: Partial<PipelineExecutionSummary>) => {
+      if (row.trigger != null) {
+        return (
+          <>{row.trigger.triggerDetail}</>
         );
       }
       else return(<></>);
@@ -77,12 +98,14 @@ type Props = {
   loading: boolean;
   retry: () => void;
   region: string;
-  pipelineInfo?: GetPipelineStateOutput;
+  pipelineRunsSummaries?: PipelineExecutionSummary[];
+  pipelineName: string;
 };
 
-export const PipeLineCITableView = ({
+export const PipelineCITableView = ({
   loading,
-  pipelineInfo,
+  pipelineRunsSummaries,
+  pipelineName,
   region,
   retry,
 }: Props) => {
@@ -97,13 +120,13 @@ export const PipeLineCITableView = ({
             onClick: () => retry(),
           },
         ]}
-        data={pipelineInfo?.stageStates ?? []}
+        data={pipelineRunsSummaries ?? []}
         title={
           <Box display="flex" alignItems="center">
             <Box mr={2} />
             <Typography variant="h6">CodePipeline: &nbsp;
-              <a href={"https://" + region + ".console.aws.amazon.com/codesuite/codepipeline/pipelines/" + pipelineInfo?.pipelineName + "/view?" + region }
-              target="_blank">{pipelineInfo?.pipelineName}</a>
+              <a href={"https://" + region + ".console.aws.amazon.com/codesuite/codepipeline/pipelines/" + pipelineName + "/view?" + region}
+              target="_blank">{pipelineName}</a>
             </Typography>
           </Box>
         }

@@ -15,30 +15,31 @@
  */
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import { getBuilds, getDeployments, getPipelineState } from '../../../useBuilds';
+import { getBuilds, getDeployments, getPipelineRunsList } from '../../../useBuilds';
 /* import {Exception } from '../../../../api/ServiceApi'; */
 import {BuildCITableView} from './BuildCITableView';
 import {DeployCITableView} from './DeployCITableView';
-import {PipeLineCITableView} from './PipeLineCITableView';
+import {PipelineCITableView} from './PipelineCITableView';
 import {isBuildAvailable, isDeployAvailable, isPipelineAvailable} from '../../../Flags';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 export const CITable = () => {
   const {loading, buildOutput, retry} = getBuilds();
   const {loadingd, deploymentsInfo, retryd} = getDeployments();
-  const {loadingPipeline,  pipelineInfo, region, retryPipeline} = getPipelineState();
+  const {loadingSummaries,  pipelineRunsSummaries, pipelineName, region, retrySummaries} = getPipelineRunsList();
   const { entity } = useEntity();
 
   return (
     <>
       { isPipelineAvailable(entity) &&
         <Grid item sm={12}>
-          <PipeLineCITableView
-             loading={loadingPipeline}
-             region={region}
-             pipelineInfo={pipelineInfo}
-             retry={retryPipeline}
-          />
+            <PipelineCITableView
+                loading={loadingSummaries}
+                region={region}
+                pipelineRunsSummaries={pipelineRunsSummaries}
+                pipelineName={pipelineName}
+                retry={retrySummaries}
+            />
         </Grid>
       }
       { isBuildAvailable(entity) &&

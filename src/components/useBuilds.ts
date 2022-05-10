@@ -115,3 +115,33 @@ export function getPipelineState() {
   const retryPipeline = retry;
   return {loadingPipeline, pipelineInfo, region, retryPipeline} as const;
 };
+
+export function getPipelineRunsList() {
+  const api = useApi(codeStarApiRef);
+  const {entity} = useEntity();
+  const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
+  const pipelineName = entity?.metadata.annotations?.[PIPELINE_NAME_ANNOTATION] ?? '';
+  const iamRole = entity?.metadata.annotations?.[IAM_ROLE_ANNOTATION] ?? '';
+  // const errorApi = useApi(errorApiRef);
+  const {
+    loading,
+    value: pipelineRunsSummaries,
+    retry
+  } = useAsyncRetry(async () => {
+    try {
+      const creds = await api.generateCredentials({iamRole: iamRole})
+      const pipelineRunsList = await api.getPipelineRuns({region: region, name: pipelineName, creds});
+      if (pipelineRunsList?.pipelineExecutionSummaries == undefined) {
+        return
+      }
+      return pipelineRunsList.pipelineExecutionSummaries
+    } catch (e) {
+      // errorApi.post(e)
+      throw e
+    }
+  });
+  console.log(pipelineRunsSummaries);
+  const loadingSummaries = loading;
+  const retrySummaries = retry;
+  return {loadingSummaries, pipelineRunsSummaries, pipelineName, region, retrySummaries} as const;
+}

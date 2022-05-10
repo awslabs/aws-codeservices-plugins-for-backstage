@@ -16,11 +16,11 @@
 import React from 'react';
 import {Box, Link, Typography} from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
-/* import { generatePath, Link as RouterLink } from 'react-router-dom'; */
 import { RunStatus } from '../Status';
 import { Table, TableColumn } from '@backstage/core-components';
-/* import {Exception } from '../../../../api/ServiceApi'; */
 import {DeploymentInfo} from "@aws-sdk/client-codedeploy";
+import {useEntity} from '@backstage/plugin-catalog-react';
+import {REGION_ANNOTATION} from '../../../../constants';
 
 const generatedColumns: TableColumn[] = [
   {
@@ -28,9 +28,11 @@ const generatedColumns: TableColumn[] = [
     field: 'id',
 
     render: (row: Partial<DeploymentInfo>) => {
+      const {entity} = useEntity();
+      const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
       return (
          <> <Link
-              href={"https://" + "us-west-2" + ".console.aws.amazon.com/codesuite/codedeploy/deployments/" + row.deploymentId + "?" + "us-west-2" }
+              href={"https://" + region + ".console.aws.amazon.com/codesuite/codedeploy/deployments/" + row.deploymentId + "?" + region }
               target="_blank">
             {row.deploymentId}
           </Link></>

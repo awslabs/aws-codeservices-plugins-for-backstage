@@ -3,7 +3,7 @@ import {
   Credentials
 } from '../api';
 
-import { buildsResponseMock, credsMock, deployResponseMock, pipelineResponseMock } from './mocks';
+import { buildsResponseMock, credsMock, deployResponseMock, pipelineResponseMock, pipelineRunsResponseMock } from './mocks';
 
 export class MockCodeStarClient implements CodeStarApi {
   async generateCredentials(_ : {iamRole: string}): Promise<Credentials> {
@@ -27,5 +27,8 @@ export class MockCodeStarClient implements CodeStarApi {
   }
   async getPipelineState(_: {region: string, name: string, creds: Credentials}): Promise<any> {
     return new Promise((resolve, _) => { resolve(pipelineResponseMock) })
+  }
+  async getPipelineRuns(_: {region: string, name: string, creds: Credentials}): Promise<any> {
+    return new Promise((resolve, _) => { resolve(pipelineRunsResponseMock) })
   }
 }
