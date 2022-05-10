@@ -140,7 +140,6 @@ export function getPipelineRunsList() {
       throw e
     }
   });
-  console.log(pipelineRunsSummaries);
   const loadingSummaries = loading;
   const retrySummaries = retry;
   return {loadingSummaries, pipelineRunsSummaries, pipelineName, region, retrySummaries} as const;

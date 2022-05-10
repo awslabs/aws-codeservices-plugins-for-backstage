@@ -28,7 +28,6 @@ const generatedColumns: TableColumn[] = [
     field: 'Pipeline',
 
     render: (row: Partial<PipelineExecutionSummary>) => {
-      console.log(row)
       if (row.pipelineExecutionId !== undefined) {
           const {entity} = useEntity();
           const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';

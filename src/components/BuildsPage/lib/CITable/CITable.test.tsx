@@ -32,7 +32,14 @@ import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {
   codeStarApiRef,
 } from '../../../../api';
-import { entityBuildMock, credsMock, buildsResponseMock } from '../../../../mocks/mocks';
+import {
+  entityBuildMock,
+  credsMock,
+  buildsResponseMock,
+  entityAllMock,
+  pipelineRunsResponseMock,
+  deployResponseMock
+} from '../../../../mocks/mocks';
 import {CodeStar} from '../../../Router';
 import {MockCodeStarClient} from '../../../../mocks/MockCodeStarClient'
 
@@ -64,7 +71,7 @@ describe('CITable', () => {
     );
   });
 
-  it('should display widget with CITable data', async () => {
+  it.only('should display widget with CITable data', async () => {
     const rendered = render(
       wrapInTestApp(
         <TestApiProvider apis={apis}>
@@ -76,6 +83,59 @@ describe('CITable', () => {
     );
     expect(
       await rendered.findByText(buildsResponseMock.builds[0].id),
+    ).toBeInTheDocument();
+    await expect(
+      rendered.findByText(deployResponseMock.deploymentsInfo[0].deploymentId),
+    ).rejects.toThrow();
+    await expect(
+      rendered.findByText(pipelineRunsResponseMock.pipelineExecutionSummaries[0].pipelineExecutionId),
+    ).rejects.toThrow();
+  });
+
+  it('should display all CICD tables when all annotations are present', async () => {
+    const rendered = render(
+      wrapInTestApp(
+        <TestApiProvider apis={apis}>
+          <EntityProvider entity={entityAllMock}>
+            <CodeStar entity={entityAllMock} children={null}/>
+          </EntityProvider>
+        </TestApiProvider>,
+      ),
+    );
+    expect(
+      await rendered.findByText(buildsResponseMock.builds[0].id),
+    ).toBeInTheDocument();
+    expect(
+      await rendered.findByText(buildsResponseMock.builds[0].buildNumber),
+    ).toBeInTheDocument();
+
+    expect(
+      await rendered.findByText(buildsResponseMock.builds[1].id),
+    ).toBeInTheDocument();
+    expect(
+      await rendered.findByText(buildsResponseMock.builds[1].buildNumber),
+    ).toBeInTheDocument();
+
+    expect(
+      await rendered.findByText(deployResponseMock.deploymentsInfo[0].deploymentId),
+    ).toBeInTheDocument();
+
+
+    expect(
+      await rendered.findByText(pipelineRunsResponseMock.pipelineExecutionSummaries[0].pipelineExecutionId),
+    ).toBeInTheDocument();
+    expect(
+      await rendered.findByText(pipelineRunsResponseMock.pipelineExecutionSummaries[0].lastUpdateTime.toLocaleString()),
+    ).toBeInTheDocument();
+    expect(
+      await rendered.findByText(pipelineRunsResponseMock.pipelineExecutionSummaries[0].trigger?.triggerDetail),
+    ).toBeInTheDocument();
+
+    expect(
+      await rendered.findByText(pipelineRunsResponseMock.pipelineExecutionSummaries[1].pipelineExecutionId),
+    ).toBeInTheDocument();
+    expect(
+      await rendered.findByText(pipelineRunsResponseMock.pipelineExecutionSummaries[1].trigger?.triggerDetail),
     ).toBeInTheDocument();
   });
 });

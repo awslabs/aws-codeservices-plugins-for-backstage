@@ -1,3 +1,26 @@
+export const entityAllMock = {
+  metadata: {
+    namespace: 'default',
+    annotations: {
+      'code.aws.com/region': 'us-west-2',
+      'code.aws.com/iam-role': 'some-arn',
+      'code.aws.com/build-project': 'hello-world',
+      'code.aws.com/deploy-application': 'hello-world',
+      'code.aws.com/deploy-group-name': 'hello-world',
+      'code.aws.com/pipeline-name': 'hello-world'
+    },
+    name: 'sample-service',
+    generation: 1,
+  },
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'Component',
+  spec: {
+    type: 'service',
+    owner: 'david@roadie.io',
+    lifecycle: 'experimental',
+  },
+};
+
 export const entityBuildMock = {
   metadata: {
     namespace: 'default',
@@ -513,7 +536,10 @@ export const pipelineRunsResponseMock = {
       startTime: "2022-05-03T00:51:35.229Z",
       status: 'Failed',
       stopTrigger: undefined,
-      trigger: [Object]
+      trigger: {
+        triggerType: "CodeBuild",
+        triggerDetail: "detail 1"
+      }
     },
     {
       lastUpdateTime: "2022-04-15T17:55:04.950Z",
@@ -522,7 +548,10 @@ export const pipelineRunsResponseMock = {
       startTime: "2022-04-15T17:45:51.244Z",
       status: 'Failed',
       stopTrigger: undefined,
-      trigger: [Object]
+      trigger: {
+        triggerType: "CodeBuild",
+        triggerDetail: "detail 2"
+      }
     }
   ]
 };
