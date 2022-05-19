@@ -82,7 +82,7 @@ You can enable a subset or all of the following components:
 ```yaml
 metadata:
   annotations:
-    ode.aws.com/build-project: [YOUR_BUILD_PROJECT]
+    code.aws.com/build-project: [YOUR_BUILD_PROJECT]
 ```
 - to integrate with CodeeDeploy:
 ```yaml
