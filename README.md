@@ -163,6 +163,14 @@ folder under `/var/...`, if you are Mac user.
   - Click on it and should navigate you to the first page of the component, with
     the card from the plugin popping up.
 
+## Security
+
+See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+
+## License
+
+This project is licensed under the Apache-2.0 License.
+
 ## Acknowledgement
 
 This plugin started as a hackathon project in an effort initiated by the following
