@@ -4,21 +4,22 @@
   "main": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "license": "Apache-2.0",
+  "author": {
+    "name": "Amazon Web Services",
+    "url": "http://aws.amazon.com"
+  },
   "private": false,
   "publishConfig": {
     "access": "public",
     "main": "dist/index.esm.js",
     "types": "dist/index.d.ts"
   },
-  "homepage": "https://backstage.io",
   "repository": {
     "type": "git",
-    "url": "https://github.com/backstage/backstage",
-    "directory": "plugins/spinnaker"
+    "url": "github:awslabs/backstage-code-star-plugin"
   },
   "keywords": [
-    "backstage",
-    "spinnaker"
+    "backstage"
   ],
   "scripts": {
     "build": "backstage-cli plugin:build",
