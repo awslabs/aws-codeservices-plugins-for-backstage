@@ -19,7 +19,7 @@ import { getBuilds, getDeployments, getPipelineRunsList } from '../../../useBuil
 /* import {Exception } from '../../../../api/ServiceApi'; */
 import {BuildCITableView} from './BuildCITableView';
 import {DeployCITableView} from './DeployCITableView';
-import {PipelineCITableView} from './PipelineCITableView';
+import {PipelineCITableView} from './PipeLineCITableView';
 import {isBuildAvailable, isDeployAvailable, isPipelineAvailable} from '../../../Flags';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
