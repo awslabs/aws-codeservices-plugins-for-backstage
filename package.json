@@ -28,7 +28,8 @@
     "diff": "backstage-cli plugin:diff",
     "prepack": "backstage-cli prepack",
     "postpack": "backstage-cli postpack",
-    "clean": "backstage-cli clean"
+    "clean": "backstage-cli clean",
+    "ci": "tsc && yarn build && yarn test && yarn lint"
   },
   "jest": {
     "testEnvironment": "jsdom"
