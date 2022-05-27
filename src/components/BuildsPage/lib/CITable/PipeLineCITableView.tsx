@@ -28,18 +28,20 @@ const generatedColumns: TableColumn[] = [
     field: 'Pipeline',
 
     render: (row: Partial<PipelineExecutionSummary>) => {
-      if (row.pipelineExecutionId !== undefined) {
+      if (row.pipelineExecutionId) {
+          // eslint-disable-next-line
           const {entity} = useEntity();
           const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
           return (
             <>
-              <Link href={"https://" + region + ".console.aws.amazon.com/codesuite/codepipeline/pipelines/" +  "Hello-world-pipeline" + "/executions/" + row.pipelineExecutionId + "/timeline?region=" + region} target="_blank">
+              <Link href={`https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${"Hello-world-pipeline"}/executions/${row.pipelineExecutionId}/timeline?region=${region}`} 
+              target="_blank">
                 {row.pipelineExecutionId}
               </Link>
             </>
           );
       }
-      else return(<></>);
+      return(<></>);
     },
   },
   {
@@ -47,48 +49,48 @@ const generatedColumns: TableColumn[] = [
     field: '',
     highlight: true,
     render: (row: Partial<PipelineExecutionSummary>) => {
-       if (row.lastUpdateTime != null) {
+       if (row.lastUpdateTime) {
         return (<p>{row.lastUpdateTime.toLocaleString()}</p>)
       }
-      else return(<></>);
+      return(<></>);
     },
   },
   {
     title: 'Status',
     field: 'status',
     render: (row: Partial<PipelineExecutionSummary>) => {
-      if (row.status != null) {
+      if (row.status) {
         return (
           <Box display="flex" alignItems="center">
             <RunStatus status={row?.status}/>
           </Box>
         );
       }
-      else return(<></>);
+      return(<></>);
     },
   },
   {
     title: 'Trigger Type',
     field: 'trigger type',
     render: (row: Partial<PipelineExecutionSummary>) => {
-      if (row.trigger != null) {
+      if (row.trigger) {
         return (
           <>{row.trigger.triggerType}</>
         );
       }
-      else return(<></>);
+      return(<></>);
     },
   },
   {
     title: 'Trigger Detail',
     field: 'trigger detail',
     render: (row: Partial<PipelineExecutionSummary>) => {
-      if (row.trigger != null) {
+      if (row.trigger) {
         return (
           <>{row.trigger.triggerDetail}</>
         );
       }
-      else return(<></>);
+      return(<></>);
     },
   }
 ];
@@ -124,7 +126,7 @@ export const PipelineCITableView = ({
           <Box display="flex" alignItems="center">
             <Box mr={2} />
             <Typography variant="h6">CodePipeline: &nbsp;
-              <a href={"https://" + region + ".console.aws.amazon.com/codesuite/codepipeline/pipelines/" + pipelineName + "/view?" + region}
+              <a href={`https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipelineName}/view?${region}`}
               target="_blank">{pipelineName}</a>
             </Typography>
           </Box>

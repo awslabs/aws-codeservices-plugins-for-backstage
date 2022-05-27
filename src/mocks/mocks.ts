@@ -568,7 +568,8 @@ export const pipelineResponseMock = {
           entityUrl: "https://console.aws.amazon.com/s3/home?#",
           latestExecution: {
             lastStatusChange: 1446137358.328,
-            status: "Succeeded"
+            status: "Succeeded",
+            actionExecutionId: "17baba6f-22f6-4f6d-8d37-96321a35f77e"
           }
         }
       ],
@@ -584,7 +585,8 @@ export const pipelineResponseMock = {
             externalExecutionUrl: "https://console.aws.amazon.com/codedeploy/home?#/deployments/d-EXAMPLE",
             lastStatusChange: 1446137493.131,
             status: "Succeeded",
-            summary: "Deployment Succeeded"
+            summary: "Deployment Succeeded",
+            actionExecutionId: "e6c91a02-d844-4663-ad62-b719608f8fc5"
           }
         }
       ],

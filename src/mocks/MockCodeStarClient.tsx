@@ -6,29 +6,29 @@ import {
 import { buildsResponseMock, credsMock, deployResponseMock, pipelineResponseMock, pipelineRunsResponseMock } from './mocks';
 
 export class MockCodeStarClient implements CodeStarApi {
-  async generateCredentials(_ : {iamRole: string}): Promise<Credentials> {
-    return new Promise((resolve, _) => { resolve(credsMock) } )
+  async generateCredentials({} : {iamRole: string}): Promise<Credentials> {
+    return new Promise((resolve) => { resolve(credsMock) } )
   }
 
-  async getBuildIds(_ : {region: string, project: string, creds: Credentials}): Promise<any> {
-    return new Promise((resolve, _) => { resolve({ids: []}) })
+  async getBuildIds({} : {region: string, project: string, creds: Credentials}): Promise<any> {
+    return new Promise((resolve) => { resolve({ids: []}) })
   }
 
-  async getBuilds(_: {region: string, ids: string[], creds: Credentials}): Promise<any> {
-    return new Promise((resolve, _) => { resolve(buildsResponseMock) })
+  async getBuilds({}: {region: string, ids: string[], creds: Credentials}): Promise<any> {
+    return new Promise((resolve) => { resolve(buildsResponseMock) })
   }
 
-  async getDeploymentIds(_: {region: string, appName: string, deploymentGroupName: string, creds: Credentials}): Promise<any>{
-    return new Promise((resolve, _) => { resolve({deployments: []}) })
+  async getDeploymentIds({}: {region: string, appName: string, deploymentGroupName: string, creds: Credentials}): Promise<any>{
+    return new Promise((resolve) => { resolve({deployments: []}) })
   }
 
-  async getDeployments(_: {region: string, ids: string[], creds: Credentials}): Promise<any> {
-    return new Promise((resolve, _) => { resolve(deployResponseMock) })
+  async getDeployments({}: {region: string, ids: string[], creds: Credentials}): Promise<any> {
+    return new Promise((resolve) => { resolve(deployResponseMock) })
   }
-  async getPipelineState(_: {region: string, name: string, creds: Credentials}): Promise<any> {
-    return new Promise((resolve, _) => { resolve(pipelineResponseMock) })
+  async getPipelineState({}: {region: string, name: string, creds: Credentials}): Promise<any> {
+    return new Promise((resolve) => { resolve(pipelineResponseMock) })
   }
-  async getPipelineRuns(_: {region: string, name: string, creds: Credentials}): Promise<any> {
-    return new Promise((resolve, _) => { resolve(pipelineRunsResponseMock) })
+  async getPipelineRuns({}: {region: string, name: string, creds: Credentials}): Promise<any> {
+    return new Promise((resolve) => { resolve(pipelineRunsResponseMock) })
   }
 }

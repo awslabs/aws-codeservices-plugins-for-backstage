@@ -15,7 +15,7 @@
  */
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import { getBuilds, getDeployments, getPipelineRunsList } from '../../../useBuilds';
+import { useBuilds, useDeployments, usePipelineRunsList } from '../../../useBuilds';
 /* import {Exception } from '../../../../api/ServiceApi'; */
 import {BuildCITableView} from './BuildCITableView';
 import {DeployCITableView} from './DeployCITableView';
@@ -24,9 +24,9 @@ import {isBuildAvailable, isDeployAvailable, isPipelineAvailable} from '../../..
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 export const CITable = () => {
-  const {loading, buildOutput, retry} = getBuilds();
-  const {loadingd, deploymentsInfo, retryd} = getDeployments();
-  const {loadingSummaries,  pipelineRunsSummaries, pipelineName, region, retrySummaries} = getPipelineRunsList();
+  const {loading, buildOutput, retry} = useBuilds();
+  const {loadingd, deploymentsInfo, retryd} = useDeployments();
+  const {loadingSummaries,  pipelineRunsSummaries, pipelineName, region, retrySummaries} = usePipelineRunsList();
   const { entity } = useEntity();
 
   return (

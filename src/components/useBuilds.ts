@@ -20,13 +20,16 @@ import {useEntity} from '@backstage/plugin-catalog-react';
 import {REGION_ANNOTATION, BUILD_PROJECT_ANNOTATION, IAM_ROLE_ANNOTATION} from '../constants';
 import {DEPLOY_APPLICATION_ANNOTATION, DEPLOY_GROUP_NAME_ANNOTATION} from '../constants';
 import {PIPELINE_NAME_ANNOTATION} from '../constants';
+import { BatchGetDeploymentsCommandOutput } from '@aws-sdk/client-codedeploy';
+import { GetPipelineStateOutput, PipelineExecutionSummary } from '@aws-sdk/client-codepipeline';
+import { BatchGetBuildsCommandOutput } from '@aws-sdk/client-codebuild';
 
 export enum ErrorType {
   CONNECTION_ERROR,
   NOT_FOUND,
 }
 
-export function getBuilds() {
+export function useBuilds() {
   const {entity} = useEntity();
   const api = useApi(codeStarApiRef);
   const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
@@ -37,12 +40,12 @@ export function getBuilds() {
     loading,
     value: builds,
     retry,
-  } = useAsyncRetry(async () => {
+  } = useAsyncRetry<BatchGetBuildsCommandOutput | undefined>(async () => {
     try {
-      const creds = await api.generateCredentials({iamRole: iamRole})
+      const creds = await api.generateCredentials({iamRole: iamRole});
       const buildIds = await api.getBuildIds({region: region, project: project, creds});
-      if (buildIds.ids == undefined) {
-        return
+      if (buildIds.ids === undefined) {
+        return undefined;
       }
       return await api.getBuilds({region: region, ids: buildIds.ids, creds});
     } catch (e) {
@@ -51,11 +54,11 @@ export function getBuilds() {
     }
   });
 
-  var buildOutput = builds?.builds;
-  return {loading, buildOutput, region, retry} as const
+  const buildOutput = builds?.builds;
+  return {loading, buildOutput, region, retry} as const;
 };
 
-export function getDeployments() {
+export function useDeployments() {
   const api = useApi(codeStarApiRef);
   const {entity} = useEntity();
   const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
@@ -67,27 +70,26 @@ export function getDeployments() {
     loading,
     value: deployments,
     retry,
-  } = useAsyncRetry(async () => {
+  } = useAsyncRetry<BatchGetDeploymentsCommandOutput | null>(async () => {
     try {
-      const creds = await api.generateCredentials({iamRole: iamRole})
+      const creds = await api.generateCredentials({iamRole: iamRole});
       const output = await api.getDeploymentIds({region: region, appName: application, deploymentGroupName: groupName, creds});
-      if (output.deployments == undefined) {
-        return
+      if (output.deployments === undefined) {
+        return null;
       }
-      var deployments = await api.getDeployments({region: region, ids: output.deployments, creds});
-      return deployments
+      return await api.getDeployments({region: region, ids: output.deployments, creds});
     } catch (e) {
       // errorApi.post(e)
-      throw e
+      throw e;
     }
   });
 
-  var deploymentsInfo = deployments?.deploymentsInfo;
+  const deploymentsInfo = deployments?.deploymentsInfo;
   return {loadingd: loading, deploymentsInfo, region: region, retryd: retry} as const
 };
 
 
-export function getPipelineState() {
+export function usePipelineState() {
   const api = useApi(codeStarApiRef);
   const {entity} = useEntity();
   const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
@@ -98,14 +100,15 @@ export function getPipelineState() {
     loading,
     value: pipelineInfo,
     retry
-  } = useAsyncRetry(async () => {
+  } = useAsyncRetry<GetPipelineStateOutput | undefined>(async () => {
     try {
       const creds = await api.generateCredentials({iamRole: iamRole})
+      // eslint-disable-next-line
       const pipelineInfo = await api.getPipelineState({region: region, name: pipelineName, creds});
-      if (pipelineInfo?.stageStates == undefined) {
-        return
+      if (pipelineInfo?.stageStates === undefined) {
+        return undefined;
       }
-      return pipelineInfo
+      return pipelineInfo;
     } catch (e) {
       // errorApi.post(e)
       throw e
@@ -116,7 +119,7 @@ export function getPipelineState() {
   return {loadingPipeline, pipelineInfo, region, retryPipeline} as const;
 };
 
-export function getPipelineRunsList() {
+export function usePipelineRunsList() {
   const api = useApi(codeStarApiRef);
   const {entity} = useEntity();
   const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
@@ -127,17 +130,17 @@ export function getPipelineRunsList() {
     loading,
     value: pipelineRunsSummaries,
     retry
-  } = useAsyncRetry(async () => {
+  } = useAsyncRetry<PipelineExecutionSummary[] | undefined>(async () => {
     try {
-      const creds = await api.generateCredentials({iamRole: iamRole})
+      const creds = await api.generateCredentials({iamRole: iamRole});
       const pipelineRunsList = await api.getPipelineRuns({region: region, name: pipelineName, creds});
-      if (pipelineRunsList?.pipelineExecutionSummaries == undefined) {
-        return
+      if (pipelineRunsList?.pipelineExecutionSummaries === undefined) {
+        return undefined;
       }
-      return pipelineRunsList.pipelineExecutionSummaries
+      return pipelineRunsList.pipelineExecutionSummaries;
     } catch (e) {
       // errorApi.post(e)
-      throw e
+      throw e;
     }
   });
   const loadingSummaries = loading;

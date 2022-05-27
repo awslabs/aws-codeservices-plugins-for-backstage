@@ -28,19 +28,19 @@ const generatedColumns: TableColumn[] = [
     field: 'name',
     highlight: true,
     render: (row: Partial<Build>) => {
-      if (row.id != undefined) {
+      if (row.id !== undefined) {
         const arn = row.arn?.split(':');
-        if (arn == undefined) {
+        if (arn === undefined) {
           return (<> {row.id} </>)
         }
         return (
-          <Link href={"https://"+arn[3]+".console.aws.amazon.com/codesuite/codebuild/"+arn[4]+"/"+arn[5].replace('build','projects')+"/"+arn[5]+":"+arn[6]} target="_blank" >
+          <Link href={`https://${arn[3]}.console.aws.amazon.com/codesuite/codebuild/${arn[4]}/${arn[5].replace('build','projects')}/${arn[5]}:${+arn[6]}`} 
+          target="_blank" >
             {row.id}
           </Link>
         );
-      } else {
-        return (<> {row.id} </>);
       }
+      return (<> {row.id} </>);
     },
   },
   {
@@ -80,15 +80,14 @@ const generatedColumns: TableColumn[] = [
     title: 'Duration',
     field: 'duration',
     render: (row: Partial<Build>) => {
-      if (row.endTime != undefined && row.startTime != undefined) {
+      if (row.endTime !== undefined && row.startTime !== undefined) {
         return (
           <>
             {(row.endTime.getTime() - row.startTime.getTime()) / 1000} Seconds
           </>
         );
-      } else {
-        return(<></>);
       }
+      return(<></>);
     },
   },
 ];

@@ -14,8 +14,4 @@
  * limitations under the License.
  */
 
-// eslint-disable-next-line notice/notice
 import '@testing-library/jest-dom';
-
-// @ts-ignore
-// window.HTMLCanvasElement.prototype.getContext = () => {}

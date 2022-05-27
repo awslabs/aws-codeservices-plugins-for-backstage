@@ -28,11 +28,12 @@ const generatedColumns: TableColumn[] = [
     field: 'id',
 
     render: (row: Partial<DeploymentInfo>) => {
+      // eslint-disable-next-line
       const {entity} = useEntity();
       const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
       return (
          <> <Link
-              href={"https://" + region + ".console.aws.amazon.com/codesuite/codedeploy/deployments/" + row.deploymentId + "?" + region }
+              href={`https://${region}.console.aws.amazon.com/codesuite/codedeploy/deployments/${row.deploymentId}?${region}`}
               target="_blank">
             {row.deploymentId}
           </Link></>
@@ -77,7 +78,7 @@ const generatedColumns: TableColumn[] = [
     title: 'Duration',
     field: 'duration',
     render: (row: Partial<DeploymentInfo>) => {
-      if (row.completeTime != undefined && row.createTime != undefined) {
+      if (row.completeTime !== undefined && row.createTime !== undefined) {
         if ( row.completeTime instanceof Date && row.createTime instanceof Date) {
         return (
           <>
@@ -86,9 +87,8 @@ const generatedColumns: TableColumn[] = [
         );
       }
       return (<></>)
-    }else {
-        return(<></>);
-      }
+    }
+    return(<></>);
     },
   },
 ];

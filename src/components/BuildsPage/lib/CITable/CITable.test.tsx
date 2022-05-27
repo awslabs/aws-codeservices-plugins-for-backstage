@@ -49,8 +49,6 @@ const config = {
   getString: (_: string) => undefined,
 };
 
-//let CodeStarClientFake = new MockCodeStarClient()
-
 const apis: [AnyApiRef, Partial<unknown>][] = [
   [configApiRef, config],
   [errorApiRef, errorApiMock],
@@ -71,7 +69,7 @@ describe('CITable', () => {
     );
   });
 
-  it.only('should display widget with CITable data', async () => {
+  it('should display widget with CITable data', async () => {
     const rendered = render(
       wrapInTestApp(
         <TestApiProvider apis={apis}>

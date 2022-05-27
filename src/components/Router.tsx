@@ -24,19 +24,6 @@ import { isCodeStarAvailable } from './Flags';
 import { REGION_ANNOTATION, BUILD_PROJECT_ANNOTATION, PIPELINE_NAME_ANNOTATION, DEPLOY_APPLICATION_ANNOTATION } from '../constants';
 import { isBuildAvailable, isDeployAvailable, isPipelineAvailable } from './Flags';
 
-export const Router = (_props: Props) => {
-  const { entity } = useEntity();
-  if (!isCodeStarAvailable(entity)) {
-    return <MissingAnnotationEmptyState annotation={REGION_ANNOTATION} />;
-  }
-
-  return (
-    <Routes>
-      <Route path="/" element={<CodeStar entity={entity} children={null}/>}  />
-    </Routes>
-  );
-};
-
 export const BuildWidget: React.FC<Props> = ({ entity }) => {
   if (isBuildAvailable(entity)) {
     return (
@@ -77,5 +64,18 @@ export const CodeStar: React.FC<Props> = ({ entity }) => {
     <ContextProvider entity={entity} >
       <CITable/>
     </ContextProvider>
+  );
+};
+
+export const Router = (_props: Props) => {
+  const { entity } = useEntity();
+  if (!isCodeStarAvailable(entity)) {
+    return <MissingAnnotationEmptyState annotation={REGION_ANNOTATION} />;
+  }
+
+  return (
+    <Routes>
+      <Route path="/" element={<CodeStar entity={entity} children={null}/>}  />
+    </Routes>
   );
 };
