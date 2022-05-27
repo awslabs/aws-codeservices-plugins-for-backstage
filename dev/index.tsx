@@ -6,9 +6,9 @@ import React from 'react';
 import {
   AnyApiRef,
 } from '@backstage/core-plugin-api';
-import { codeStarApiRef } from '../src';
+import { BuildLatestRunCard, codeStarApiRef, DeployLatestRunCard, PipelineLatestRunCard } from '../src';
 import { MockCodeStarClient } from '../src/mocks/MockCodeStarClient';
-import { BuildWidget, CodeStar, DeployWidget, PipelineWidget } from '../src/components/Router';
+import { CodeStar } from '../src/components/Router';
 import { entityAllMock, entityBuildMock, entityDeployMock, entityPipelineMock } from '../src/mocks/mocks';
 
 const apis: [AnyApiRef, Partial<unknown>][] = [
@@ -22,7 +22,7 @@ createDevApp()
     element: (
     <TestApiProvider apis={apis}>
       <EntityProvider entity={entityBuildMock}>
-        <BuildWidget entity={entityBuildMock} children={null} />
+        <BuildLatestRunCard />
       </EntityProvider>
     </TestApiProvider>
     ),
@@ -33,18 +33,18 @@ createDevApp()
     element: (
     <TestApiProvider apis={apis}>
       <EntityProvider entity={entityDeployMock}>
-        <DeployWidget entity={entityDeployMock} children={null} />
+        <DeployLatestRunCard />
       </EntityProvider>
     </TestApiProvider>
     ),
   })
   .addPage({
     path: '/fixture-pipeline-run',
-    title: 'CodePipeline Run',
+    title: 'CodePipeline',
     element: (
     <TestApiProvider apis={apis}>
       <EntityProvider entity={entityPipelineMock}>
-        <PipelineWidget entity={entityPipelineMock} children={null} />
+        <PipelineLatestRunCard />
       </EntityProvider>
     </TestApiProvider>
     ),

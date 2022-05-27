@@ -25,8 +25,8 @@ import { useEntity } from '@backstage/plugin-catalog-react';
 
 export const CITable = () => {
   const {loading, buildOutput, retry} = useBuilds();
-  const {loadingd, deploymentsInfo, retryd} = useDeployments();
-  const {loadingSummaries,  pipelineRunsSummaries, pipelineName, region, retrySummaries} = usePipelineRunsList();
+  const {loading: loadingd, deploymentsInfo, retry: retryd} = useDeployments();
+  const {loading: loadingSummaries,  pipelineRunsSummaries, pipelineName, region, retry: retrySummaries} = usePipelineRunsList();
   const { entity } = useEntity();
 
   return (

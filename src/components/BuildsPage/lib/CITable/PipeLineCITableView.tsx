@@ -125,7 +125,7 @@ export const PipelineCITableView = ({
         title={
           <Box display="flex" alignItems="center">
             <Box mr={2} />
-            <Typography variant="h6">CodePipeline: &nbsp;
+            <Typography variant="h6">AWS CodePipeline: &nbsp;
               <a href={`https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipelineName}/view?${region}`}
               target="_blank">{pipelineName}</a>
             </Typography>

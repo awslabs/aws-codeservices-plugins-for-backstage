@@ -165,7 +165,7 @@ describe('PipelineRunCard', () => {
       ),
     );
     expect(
-      await rendered.findByText(pipelineResponseMock.pipelineName),
+      await rendered.findByText(`AWS CodePipeline: ${pipelineResponseMock.pipelineName}`),
     ).toBeInTheDocument();
   });
 
@@ -180,7 +180,7 @@ describe('PipelineRunCard', () => {
       ),
     );
     await expect(
-      rendered.findByText(pipelineResponseMock.pipelineName),
+      rendered.findByText(`AWS CodePipeline: ${pipelineResponseMock.pipelineName}`),
     ).rejects.toThrow();
   });
 });

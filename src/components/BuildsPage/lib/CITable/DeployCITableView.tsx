@@ -119,7 +119,7 @@ export const DeployCITableView = ({
       title={
         <Box display="flex" alignItems="center">
           <Box mr={2} />
-          <Typography variant="h6">CodeDeploy Data</Typography>
+          <Typography variant="h6">AWS CodeDeploy</Typography>
         </Box>
       }
       columns={generatedColumns}

@@ -4,6 +4,7 @@ import {  useDeployments } from '../useBuilds';
 import {
   InfoCard,
   InfoCardVariants,
+  ResponseErrorPanel,
   StructuredMetadataTable,
   /* WarningPanel, */
 } from '@backstage/core-components';
@@ -13,7 +14,7 @@ import { RunStatus } from '../BuildsPage/lib/Status';
 import { GetPipelineStateOutput } from "@aws-sdk/client-codepipeline";
 import { isBuildAvailable, isDeployAvailable, isPipelineAvailable } from '../Flags';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { Grid }  from "@material-ui/core"
+import { Grid, LinearProgress }  from "@material-ui/core"
 
 
 const WidgetContent = ({
@@ -32,7 +33,7 @@ const WidgetContent = ({
     const id = builds[0]?.id?.split(':');
     const ar = builds[0]?.arn?.split(':');
     if (ar !== undefined && id !== undefined) {
-      rows.set("Build Id",
+      rows.set("Build ID",
           <a
               href={`https://${ar[3]}.console.aws.amazon.com/codesuite/codebuild/${ar[4]}/${ar[5].replace('build', 'projects')}/${ar[5]}:${ar[6]}`}
               target="_blank"
@@ -42,8 +43,7 @@ const WidgetContent = ({
       )
     }
     const buildTime = builds[0]?.endTime;
-    if (buildTime !== undefined) {
-
+    if (buildTime) {
       // make this duration or something later.
       if (buildTime instanceof Date) {
         rows.set("Completed", `${buildTime.toDateString()}:${buildTime.toTimeString()}`);
@@ -62,17 +62,29 @@ export const BuildLatestRunCard = ({
 }: {
   variant?: InfoCardVariants;
 }) => {
-  const { buildOutput } =  useBuilds() ?? []
-  const error = null
-  return (
-    <InfoCard title={`Latest Build Status `} variant={variant}>
-      {!error ? (
+  const { buildOutput, error, loading } =  useBuilds()
+
+  if(buildOutput) {
+    return (
+      <InfoCard title='AWS CodeBuild' variant={variant}>
         <WidgetContent
           builds={buildOutput}
         />
-      ) : ( "" )}
+      </InfoCard>
+    );
+  }
+
+  return (
+    <InfoCard title='AWS CodeBuild' variant={variant}>
+        {error &&
+          <ResponseErrorPanel error={error} />
+        }
+
+        {loading &&
+          <LinearProgress />
+        }
     </InfoCard>
-  );
+  )
 };
 
 /* ---------------------------------------- */
@@ -92,7 +104,7 @@ const DeployWidgetContent = ({
     )
     const id = deploymentInfo?.deploymentId;
     if (id !== undefined) {
-      rows.set("Deploy Id",
+      rows.set("Deploy ID",
           <a
               href={`https://${region}.console.aws.amazon.com/codesuite/codedeploy/deployments/${id}?${region}`}
               target="_blank"
@@ -121,21 +133,32 @@ export const DeployLatestRunCard = ({
 }: {
   variant?: InfoCardVariants;
 }) => {
-  const { deploymentsInfo,region } =  useDeployments() ?? []
-  let error = null
-  if (deploymentsInfo === undefined || deploymentsInfo.length <= 0) {
-    error = "problem"
+  const { deploymentsInfo, region, error, loading } =  useDeployments()
+
+  if(deploymentsInfo) {
+    return (
+      <InfoCard title='AWS CodeDeploy' variant={variant}>
+        {!error && deploymentsInfo !== undefined ? (
+          <DeployWidgetContent
+            deploymentInfo={deploymentsInfo[0]}
+            region={region}
+          />
+        ) : ( "" )}
+      </InfoCard>
+    );
   }
+
   return (
-    <InfoCard title={`Latest Deploy Status `} variant={variant}>
-      {!error && deploymentsInfo !== undefined ? (
-        <DeployWidgetContent
-          deploymentInfo={deploymentsInfo[0]}
-          region={region}
-        />
-      ) : ( "" )}
+    <InfoCard title='AWS CodeDeploy' variant={variant}>
+        {error &&
+          <ResponseErrorPanel error={error} />
+        }
+
+        {loading &&
+          <LinearProgress />
+        }
     </InfoCard>
-  );
+  )
 };
 
 
@@ -145,9 +168,8 @@ const PipelineWidgetContent = ({
     pipelineInfo: GetPipelineStateOutput,
     region?: string,
 }) => {
-  /* if (loading) return <LinearProgress />; */
   const rows = new Map<string, any>()
-  if(pipelineInfo !== undefined && pipelineInfo.stageStates !== undefined) {
+  if(pipelineInfo.stageStates !== undefined) {
     for (const element of pipelineInfo.stageStates) {
       if (element.actionStates === undefined || element.actionStates.length <= 0) continue;
       rows.set(element.stageName || "undefined" ,
@@ -171,27 +193,38 @@ const PipelineWidgetContent = ({
 };
 
 
-export const  PipelineLatestRunCard = ({
+export const PipelineLatestRunCard = ({
   variant,
 }: {
   variant?: InfoCardVariants;
 }) => {
-  const { pipelineInfo, region } = usePipelineState()
-  let error = null
-  if (pipelineInfo === undefined ) {
-    error = "Problem"
-  }
-  return (
-    <InfoCard title={ <a href={`https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipelineInfo?.pipelineName}/view?${region}`}
-              target="_blank"> {pipelineInfo?.pipelineName} </a>} variant={variant}>
-        {!error && pipelineInfo !== undefined ? (
-          <PipelineWidgetContent
-             pipelineInfo={pipelineInfo}
-             region={region}
+  const { pipelineInfo, region, error, loading } = usePipelineState()
+
+  if(pipelineInfo) {
+    return (
+      <InfoCard title={ <a href={`https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipelineInfo?.pipelineName}/view?${region}`}
+                target="_blank"> AWS CodePipeline: {pipelineInfo?.pipelineName} </a>} variant={variant}>
+          {pipelineInfo &&
+            <PipelineWidgetContent
+              pipelineInfo={pipelineInfo}
+              region={region}
             />
-        ) : ("")}
+          }
+      </InfoCard>
+    );
+  }
+
+  return (
+    <InfoCard title='AWS CodePipeline' variant={variant}>
+        {error &&
+          <ResponseErrorPanel error={error} />
+        }
+
+        {loading &&
+          <LinearProgress />
+        }
     </InfoCard>
-  );
+  )
 };
 
 export const CodeStarCards = ({

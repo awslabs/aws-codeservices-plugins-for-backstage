@@ -118,7 +118,7 @@ export const BuildCITableView = ({
       title={
         <Box display="flex" alignItems="center">
           <Box mr={2} />
-          <Typography variant="h6">CodeBuild Data</Typography>
+          <Typography variant="h6">AWS CodeBuild</Typography>
         </Box>
       }
       columns={generatedColumns}
