@@ -29,7 +29,7 @@
     "prepack": "backstage-cli prepack",
     "postpack": "backstage-cli postpack",
     "clean": "backstage-cli clean",
-    "ci": "tsc && yarn build && yarn test && yarn lint"
+    "ci": "tsc && yarn build && yarn test --watch false && yarn lint"
   },
   "jest": {
     "testEnvironment": "jsdom"
