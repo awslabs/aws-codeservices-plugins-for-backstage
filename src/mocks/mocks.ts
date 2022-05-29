@@ -2,12 +2,10 @@ export const entityAllMock = {
   metadata: {
     namespace: 'default',
     annotations: {
-      'code.aws.com/region': 'us-west-2',
-      'code.aws.com/iam-role': 'some-arn',
-      'code.aws.com/build-project': 'hello-world',
-      'code.aws.com/deploy-application': 'hello-world',
-      'code.aws.com/deploy-group-name': 'hello-world',
-      'code.aws.com/pipeline-name': 'hello-world'
+      'aws.amazon.com/iam-role-arn': 'some-arn',
+      'aws.amazon.com/codebuild-project-arn': 'arn:aws:codebuild:us-west-2:11111111:project/hello-world',
+      'aws.amazon.com/codedeploy-group-arn': 'arn:aws:codedeploy:us-west-2:11111111:deploymentgroup:hello-world/hello-world-group',
+      'aws.amazon.com/codepipeline-arn': 'arn:aws:codepipeline:us-west-2:111111:test-pipeline'
     },
     name: 'sample-service',
     generation: 1,
@@ -25,9 +23,8 @@ export const entityBuildMock = {
   metadata: {
     namespace: 'default',
     annotations: {
-      'code.aws.com/region': 'us-west-2',
-      'code.aws.com/iam-role': 'some-arn',
-      'code.aws.com/build-project': 'hello-world'
+      'aws.amazon.com/iam-role-arn': 'some-arn',
+      'aws.amazon.com/codebuild-project-arn': 'arn:aws:codebuild:us-west-2:11111111:project/hello-world',
     },
     name: 'sample-service',
     generation: 1,
@@ -45,10 +42,8 @@ export const entityDeployMock = {
   metadata: {
     namespace: 'default',
     annotations: {
-      'code.aws.com/region': 'us-west-2',
-      'code.aws.com/iam-role': 'some-arn',
-      'code.aws.com/deploy-application': 'hello-world',
-      'code.aws.com/deploy-group-name': 'hello-world'
+      'aws.amazon.com/iam-role-arn': 'some-arn',
+      'aws.amazon.com/codedeploy-group-arn': 'arn:aws:codedeploy:us-west-2:11111111:deploymentgroup:hello-world/hello-world-group',
     },
     name: 'sample-service',
     generation: 1,
@@ -66,9 +61,8 @@ export const entityPipelineMock = {
   metadata: {
     namespace: 'default',
     annotations: {
-      'code.aws.com/region': 'us-west-2',
-      'code.aws.com/iam-role': 'some-arn',
-      'code.aws.com/pipeline-name': 'hello-world'
+      'aws.amazon.com/iam-role-arn': 'some-arn',
+      'aws.amazon.com/codepipeline-arn': 'arn:aws:codepipeline:us-west-2:111111:test-pipeline'
     },
     name: 'sample-service',
     generation: 1,

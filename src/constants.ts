@@ -14,6 +14,6 @@
  * limitations under the License.
  */
 export const IAM_ROLE_ANNOTATION = 'aws.amazon.com/iam-role-arn'
-export const BUILD_PROJECT_ARN_ANNOTATION = 'aws.amazon.com/build-project-arn'
-export const DEPLOY_GROUP_ARN_ANNOTATION = 'aws.amazon.com/deploy-group-arn'
-export const PIPELINE_ARN_ANNOTATION = 'aws.amazon.com/pipeline-arn'
+export const BUILD_PROJECT_ARN_ANNOTATION = 'aws.amazon.com/codebuild-project-arn'
+export const DEPLOY_GROUP_ARN_ANNOTATION = 'aws.amazon.com/codedeploy-group-arn'
+export const PIPELINE_ARN_ANNOTATION = 'aws.amazon.com/codepipeline-arn'
