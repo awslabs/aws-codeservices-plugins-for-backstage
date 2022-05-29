@@ -20,7 +20,7 @@ import { RunStatus } from '../Status';
 import { Table, TableColumn } from '@backstage/core-components';
 import {DeploymentInfo} from "@aws-sdk/client-codedeploy";
 import {useEntity} from '@backstage/plugin-catalog-react';
-import {REGION_ANNOTATION} from '../../../../constants';
+import {DEPLOY_GROUP_ARN_ANNOTATION} from '../../../../constants';
 
 const generatedColumns: TableColumn[] = [
   {
@@ -30,7 +30,12 @@ const generatedColumns: TableColumn[] = [
     render: (row: Partial<DeploymentInfo>) => {
       // eslint-disable-next-line
       const {entity} = useEntity();
-      const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
+      const deployARN = entity?.metadata.annotations?.[DEPLOY_GROUP_ARN_ANNOTATION] ?? '';
+      const arnElements = deployARN.split(":")
+      if (arnElements.length < 7)
+        return [];
+
+      const region = arnElements[3];
       return (
          <> <Link
               href={`https://${region}.console.aws.amazon.com/codesuite/codedeploy/deployments/${row.deploymentId}?${region}`}

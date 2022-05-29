@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export const REGION_ANNOTATION = 'code.aws.com/region'
-export const IAM_ROLE_ANNOTATION = 'code.aws.com/iam-role'
-export const BUILD_PROJECT_ANNOTATION = 'code.aws.com/build-project'
-export const DEPLOY_APPLICATION_ANNOTATION = 'code.aws.com/deploy-application'
-export const DEPLOY_GROUP_NAME_ANNOTATION = 'code.aws.com/deploy-group-name'
-export const PIPELINE_NAME_ANNOTATION = 'code.aws.com/pipeline-name'
+export const IAM_ROLE_ANNOTATION = 'aws.amazon.com/iam-role-arn'
+export const BUILD_PROJECT_ARN_ANNOTATION = 'aws.amazon.com/build-project-arn'
+export const DEPLOY_GROUP_ARN_ANNOTATION = 'aws.amazon.com/deploy-group-arn'
+export const PIPELINE_ARN_ANNOTATION = 'aws.amazon.com/pipeline-arn'

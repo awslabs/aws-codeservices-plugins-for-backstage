@@ -20,7 +20,7 @@ import { RunStatus } from '../Status';
 import { Table, TableColumn } from '@backstage/core-components';
 import { PipelineExecutionSummary } from "@aws-sdk/client-codepipeline";
 import {useEntity} from '@backstage/plugin-catalog-react';
-import {REGION_ANNOTATION} from '../../../../constants';
+import {PIPELINE_ARN_ANNOTATION} from '../../../../constants';
 
 const generatedColumns: TableColumn[] = [
   {
@@ -31,10 +31,16 @@ const generatedColumns: TableColumn[] = [
       if (row.pipelineExecutionId) {
           // eslint-disable-next-line
           const {entity} = useEntity();
-          const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
+          const pipelineARN = entity?.metadata.annotations?.[PIPELINE_ARN_ANNOTATION] ?? '';
+          const arnElements = pipelineARN.split(":")
+          if (arnElements.length < 6)
+            return [];
+
+          const region = arnElements[3];
+          const pipelineName = arnElements[5]
           return (
             <>
-              <Link href={`https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${"Hello-world-pipeline"}/executions/${row.pipelineExecutionId}/timeline?region=${region}`} 
+              <Link href={`https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipelineName}/executions/${row.pipelineExecutionId}/timeline?region=${region}`}
               target="_blank">
                 {row.pipelineExecutionId}
               </Link>
@@ -98,16 +104,12 @@ const generatedColumns: TableColumn[] = [
 type Props = {
   loading: boolean;
   retry: () => void;
-  region: string;
   pipelineRunsSummaries?: PipelineExecutionSummary[];
-  pipelineName: string;
 };
 
 export const PipelineCITableView = ({
   loading,
   pipelineRunsSummaries,
-  pipelineName,
-  region,
   retry,
 }: Props) => {
     return (
@@ -125,10 +127,7 @@ export const PipelineCITableView = ({
         title={
           <Box display="flex" alignItems="center">
             <Box mr={2} />
-            <Typography variant="h6">AWS CodePipeline: &nbsp;
-              <a href={`https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipelineName}/view?${region}`}
-              target="_blank">{pipelineName}</a>
-            </Typography>
+            <Typography variant="h6">AWS CodePipeline</Typography>
           </Box>
         }
         columns={generatedColumns}

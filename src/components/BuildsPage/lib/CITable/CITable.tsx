@@ -19,14 +19,14 @@ import { useBuilds, useDeployments, usePipelineRunsList } from '../../../useBuil
 /* import {Exception } from '../../../../api/ServiceApi'; */
 import {BuildCITableView} from './BuildCITableView';
 import {DeployCITableView} from './DeployCITableView';
-import {PipelineCITableView} from './PipeLineCITableView';
+import {PipelineCITableView} from './PipelineCITableView';
 import {isBuildAvailable, isDeployAvailable, isPipelineAvailable} from '../../../Flags';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 export const CITable = () => {
   const {loading, buildOutput, retry} = useBuilds();
   const {loading: loadingd, deploymentsInfo, retry: retryd} = useDeployments();
-  const {loading: loadingSummaries,  pipelineRunsSummaries, pipelineName, region, retry: retrySummaries} = usePipelineRunsList();
+  const {loading: loadingSummaries,  pipelineRunsSummaries, retry: retrySummaries} = usePipelineRunsList();
   const { entity } = useEntity();
 
   return (
@@ -35,9 +35,7 @@ export const CITable = () => {
         <Grid item sm={12}>
             <PipelineCITableView
                 loading={loadingSummaries}
-                region={region}
                 pipelineRunsSummaries={pipelineRunsSummaries}
-                pipelineName={pipelineName}
                 retry={retrySummaries}
             />
         </Grid>

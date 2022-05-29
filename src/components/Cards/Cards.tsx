@@ -15,6 +15,8 @@ import { GetPipelineStateOutput } from "@aws-sdk/client-codepipeline";
 import { isBuildAvailable, isDeployAvailable, isPipelineAvailable } from '../Flags';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Grid, LinearProgress }  from "@material-ui/core"
+import { DEPLOY_GROUP_ARN_ANNOTATION } from '../../constants';
+import { PIPELINE_ARN_ANNOTATION } from '../../constants';
 
 
 const WidgetContent = ({
@@ -133,7 +135,14 @@ export const DeployLatestRunCard = ({
 }: {
   variant?: InfoCardVariants;
 }) => {
-  const { deploymentsInfo, region, error, loading } =  useDeployments()
+  const { deploymentsInfo, error, loading } =  useDeployments()
+  const { entity } = useEntity();
+  const deployARN = entity?.metadata.annotations?.[DEPLOY_GROUP_ARN_ANNOTATION] ?? '';
+  const arnElements = deployARN.split(":")
+  if (arnElements.length < 7)
+    return (<></>);
+
+  const region = arnElements[3];
 
   if(deploymentsInfo) {
     return (
@@ -198,7 +207,14 @@ export const PipelineLatestRunCard = ({
 }: {
   variant?: InfoCardVariants;
 }) => {
-  const { pipelineInfo, region, error, loading } = usePipelineState()
+  const { pipelineInfo, error, loading } = usePipelineState()
+  const { entity } = useEntity();
+  const pipelineARN = entity?.metadata.annotations?.[PIPELINE_ARN_ANNOTATION] ?? '';
+  const arnElements = pipelineARN.split(":")
+  if (arnElements.length < 6)
+    return (<></>);
+
+  const region = arnElements[3];
 
   if(pipelineInfo) {
     return (

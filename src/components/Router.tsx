@@ -21,7 +21,7 @@ import { MissingAnnotationEmptyState } from '@backstage/core-components';
 import { BuildLatestRunCard, DeployLatestRunCard, PipelineLatestRunCard } from './Cards/Cards';
 import { Props, ContextProvider } from './Context';
 import { isCodeStarAvailable } from './Flags';
-import { REGION_ANNOTATION, BUILD_PROJECT_ANNOTATION, PIPELINE_NAME_ANNOTATION, DEPLOY_APPLICATION_ANNOTATION } from '../constants';
+import { BUILD_PROJECT_ARN_ANNOTATION, PIPELINE_ARN_ANNOTATION, DEPLOY_GROUP_ARN_ANNOTATION, IAM_ROLE_ANNOTATION } from '../constants';
 import { isBuildAvailable, isDeployAvailable, isPipelineAvailable } from './Flags';
 
 export const BuildWidget: React.FC<Props> = ({ entity }) => {
@@ -32,7 +32,7 @@ export const BuildWidget: React.FC<Props> = ({ entity }) => {
       </ContextProvider>
     );
   }
-  return <MissingAnnotationEmptyState annotation={BUILD_PROJECT_ANNOTATION} />;
+  return <MissingAnnotationEmptyState annotation={BUILD_PROJECT_ARN_ANNOTATION} />;
 };
 
 
@@ -44,7 +44,7 @@ export const DeployWidget: React.FC<Props> = ({ entity }) => {
       </ContextProvider>
     );
   }
-  return <MissingAnnotationEmptyState annotation={DEPLOY_APPLICATION_ANNOTATION} />;
+  return <MissingAnnotationEmptyState annotation={DEPLOY_GROUP_ARN_ANNOTATION} />;
 };
 
 
@@ -56,7 +56,7 @@ export const PipelineWidget: React.FC<Props> = ({ entity }) => {
       </ContextProvider>
     );
   }
-  return <MissingAnnotationEmptyState annotation={PIPELINE_NAME_ANNOTATION} />;
+  return <MissingAnnotationEmptyState annotation={PIPELINE_ARN_ANNOTATION} />;
 };
 
 export const CodeStar: React.FC<Props> = ({ entity }) => {
@@ -70,7 +70,7 @@ export const CodeStar: React.FC<Props> = ({ entity }) => {
 export const Router = (_props: Props) => {
   const { entity } = useEntity();
   if (!isCodeStarAvailable(entity)) {
-    return <MissingAnnotationEmptyState annotation={REGION_ANNOTATION} />;
+    return <MissingAnnotationEmptyState annotation={IAM_ROLE_ANNOTATION} />;
   }
 
   return (

@@ -17,77 +17,101 @@ import {useAsyncRetry} from 'react-use';
 import {codeStarApiRef} from '../api';
 import {useApi} from '@backstage/core-plugin-api';
 import {useEntity} from '@backstage/plugin-catalog-react';
-import {REGION_ANNOTATION, BUILD_PROJECT_ANNOTATION, IAM_ROLE_ANNOTATION} from '../constants';
-import {DEPLOY_APPLICATION_ANNOTATION, DEPLOY_GROUP_NAME_ANNOTATION} from '../constants';
-import {PIPELINE_NAME_ANNOTATION} from '../constants';
-import { BatchGetDeploymentsCommandOutput } from '@aws-sdk/client-codedeploy';
-import { GetPipelineStateOutput, PipelineExecutionSummary } from '@aws-sdk/client-codepipeline';
-import { Build } from '@aws-sdk/client-codebuild';
+import {BUILD_PROJECT_ARN_ANNOTATION, IAM_ROLE_ANNOTATION} from '../constants';
+import {DEPLOY_GROUP_ARN_ANNOTATION} from '../constants';
+import {PIPELINE_ARN_ANNOTATION} from '../constants';
+import {BatchGetDeploymentsCommandOutput} from '@aws-sdk/client-codedeploy';
+import {GetPipelineStateOutput, PipelineExecutionSummary} from '@aws-sdk/client-codepipeline';
+import {Build} from '@aws-sdk/client-codebuild';
 
 export function useBuilds() {
   const {entity} = useEntity();
   const api = useApi(codeStarApiRef);
-  const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
-  const project = entity?.metadata.annotations?.[BUILD_PROJECT_ANNOTATION] ?? '';
+
   const iamRole = entity?.metadata.annotations?.[IAM_ROLE_ANNOTATION] ?? '';
+  const buildARN = entity?.metadata.annotations?.[BUILD_PROJECT_ARN_ANNOTATION] ?? '';
   const {
     loading,
     value: builds,
     error,
     retry,
   } = useAsyncRetry<Build[]>(async () => {
+    const arnElements = buildARN.split(":")
+    if (arnElements.length < 6)
+      return [];
+
+    const region = arnElements[3];
+    const project = arnElements[5].substring("project/".length)
+
     const creds = await api.generateCredentials({iamRole: iamRole});
     const buildIds = await api.getBuildIds({region: region, project: project, creds});
     if (buildIds.ids) {
       const output = await api.getBuilds({region: region, ids: buildIds.ids, creds})
       return output.builds ?? [];
     }
-    
     return [];
   });
 
   const buildOutput = builds;
-  return {loading, buildOutput, region, error, retry} as const;
+  return {loading, buildOutput, error, retry} as const;
 };
 
 export function useDeployments() {
   const api = useApi(codeStarApiRef);
   const {entity} = useEntity();
-  const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
-  const application = entity?.metadata.annotations?.[DEPLOY_APPLICATION_ANNOTATION] ?? '';
-  const groupName = entity?.metadata.annotations?.[DEPLOY_GROUP_NAME_ANNOTATION] ?? '';
+
   const iamRole = entity?.metadata.annotations?.[IAM_ROLE_ANNOTATION] ?? '';
+  const deployARN = entity?.metadata.annotations?.[DEPLOY_GROUP_ARN_ANNOTATION] ?? '';
   const {
     loading,
     value: deployments,
     error,
     retry,
-  } = useAsyncRetry<BatchGetDeploymentsCommandOutput | null>(async () => {
+  } = useAsyncRetry<BatchGetDeploymentsCommandOutput | undefined>(async () => {
+    const arnElements = deployARN.split(":")
+    if (arnElements.length < 7)
+      return undefined;
+
+    const region = arnElements[3];
+    const deploymentGroup = arnElements[6].split("/")
+    if (deploymentGroup.length < 2)
+      return undefined;
+
+    const application = deploymentGroup[0]
+    const groupName = deploymentGroup[1]
+
     const creds = await api.generateCredentials({iamRole: iamRole});
     const output = await api.getDeploymentIds({region: region, appName: application, deploymentGroupName: groupName, creds});
     if (output.deployments === undefined) {
-      return null;
+      return undefined;
     }
     return await api.getDeployments({region: region, ids: output.deployments, creds});
   });
 
   const deploymentsInfo = deployments?.deploymentsInfo;
-  return {loading, deploymentsInfo, region, error, retry} as const
+  return {loading, deploymentsInfo, error, retry} as const
 };
 
 
 export function usePipelineState() {
   const api = useApi(codeStarApiRef);
   const {entity} = useEntity();
-  const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
-  const pipelineName = entity?.metadata.annotations?.[PIPELINE_NAME_ANNOTATION] ?? '';
+
   const iamRole = entity?.metadata.annotations?.[IAM_ROLE_ANNOTATION] ?? '';
+  const pipelineARN = entity?.metadata.annotations?.[PIPELINE_ARN_ANNOTATION] ?? '';
   const {
     loading,
     value: pipelineInfo,
     error,
     retry
   } = useAsyncRetry<GetPipelineStateOutput | undefined>(async () => {
+    const arnElements = pipelineARN.split(":")
+    if (arnElements.length < 6)
+      return undefined;
+
+    const region = arnElements[3];
+    const pipelineName = arnElements[5]
+
     const creds = await api.generateCredentials({iamRole: iamRole})
     // eslint-disable-next-line
     const pipelineInfo = await api.getPipelineState({region: region, name: pipelineName, creds});
@@ -97,21 +121,27 @@ export function usePipelineState() {
     return pipelineInfo;
   });
 
-  return {loading, pipelineInfo, region, error, retry} as const;
+  return {loading, pipelineInfo, error, retry} as const;
 };
 
 export function usePipelineRunsList() {
   const api = useApi(codeStarApiRef);
   const {entity} = useEntity();
-  const region = entity?.metadata.annotations?.[REGION_ANNOTATION] ?? '';
-  const pipelineName = entity?.metadata.annotations?.[PIPELINE_NAME_ANNOTATION] ?? '';
   const iamRole = entity?.metadata.annotations?.[IAM_ROLE_ANNOTATION] ?? '';
+  const pipelineARN = entity?.metadata.annotations?.[PIPELINE_ARN_ANNOTATION] ?? '';
   const {
     loading,
     value: pipelineRunsSummaries,
     error,
     retry
   } = useAsyncRetry<PipelineExecutionSummary[] | undefined>(async () => {
+    const arnElements = pipelineARN.split(":")
+    if (arnElements.length < 6)
+      return undefined;
+
+    const region = arnElements[3];
+    const pipelineName = arnElements[5]
+
     const creds = await api.generateCredentials({iamRole: iamRole});
     const pipelineRunsList = await api.getPipelineRuns({region: region, name: pipelineName, creds});
     if (pipelineRunsList?.pipelineExecutionSummaries === undefined) {
@@ -120,5 +150,5 @@ export function usePipelineRunsList() {
     return pipelineRunsList.pipelineExecutionSummaries;
   });
 
-  return {loading, pipelineRunsSummaries, pipelineName, region, error, retry} as const;
+  return {loading, pipelineRunsSummaries, error, retry} as const;
 }

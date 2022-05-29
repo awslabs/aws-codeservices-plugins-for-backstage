@@ -71,8 +71,7 @@ annotations and at least one of the optional set of annotations:
 ```yaml
 metadata:
   annotations:
-    code.aws.com/region: [YOUR_REGION]
-    code.aws.com/iam-role: [YOUR_ACCOUNT]
+    aws.amazon.com/iam-role-arn: [YOUR_ACCOUNT]
 ```
 
 **Optional Annotations**
@@ -82,20 +81,19 @@ You can enable a subset or all of the following components:
 ```yaml
 metadata:
   annotations:
-    code.aws.com/build-project: [YOUR_BUILD_PROJECT]
+    aws.amazon.com/build-project-arn: [YOUR_BUILD_PROJECT]
 ```
 - to integrate with CodeeDeploy:
 ```yaml
 metadata:
   annotations:
-    code.aws.com/deploy-application: [YOUR_DEPLOY_APPLICATION]
-    code.aws.com/deploy-group-name:  [YOUR_DEPLOY_GROUP_NAME]
+    aws.amazon.com/deploy-group-arn: [YOUR_DEPLOY_APPLICATION]
 ```
 - to integrate with CodePipeline:
 ```yaml
 metadata:
   annotations:
-    code.aws.com/pipeline-name: [YOUR_PIPELINE_NAME]
+    aws.amazon.com/pipeline-arn: [YOUR_PIPELINE_NAME]
 ```
 
 ## Dev Environment Setup
