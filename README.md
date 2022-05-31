@@ -88,19 +88,19 @@ You can enable a subset or all of the following components:
 ```yaml
 metadata:
   annotations:
-    aws.amazon.com/build-project-arn: [YOUR_BUILD_PROJECT]
+    aws.amazon.com/build-project-arn: [YOUR_BUILD_PROJECT_ARN]
 ```
 - to integrate with CodeeDeploy:
 ```yaml
 metadata:
   annotations:
-    aws.amazon.com/deploy-group-arn: [YOUR_DEPLOY_APPLICATION]
+    aws.amazon.com/deploy-group-arn: [YOUR_APPLICATION_DEPLOY_GROUP_ARN]
 ```
 - to integrate with CodePipeline:
 ```yaml
 metadata:
   annotations:
-    aws.amazon.com/pipeline-arn: [YOUR_PIPELINE_NAME]
+    aws.amazon.com/pipeline-arn: [YOUR_PIPELINE_ARN]
 ```
 
 ## Dev Environment Setup
