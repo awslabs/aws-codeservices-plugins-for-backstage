@@ -1,6 +1,13 @@
-# Code-* Plugin for Backstage
+# AWS CodeStar Plugins for Backstage
 
-The plugin adds latest status cards as well as expanded history for CI/CD runs of your `AWS Code-*` services to your Backstage deployment. You can track the status of your application's build, deploy, and pipelines in `AWS Code-*`. Through the selection of which annotations you want to add to your component, you can also customize which views you would like to get in your integration with Backstage.
+[![CI](https://github.com/awslabs/aws-codestar-plugins-for-backstage/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/awslabs/aws-codestar-plugins-for-backstage/actions/workflows/ci.yml)
+
+The plugin adds latest status cards as well as expanded history for CI/CD runs of your `AWS Code*` services to your Backstage deployment including:
+- AWS CodeBuild
+- AWS CodePipeline
+- AWS CodeDeploy
+
+You can track the status of your application's build, deploy, and pipelines in `AWS Code*`. Through the selection of which annotations you want to add to your component, you can also customize which views you would like to get in your integration with Backstage.
 
 Card Views:
 ![card image](./pics/code-cards.png)
