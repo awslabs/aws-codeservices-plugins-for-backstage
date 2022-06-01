@@ -14,11 +14,11 @@
 import React from 'react';
 import {Box, Typography, Link} from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
-import { RunStatus } from '../Status';
 import { Table, TableColumn } from '@backstage/core-components';
 import { PipelineExecutionSummary } from "@aws-sdk/client-codepipeline";
 import {useEntity} from '@backstage/plugin-catalog-react';
 import {PIPELINE_ARN_ANNOTATION} from '../../../../constants';
+import { PipelineStageStatus } from '../../../PipelineStageStatus';
 
 const generatedColumns: TableColumn[] = [
   {
@@ -51,7 +51,6 @@ const generatedColumns: TableColumn[] = [
   {
     title: 'Last Run',
     field: '',
-    highlight: true,
     render: (row: Partial<PipelineExecutionSummary>) => {
        if (row.lastUpdateTime) {
         return (<p>{row.lastUpdateTime.toLocaleString()}</p>)
@@ -66,7 +65,7 @@ const generatedColumns: TableColumn[] = [
       if (row.status) {
         return (
           <Box display="flex" alignItems="center">
-            <RunStatus status={row?.status}/>
+            <PipelineStageStatus status={row?.status}/>
           </Box>
         );
       }

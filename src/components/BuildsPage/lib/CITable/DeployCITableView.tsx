@@ -14,11 +14,11 @@
 import React from 'react';
 import {Box, Link, Typography} from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
-import { RunStatus } from '../Status';
 import { Table, TableColumn } from '@backstage/core-components';
 import {DeploymentInfo} from "@aws-sdk/client-codedeploy";
 import {useEntity} from '@backstage/plugin-catalog-react';
 import {DEPLOY_GROUP_ARN_ANNOTATION} from '../../../../constants';
+import { DeploymentStatus } from '../../../DeploymentStatus';
 
 const generatedColumns: TableColumn[] = [
   {
@@ -46,7 +46,6 @@ const generatedColumns: TableColumn[] = [
   {
     title: 'Plaform',
     field: '',
-    highlight: true,
     render: (row: Partial<DeploymentInfo>) => {
         return (
           <>
@@ -72,7 +71,7 @@ const generatedColumns: TableColumn[] = [
     render: (row: Partial<DeploymentInfo>) => {
       return (
         <Box display="flex" alignItems="center">
-          <RunStatus status={row.status?.toLowerCase()} />
+          <DeploymentStatus status={row.status} />
         </Box>
       );
     },

@@ -15,16 +15,15 @@ import React from 'react';
 import { Box, Typography} from '@material-ui/core';
 import { Link } from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
-import { RunStatus } from '../Status';
 import { Table, TableColumn } from '@backstage/core-components';
 /* import {Exception } from '../../../../api/ServiceApi'; */
 import {Build} from "@aws-sdk/client-codebuild";
+import { BuildStatus } from '../../../BuildStatus';
 
 const generatedColumns: TableColumn[] = [
   {
     title: 'Builds',
     field: 'name',
-    highlight: true,
     render: (row: Partial<Build>) => {
       if (row.id !== undefined) {
         const arn = row.arn?.split(':');
@@ -32,7 +31,7 @@ const generatedColumns: TableColumn[] = [
           return (<> {row.id} </>)
         }
         return (
-          <Link href={`https://${arn[3]}.console.aws.amazon.com/codesuite/codebuild/${arn[4]}/${arn[5].replace('build','projects')}/${arn[5]}:${+arn[6]}`} 
+          <Link href={`https://${arn[3]}.console.aws.amazon.com/codesuite/codebuild/${arn[4]}/${arn[5].replace('build','projects')}/${arn[5]}:${arn[6]}`} 
           target="_blank" >
             {row.id}
           </Link>
@@ -69,7 +68,7 @@ const generatedColumns: TableColumn[] = [
     render: (row: Partial<Build>) => {
       return (
         <Box display="flex" alignItems="center">
-          <RunStatus status={row.buildStatus?.toLowerCase()} />
+          <BuildStatus status={row.buildStatus} />
         </Box>
       );
     },

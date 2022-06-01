@@ -541,7 +541,7 @@ export const pipelineRunsResponseMock = {
       pipelineExecutionId: 'e6c91a02-d844-4663-ad62-b719608f8fc5',
       sourceRevisions: [Array],
       startTime: "2022-05-03T00:51:35.229Z",
-      status: 'Failed',
+      status: 'InProgress',
       stopTrigger: undefined,
       trigger: {
         triggerType: "CodeBuild",

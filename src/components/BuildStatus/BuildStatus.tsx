@@ -13,74 +13,59 @@
 
 import React from 'react';
 import {
-  StatusPending,
   StatusRunning,
   StatusOK,
-  StatusWarning,
   StatusAborted,
   StatusError,
 } from '@backstage/core-components';
+import { StatusType } from '@aws-sdk/client-codebuild';
 
-export const RunStatus = ({
+export const BuildStatus = ({
   status,
 }: {
   status: string | undefined;
 }) => {
-  if (status === undefined) return null;
-  switch (status.toLocaleLowerCase('en-US')) {
-    case 'queued':
-    case 'scheduled':
-      return (
-        <>
-          <StatusPending /> Queued
-        </>
-      );
-    case 'in_progress':
+  switch (status) {
+    case StatusType.IN_PROGRESS:
       return (
         <>
           <StatusRunning /> In progress
         </>
       );
-    case 'unstable':
+    case StatusType.FAULT:
       return (
         <>
-          <StatusWarning /> Unstable
+          <StatusError /> Fault
         </>
       );
-    case 'failed':
+    case StatusType.TIMED_OUT:
+      return (
+        <>
+          <StatusError /> Timed out
+        </>
+      );
+    case StatusType.FAILED:
       return (
         <>
           <StatusError /> Failed
         </>
       );
-    case 'terminal':
+    case StatusType.SUCCEEDED:
       return (
         <>
-          <StatusError /> Failed
+          <StatusOK /> Succeeded
         </>
       );
-    case 'succeeded':
+    case StatusType.STOPPED:
       return (
         <>
-          <StatusOK /> Completed
-        </>
-      );
-    case 'stopped':
-      return (
-        <>
-          <StatusAborted /> Aborted
-        </>
-      );
-    case 'canceled':
-      return (
-        <>
-          <StatusAborted /> Aborted
+          <StatusAborted /> Stopped
         </>
       );
     default:
       return (
         <>
-          <StatusWarning /> {status}
+          <StatusAborted /> Unknown
         </>
       );
   }

@@ -11,4 +11,4 @@
  * limitations under the License.
  */
 
-export {RunStatus} from './RunStatus';
+export {PipelineStageStatus} from './PipelineStageStatus';

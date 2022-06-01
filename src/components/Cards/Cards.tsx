@@ -21,13 +21,15 @@ import {
 } from '@backstage/core-components';
 import { Build }  from "@aws-sdk/client-codebuild";
 import { DeploymentInfo }  from "@aws-sdk/client-codedeploy";
-import { RunStatus } from '../BuildsPage/lib/Status';
 import { GetPipelineStateOutput } from "@aws-sdk/client-codepipeline";
 import { isBuildAvailable, isDeployAvailable, isPipelineAvailable } from '../Flags';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Grid, LinearProgress }  from "@material-ui/core"
 import { DEPLOY_GROUP_ARN_ANNOTATION } from '../../constants';
 import { PIPELINE_ARN_ANNOTATION } from '../../constants';
+import { DeploymentStatus } from '../DeploymentStatus';
+import { BuildStatus } from '../BuildStatus';
+import { PipelineStageStatus } from '../PipelineStageStatus';
 
 const WidgetContent = ({
   builds,
@@ -37,7 +39,7 @@ const WidgetContent = ({
   const rows = new Map<string, any>()
   if (builds && builds.length > 0) {
     rows.set("Status", <>
-          <RunStatus status={builds[0].buildStatus?.toLowerCase()}/>
+          <BuildStatus status={builds[0].buildStatus}/>
         </>
     )
 
@@ -106,11 +108,10 @@ const DeployWidgetContent = ({
   deploymentInfo?: DeploymentInfo,
   region: string
 }) => {
-  /* if (loading) return <LinearProgress />; */
   const rows = new Map<string, any>()
   if (deploymentInfo) {
     rows.set("Status",<>
-        <RunStatus status={deploymentInfo.status?.toLowerCase()} />
+        <DeploymentStatus status={deploymentInfo.status} />
       </>
     )
     const id = deploymentInfo?.deploymentId;
@@ -197,7 +198,7 @@ const PipelineWidgetContent = ({
                  target="_blank">
             {element.actionStates[0].latestExecution?.actionExecutionId}
              </a>
-            <div><RunStatus status={element.actionStates[0].latestExecution?.status} /></div>
+            <div><PipelineStageStatus status={element.actionStates[0].latestExecution?.status} /></div>
             </>
        )
     }
