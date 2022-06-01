@@ -19,6 +19,8 @@ import {DeploymentInfo} from "@aws-sdk/client-codedeploy";
 import {useEntity} from '@backstage/plugin-catalog-react';
 import {DEPLOY_GROUP_ARN_ANNOTATION} from '../../../../constants';
 import { DeploymentStatus } from '../../../DeploymentStatus';
+import { Entity } from '@backstage/catalog-model';
+import { useCodeDeployDeployments } from '../../../../hooks';
 
 const generatedColumns: TableColumn[] = [
   {
@@ -96,16 +98,13 @@ const generatedColumns: TableColumn[] = [
 ];
 
 type Props = {
-  loading: boolean;
-  retry: () => void;
-  deployments?: DeploymentInfo[];
+  entity: Entity;
 };
 
 export const DeployCITableView = ({
-  loading,
-  deployments,
-  retry,
+  entity,
 }: Props) => {
+  const {loading, deploymentsInfo, retry} = useCodeDeployDeployments(entity);
   return (
     <Table
       isLoading={loading}
@@ -117,7 +116,7 @@ export const DeployCITableView = ({
           onClick: () => retry(),
         },
       ]}
-      data={deployments ?? []}
+      data={deploymentsInfo ?? []}
       title={
         <Box display="flex" alignItems="center">
           <Box mr={2} />

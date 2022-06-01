@@ -18,41 +18,25 @@ import {DeployCITableView} from './DeployCITableView';
 import {PipelineCITableView} from './PipelineCITableView';
 import {isBuildAvailable, isDeployAvailable, isPipelineAvailable} from '../../../Flags';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { useCodeBuildBuilds, useCodeDeployDeployments, useCodePipelineExecutions } from '../../../../hooks';
 
 export const CITable = () => {
-  const {loading, buildOutput, retry} = useCodeBuildBuilds();
-  const {loading: loadingd, deploymentsInfo, retry: retryd} = useCodeDeployDeployments();
-  const {loading: loadingSummaries,  pipelineRunsSummaries, retry: retrySummaries} = useCodePipelineExecutions();
   const { entity } = useEntity();
 
   return (
     <>
       { isPipelineAvailable(entity) &&
         <Grid item sm={12}>
-            <PipelineCITableView
-                loading={loadingSummaries}
-                pipelineRunsSummaries={pipelineRunsSummaries}
-                retry={retrySummaries}
-            />
+            <PipelineCITableView entity={entity} />
         </Grid>
       }
       { isBuildAvailable(entity) &&
         <Grid item sm={12}>
-          <BuildCITableView
-            loading={loading}
-            builds={buildOutput}
-            retry={retry}
-          />
+          <BuildCITableView entity={entity} />
         </Grid>
       }
       { isDeployAvailable(entity) &&
         <Grid item sm={12}>
-          <DeployCITableView
-            loading={loadingd}
-            deployments={deploymentsInfo}
-            retry={retryd}
-          />
+          <DeployCITableView entity={entity} />
         </Grid>
       }
     </>

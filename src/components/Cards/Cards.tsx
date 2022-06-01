@@ -75,7 +75,8 @@ export const BuildLatestRunCard = ({
 }: {
   variant?: InfoCardVariants;
 }) => {
-  const { buildOutput, error, loading } =  useCodeBuildBuilds()
+  const { entity } = useEntity();
+  const { buildOutput, error, loading } =  useCodeBuildBuilds(entity);
 
   if(buildOutput) {
     return (
@@ -145,8 +146,8 @@ export const DeployLatestRunCard = ({
 }: {
   variant?: InfoCardVariants;
 }) => {
-  const { deploymentsInfo, error, loading } =  useCodeDeployDeployments()
   const { entity } = useEntity();
+  const { deploymentsInfo, error, loading } =  useCodeDeployDeployments(entity)
   const deployARN = entity?.metadata.annotations?.[DEPLOY_GROUP_ARN_ANNOTATION] ?? '';
   const arnElements = deployARN.split(":")
   if (arnElements.length < 7)
@@ -217,8 +218,8 @@ export const PipelineLatestRunCard = ({
 }: {
   variant?: InfoCardVariants;
 }) => {
-  const { pipelineInfo, error, loading } = useCodePipelineSummary()
   const { entity } = useEntity();
+  const { pipelineInfo, error, loading } = useCodePipelineSummary(entity)
   const pipelineARN = entity?.metadata.annotations?.[PIPELINE_ARN_ANNOTATION] ?? '';
   const arnElements = pipelineARN.split(":")
   if (arnElements.length < 6)

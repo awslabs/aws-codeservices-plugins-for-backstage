@@ -14,14 +14,13 @@
 import {useAsyncRetry} from 'react-use';
 import {codeStarApiRef} from '../api';
 import {useApi} from '@backstage/core-plugin-api';
-import {useEntity} from '@backstage/plugin-catalog-react';
 import {IAM_ROLE_ANNOTATION} from '../constants';
 import {DEPLOY_GROUP_ARN_ANNOTATION} from '../constants';
 import {BatchGetDeploymentsCommandOutput} from '@aws-sdk/client-codedeploy';
+import { Entity } from '@backstage/catalog-model';
 
-export function useCodeDeployDeployments() {
+export function useCodeDeployDeployments(entity: Entity) {
   const api = useApi(codeStarApiRef);
-  const {entity} = useEntity();
 
   const iamRole = entity?.metadata.annotations?.[IAM_ROLE_ANNOTATION] ?? '';
   const deployARN = entity?.metadata.annotations?.[DEPLOY_GROUP_ARN_ANNOTATION] ?? '';

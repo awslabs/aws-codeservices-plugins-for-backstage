@@ -14,12 +14,11 @@
 import {useAsyncRetry} from 'react-use';
 import {codeStarApiRef} from '../api';
 import {useApi} from '@backstage/core-plugin-api';
-import {useEntity} from '@backstage/plugin-catalog-react';
 import {BUILD_PROJECT_ARN_ANNOTATION, IAM_ROLE_ANNOTATION} from '../constants';
 import {Build} from '@aws-sdk/client-codebuild';
+import { Entity } from '@backstage/catalog-model';
 
-export function useCodeBuildBuilds() {
-  const {entity} = useEntity();
+export function useCodeBuildBuilds(entity: Entity) {
   const api = useApi(codeStarApiRef);
 
   const iamRole = entity?.metadata.annotations?.[IAM_ROLE_ANNOTATION] ?? '';

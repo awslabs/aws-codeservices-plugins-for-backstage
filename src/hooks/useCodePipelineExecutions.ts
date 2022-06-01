@@ -14,14 +14,13 @@
 import {useAsyncRetry} from 'react-use';
 import {codeStarApiRef} from '../api';
 import {useApi} from '@backstage/core-plugin-api';
-import {useEntity} from '@backstage/plugin-catalog-react';
 import {IAM_ROLE_ANNOTATION} from '../constants';
 import {PIPELINE_ARN_ANNOTATION} from '../constants';
 import {PipelineExecutionSummary} from '@aws-sdk/client-codepipeline';
+import { Entity } from '@backstage/catalog-model';
 
-export function useCodePipelineExecutions() {
+export function useCodePipelineExecutions(entity: Entity) {
   const api = useApi(codeStarApiRef);
-  const {entity} = useEntity();
   const iamRole = entity?.metadata.annotations?.[IAM_ROLE_ANNOTATION] ?? '';
   const pipelineARN = entity?.metadata.annotations?.[PIPELINE_ARN_ANNOTATION] ?? '';
   const {

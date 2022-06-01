@@ -19,6 +19,8 @@ import { Table, TableColumn } from '@backstage/core-components';
 /* import {Exception } from '../../../../api/ServiceApi'; */
 import {Build} from "@aws-sdk/client-codebuild";
 import { BuildStatus } from '../../../BuildStatus';
+import { Entity } from '@backstage/catalog-model';
+import { useCodeBuildBuilds } from '../../../../hooks';
 
 const generatedColumns: TableColumn[] = [
   {
@@ -90,16 +92,13 @@ const generatedColumns: TableColumn[] = [
 ];
 
 type Props = {
-  loading: boolean;
-  retry: () => void;
-  builds?: Build[];
+  entity: Entity;
 };
 
 export const BuildCITableView = ({
-  loading,
-  builds,
-  retry,
+  entity,
 }: Props) => {
+  const {loading, buildOutput, retry} = useCodeBuildBuilds(entity);
   return (
     <Table
       isLoading={loading}
@@ -111,7 +110,7 @@ export const BuildCITableView = ({
           onClick: () => retry(),
         },
       ]}
-      data={builds ?? []}
+      data={buildOutput ?? []}
       title={
         <Box display="flex" alignItems="center">
           <Box mr={2} />

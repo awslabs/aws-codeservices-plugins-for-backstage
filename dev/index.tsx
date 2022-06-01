@@ -19,7 +19,7 @@ import React from 'react';
 import {
   AnyApiRef,
 } from '@backstage/core-plugin-api';
-import { BuildLatestRunCard, codeStarApiRef, DeployLatestRunCard, PipelineLatestRunCard } from '../src';
+import { BuildLatestRunCard, codeStarApiRef, CodeStarCards, DeployLatestRunCard, PipelineLatestRunCard } from '../src';
 import { MockCodeStarClient } from '../src/mocks/MockCodeStarClient';
 import { entityAllMock, entityBuildMock, entityDeployMock, entityPipelineMock } from '../src/mocks/mocks';
 import { CITable } from '../src/components/BuildsPage/lib/CITable';
@@ -30,8 +30,8 @@ const apis: [AnyApiRef, Partial<unknown>][] = [
 
 createDevApp()
   .addPage({
-    path: '/fixture-build',
-    title: 'CodeBuild',
+    path: '/fixture-build-card',
+    title: 'CodeBuild Card',
     element: (
     <TestApiProvider apis={apis}>
       <EntityProvider entity={entityBuildMock}>
@@ -41,8 +41,8 @@ createDevApp()
     ),
   })
   .addPage({
-    path: '/fixture-deploy',
-    title: 'CodeDeploy',
+    path: '/fixture-deploy-card',
+    title: 'CodeDeploy Card',
     element: (
     <TestApiProvider apis={apis}>
       <EntityProvider entity={entityDeployMock}>
@@ -52,12 +52,23 @@ createDevApp()
     ),
   })
   .addPage({
-    path: '/fixture-pipeline-run',
-    title: 'CodePipeline',
+    path: '/fixture-pipeline-card',
+    title: 'CodePipeline Card',
     element: (
     <TestApiProvider apis={apis}>
       <EntityProvider entity={entityPipelineMock}>
         <PipelineLatestRunCard />
+      </EntityProvider>
+    </TestApiProvider>
+    ),
+  })
+  .addPage({
+    path: '/fixture-all-cards',
+    title: 'All Cards',
+    element: (
+    <TestApiProvider apis={apis}>
+      <EntityProvider entity={entityAllMock}>
+        <CodeStarCards />
       </EntityProvider>
     </TestApiProvider>
     ),

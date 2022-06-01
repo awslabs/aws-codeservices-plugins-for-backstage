@@ -19,6 +19,8 @@ import { PipelineExecutionSummary } from "@aws-sdk/client-codepipeline";
 import {useEntity} from '@backstage/plugin-catalog-react';
 import {PIPELINE_ARN_ANNOTATION} from '../../../../constants';
 import { PipelineStageStatus } from '../../../PipelineStageStatus';
+import { Entity } from '@backstage/catalog-model';
+import { useCodePipelineExecutions } from '../../../../hooks';
 
 const generatedColumns: TableColumn[] = [
   {
@@ -99,16 +101,13 @@ const generatedColumns: TableColumn[] = [
 ];
 
 type Props = {
-  loading: boolean;
-  retry: () => void;
-  pipelineRunsSummaries?: PipelineExecutionSummary[];
+  entity: Entity,
 };
 
 export const PipelineCITableView = ({
-  loading,
-  pipelineRunsSummaries,
-  retry,
+  entity,
 }: Props) => {
+    const {loading,  pipelineRunsSummaries, retry} = useCodePipelineExecutions(entity);
     return (
       <Table
         isLoading={loading}
