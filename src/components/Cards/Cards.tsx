@@ -12,14 +12,12 @@
  */
 
 import React from 'react';
-import {  useBuilds, usePipelineState } from '../useBuilds';
-import {  useDeployments } from '../useBuilds';
+import {  useCodeBuildBuilds, useCodePipelineSummary, useCodeDeployDeployments } from '../../hooks';
 import {
   InfoCard,
   InfoCardVariants,
   ResponseErrorPanel,
   StructuredMetadataTable,
-  /* WarningPanel, */
 } from '@backstage/core-components';
 import { Build }  from "@aws-sdk/client-codebuild";
 import { DeploymentInfo }  from "@aws-sdk/client-codedeploy";
@@ -31,13 +29,11 @@ import { Grid, LinearProgress }  from "@material-ui/core"
 import { DEPLOY_GROUP_ARN_ANNOTATION } from '../../constants';
 import { PIPELINE_ARN_ANNOTATION } from '../../constants';
 
-
 const WidgetContent = ({
   builds,
 }: {
   builds?: Build[],
 }) => {
-  /* if (loading) return <LinearProgress />; */
   const rows = new Map<string, any>()
   if (builds && builds.length > 0) {
     rows.set("Status", <>
@@ -77,7 +73,7 @@ export const BuildLatestRunCard = ({
 }: {
   variant?: InfoCardVariants;
 }) => {
-  const { buildOutput, error, loading } =  useBuilds()
+  const { buildOutput, error, loading } =  useCodeBuildBuilds()
 
   if(buildOutput) {
     return (
@@ -148,7 +144,7 @@ export const DeployLatestRunCard = ({
 }: {
   variant?: InfoCardVariants;
 }) => {
-  const { deploymentsInfo, error, loading } =  useDeployments()
+  const { deploymentsInfo, error, loading } =  useCodeDeployDeployments()
   const { entity } = useEntity();
   const deployARN = entity?.metadata.annotations?.[DEPLOY_GROUP_ARN_ANNOTATION] ?? '';
   const arnElements = deployARN.split(":")
@@ -220,7 +216,7 @@ export const PipelineLatestRunCard = ({
 }: {
   variant?: InfoCardVariants;
 }) => {
-  const { pipelineInfo, error, loading } = usePipelineState()
+  const { pipelineInfo, error, loading } = useCodePipelineSummary()
   const { entity } = useEntity();
   const pipelineARN = entity?.metadata.annotations?.[PIPELINE_ARN_ANNOTATION] ?? '';
   const arnElements = pipelineARN.split(":")

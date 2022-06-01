@@ -13,18 +13,17 @@
 
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
-import { useBuilds, useDeployments, usePipelineRunsList } from '../../../useBuilds';
-/* import {Exception } from '../../../../api/ServiceApi'; */
 import {BuildCITableView} from './BuildCITableView';
 import {DeployCITableView} from './DeployCITableView';
 import {PipelineCITableView} from './PipelineCITableView';
 import {isBuildAvailable, isDeployAvailable, isPipelineAvailable} from '../../../Flags';
 import { useEntity } from '@backstage/plugin-catalog-react';
+import { useCodeBuildBuilds, useCodeDeployDeployments, useCodePipelineExecutions } from '../../../../hooks';
 
 export const CITable = () => {
-  const {loading, buildOutput, retry} = useBuilds();
-  const {loading: loadingd, deploymentsInfo, retry: retryd} = useDeployments();
-  const {loading: loadingSummaries,  pipelineRunsSummaries, retry: retrySummaries} = usePipelineRunsList();
+  const {loading, buildOutput, retry} = useCodeBuildBuilds();
+  const {loading: loadingd, deploymentsInfo, retry: retryd} = useCodeDeployDeployments();
+  const {loading: loadingSummaries,  pipelineRunsSummaries, retry: retrySummaries} = useCodePipelineExecutions();
   const { entity } = useEntity();
 
   return (

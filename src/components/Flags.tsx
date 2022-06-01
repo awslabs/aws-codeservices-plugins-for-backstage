@@ -34,4 +34,3 @@ export const isDeployAvailable = (entity: Entity) => {
 export const isPipelineAvailable = (entity: Entity) => {
   return Boolean(entity.metadata.annotations?.[PIPELINE_ARN_ANNOTATION]);
 }
-

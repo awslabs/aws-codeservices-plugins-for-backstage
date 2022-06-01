@@ -37,8 +37,8 @@ import {
   pipelineRunsResponseMock,
   deployResponseMock
 } from '../../../../mocks/mocks';
-import {CodeStar} from '../../../Router';
 import {MockCodeStarClient} from '../../../../mocks/MockCodeStarClient'
+import { CITable } from './CITable';
 
 const errorApiMock = { post: jest.fn(), error$: jest.fn() };
 
@@ -71,7 +71,7 @@ describe('CITable', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityBuildMock}>
-            <CodeStar entity={entityBuildMock} children={null}/>
+            <CITable />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -92,7 +92,7 @@ describe('CITable', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityAllMock}>
-            <CodeStar entity={entityAllMock} children={null}/>
+            <CITable />
           </EntityProvider>
         </TestApiProvider>,
       ),

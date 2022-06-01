@@ -21,8 +21,8 @@ import {
 } from '@backstage/core-plugin-api';
 import { BuildLatestRunCard, codeStarApiRef, DeployLatestRunCard, PipelineLatestRunCard } from '../src';
 import { MockCodeStarClient } from '../src/mocks/MockCodeStarClient';
-import { CodeStar } from '../src/components/Router';
 import { entityAllMock, entityBuildMock, entityDeployMock, entityPipelineMock } from '../src/mocks/mocks';
+import { CITable } from '../src/components/BuildsPage/lib/CITable';
 
 const apis: [AnyApiRef, Partial<unknown>][] = [
   [codeStarApiRef, new MockCodeStarClient()],
@@ -68,7 +68,7 @@ createDevApp()
     element: (
     <TestApiProvider apis={apis}>
       <EntityProvider entity={entityAllMock}>
-        <CodeStar entity={entityAllMock} children={null}/>
+        <CITable />
       </EntityProvider>
     </TestApiProvider>
     ),

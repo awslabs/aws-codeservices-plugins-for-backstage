@@ -29,8 +29,8 @@ import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {codeStarApiRef} from '../../api';
 import { entityBuildMock, entityDeployMock, entityPipelineMock } from '../../mocks/mocks';
 import { buildsResponseMock, credsMock, deployResponseMock, pipelineResponseMock } from '../../mocks/mocks';
-import {BuildWidget, DeployWidget, PipelineWidget} from '../Router';
 import { MockCodeStarClient} from '../../mocks/MockCodeStarClient'
+import { BuildLatestRunCard, DeployLatestRunCard, PipelineLatestRunCard } from './Cards';
 
 const errorApiMock = { post: jest.fn(), error$: jest.fn() };
 
@@ -64,7 +64,7 @@ describe('BuildLatestRunCard', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityBuildMock}>
-            <BuildWidget entity={entityBuildMock} children={null} />
+            <BuildLatestRunCard />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -79,7 +79,7 @@ describe('BuildLatestRunCard', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityPipelineMock}>
-            <BuildWidget entity={entityPipelineMock} children={null} />
+            <BuildLatestRunCard />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -111,7 +111,7 @@ describe('DeployLatestRunCard', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityDeployMock}>
-            <DeployWidget entity={entityDeployMock}  children={null} />
+            <DeployLatestRunCard />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -126,7 +126,7 @@ describe('DeployLatestRunCard', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityBuildMock}>
-            <DeployWidget entity={entityBuildMock}  children={null} />
+            <DeployLatestRunCard />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -156,7 +156,7 @@ describe('PipelineRunCard', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityPipelineMock }>
-            <PipelineWidget entity={entityPipelineMock }  children={null} />
+            <PipelineLatestRunCard />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -171,7 +171,7 @@ describe('PipelineRunCard', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityDeployMock}>
-            <PipelineWidget entity={entityDeployMock}  children={null} />
+            <PipelineLatestRunCard />
           </EntityProvider>
         </TestApiProvider>,
       ),
