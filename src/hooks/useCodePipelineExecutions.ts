@@ -35,7 +35,7 @@ export function useCodePipelineExecutions() {
       return undefined;
 
     const region = arnElements[3];
-    const pipelineName = arnElements[5].split("/")[1]
+    const pipelineName = arnElements[5];
 
     const creds = await api.generateCredentials({iamRole: iamRole});
     const pipelineRunsList = await api.getPipelineRuns({region: region, name: pipelineName, creds});
