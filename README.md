@@ -19,8 +19,8 @@ Tab Views:
 
 ### Backstage Setup
 
-- The CodeStar plugin uses [Plugin AWS
-  Auth](https://github.com/RoadieHQ/backstage-plugin-aws-auth) from RodieHQ to
+- This plugin uses the [AWS
+  Auth plugin](https://github.com/RoadieHQ/roadie-backstage-plugins/tree/main/plugins/backend/backstage-plugin-aws-auth) from RoadieHQ to
   enable access to AWS resources via the frontend plugin. Follow the
   configuration steps as describe on the AWS Auth plugin page to enable it for your
   backstage deployment. _Note: it is extermely important to limit the access of
@@ -84,38 +84,37 @@ metadata:
 **Optional Annotations**
 
 You can enable a subset or all of the following components:
-- to integrate with CodeBuild:
+- to integrate with AWS CodeBuild:
 ```yaml
 metadata:
   annotations:
-    aws.amazon.com/build-project-arn: [YOUR_BUILD_PROJECT]
+    aws.amazon.com/build-project-arn: [YOUR_BUILD_PROJECT_ARN]
 ```
-- to integrate with CodeeDeploy:
+- to integrate with AWS CodeDeploy:
 ```yaml
 metadata:
   annotations:
-    aws.amazon.com/deploy-group-arn: [YOUR_DEPLOY_APPLICATION]
+    aws.amazon.com/deploy-group-arn: [YOUR_APPLICATION_DEPLOY_GROUP_ARN]
 ```
-- to integrate with CodePipeline:
+- to integrate with AWS CodePipeline:
 ```yaml
 metadata:
   annotations:
-    aws.amazon.com/pipeline-arn: [YOUR_PIPELINE_NAME]
+    aws.amazon.com/pipeline-arn: [YOUR_PIPELINE_ARN]
 ```
 
 ## Dev Environment Setup
 
 - Install [Local Package Publisher](https://www.npmjs.com/package/local-package-publisher)
 - node version v14.3.0+
-- npm  version 6.14.4+
+- npm version 6.14.4+
 
-build the plugin by running the following
+Build the plugin by running the following:
 
 ```bash
 > yarn build # builds your plugin
 > ./hack/build.sh # publishes the plugin to a local tmp folder on your machine
 ```
-
 
 Modify `package.json` in Backstage, and add the following snippet under
 `devDependencies`:
