@@ -23,11 +23,11 @@ import {
 import {CodeStarClient, codeStarApiRef} from './api';
 
 export const rootRouteRef = createRouteRef({
-  id: 'CodeStar',
+  id: 'aws-codestar',
 });
 
 export const codeStarPlugin = createPlugin({
-  id: 'codestar',
+  id: 'aws-codestar',
   apis: [
     createApiFactory({
       api: codeStarApiRef,
@@ -41,37 +41,46 @@ export const codeStarPlugin = createPlugin({
   },
 });
 
-export const EntityCodeStarContent = codeStarPlugin.provide(
+export const EntityAWSCodeStarContent = codeStarPlugin.provide(
   createRoutableExtension({
-    name: "codeStarContent",
+    name: "EntityAWSCodeStarContent",
     component: () => import('./components/Router').then(m => m.Router),
     mountPoint: rootRouteRef,
   }),
 );
 
-export const BuildLatestRunCard = codeStarPlugin.provide(
+export const EntityAWSCodeStarCards = codeStarPlugin.provide(
   createComponentExtension({
-    name: "buildCard",
+    name: "EntityAWSCodeStarCards",
     component: {
-      lazy: () => import('./components/Cards').then(m => m.BuildLatestRunCard),
+      lazy: () => import('./components/Cards').then(m => m.CodeStarCards),
     },
   }),
 );
 
-export const DeployLatestRunCard = codeStarPlugin.provide(
+export const EntityAWSCodeBuildCard = codeStarPlugin.provide(
   createComponentExtension({
-    name: "deployCard",
+    name: "EntityAWSCodeBuildCard",
     component: {
-      lazy: () => import('./components/Cards').then(m => m.DeployLatestRunCard),
+      lazy: () => import('./components/Cards').then(m => m.AWSCodeBuildWidget),
     },
   }),
 );
 
-export const PipelineLatestRunCard = codeStarPlugin.provide(
+export const EntityAWSCodeDeployCard = codeStarPlugin.provide(
   createComponentExtension({
-    name: "pipelineCard",
+    name: "EntityAWSCodeDeployCard",
     component: {
-      lazy: () => import('./components/Cards').then(m => m.PipelineLatestRunCard),
+      lazy: () => import('./components/Cards').then(m => m.AWSCodeDeployWidget),
+    },
+  }),
+);
+
+export const EntityAWSCodePipelineCard = codeStarPlugin.provide(
+  createComponentExtension({
+    name: "EntityAWSCodePipelineCard",
+    component: {
+      lazy: () => import('./components/Cards').then(m => m.AWSCodePipelineWidget),
     },
   }),
 );

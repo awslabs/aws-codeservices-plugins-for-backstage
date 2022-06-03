@@ -16,7 +16,7 @@ import Grid from '@material-ui/core/Grid';
 import {BuildCITableView} from './BuildCITableView';
 import {DeployCITableView} from './DeployCITableView';
 import {PipelineCITableView} from './PipelineCITableView';
-import {isBuildAvailable, isDeployAvailable, isPipelineAvailable} from '../../../Flags';
+import {isAWSCodeBuildAvailable, isAWSCodeDeployAvailable, isAWSCodePipelineAvailable} from '../../../Flags';
 import { useEntity } from '@backstage/plugin-catalog-react';
 
 export const CITable = () => {
@@ -24,17 +24,17 @@ export const CITable = () => {
 
   return (
     <>
-      { isPipelineAvailable(entity) &&
+      { isAWSCodePipelineAvailable(entity) &&
         <Grid item sm={12}>
             <PipelineCITableView entity={entity} />
         </Grid>
       }
-      { isBuildAvailable(entity) &&
+      { isAWSCodeBuildAvailable(entity) &&
         <Grid item sm={12}>
           <BuildCITableView entity={entity} />
         </Grid>
       }
-      { isDeployAvailable(entity) &&
+      { isAWSCodeDeployAvailable(entity) &&
         <Grid item sm={12}>
           <DeployCITableView entity={entity} />
         </Grid>

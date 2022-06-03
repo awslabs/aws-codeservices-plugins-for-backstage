@@ -19,10 +19,12 @@ import React from 'react';
 import {
   AnyApiRef,
 } from '@backstage/core-plugin-api';
-import { BuildLatestRunCard, codeStarApiRef, CodeStarCards, DeployLatestRunCard, PipelineLatestRunCard } from '../src';
+import { codeStarApiRef } from '../src';
 import { MockCodeStarClient } from '../src/mocks/MockCodeStarClient';
-import { entityAllMock, entityBuildMock, entityDeployMock, entityPipelineMock } from '../src/mocks/mocks';
+import { entityAllMock, entityBuildMock, entityDeployMock, entityNoneMock, entityPipelineMock } from '../src/mocks/mocks';
 import { CITable } from '../src/components/BuildsPage/lib/CITable';
+import { AWSCodeBuildWidget, AWSCodeDeployWidget, AWSCodePipelineWidget, CodeStarCards } from '../src/components/Cards/Cards';
+import { Grid } from '@material-ui/core';
 
 const apis: [AnyApiRef, Partial<unknown>][] = [
   [codeStarApiRef, new MockCodeStarClient()],
@@ -35,7 +37,7 @@ createDevApp()
     element: (
     <TestApiProvider apis={apis}>
       <EntityProvider entity={entityBuildMock}>
-        <BuildLatestRunCard />
+        <AWSCodeBuildWidget />
       </EntityProvider>
     </TestApiProvider>
     ),
@@ -46,7 +48,7 @@ createDevApp()
     element: (
     <TestApiProvider apis={apis}>
       <EntityProvider entity={entityDeployMock}>
-        <DeployLatestRunCard />
+        <AWSCodeDeployWidget />
       </EntityProvider>
     </TestApiProvider>
     ),
@@ -57,7 +59,7 @@ createDevApp()
     element: (
     <TestApiProvider apis={apis}>
       <EntityProvider entity={entityPipelineMock}>
-        <PipelineLatestRunCard />
+        <AWSCodePipelineWidget />
       </EntityProvider>
     </TestApiProvider>
     ),
@@ -68,7 +70,22 @@ createDevApp()
     element: (
     <TestApiProvider apis={apis}>
       <EntityProvider entity={entityAllMock}>
-        <CodeStarCards />
+        <Grid container spacing={3} alignItems="stretch">
+          <CodeStarCards />
+        </Grid>
+      </EntityProvider>
+    </TestApiProvider>
+    ),
+  })
+  .addPage({
+    path: '/fixture-missing-annotations',
+    title: 'Missing Annotations',
+    element: (
+    <TestApiProvider apis={apis}>
+      <EntityProvider entity={entityNoneMock}>
+        <AWSCodeBuildWidget />
+        <AWSCodeDeployWidget />
+        <AWSCodePipelineWidget />
       </EntityProvider>
     </TestApiProvider>
     ),

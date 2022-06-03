@@ -16,20 +16,22 @@ import {  useCodeBuildBuilds, useCodePipelineSummary, useCodeDeployDeployments }
 import {
   InfoCard,
   InfoCardVariants,
+  MissingAnnotationEmptyState,
   ResponseErrorPanel,
   StructuredMetadataTable,
 } from '@backstage/core-components';
 import { Build }  from "@aws-sdk/client-codebuild";
 import { DeploymentInfo }  from "@aws-sdk/client-codedeploy";
 import { GetPipelineStateOutput } from "@aws-sdk/client-codepipeline";
-import { isBuildAvailable, isDeployAvailable, isPipelineAvailable } from '../Flags';
+import { isAWSCodeBuildAvailable, isAWSCodeDeployAvailable, isAWSCodePipelineAvailable } from '../Flags';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { Grid, LinearProgress }  from "@material-ui/core"
-import { DEPLOY_GROUP_ARN_ANNOTATION } from '../../constants';
-import { PIPELINE_ARN_ANNOTATION } from '../../constants';
 import { DeploymentStatus } from '../DeploymentStatus';
 import { BuildStatus } from '../BuildStatus';
 import { PipelineStageStatus } from '../PipelineStageStatus';
+import { getCodeBuildArnFromEntity, getCodeDeployArnFromEntity, getCodePipelineArnFromEntity, getIAMRoleFromEntity } from '../../utils';
+import { BUILD_PROJECT_ARN_ANNOTATION, DEPLOY_GROUP_ARN_ANNOTATION, PIPELINE_ARN_ANNOTATION } from '../../constants';
+import { Entity } from '@backstage/catalog-model';
 
 const WidgetContent = ({
   builds,
@@ -47,12 +49,11 @@ const WidgetContent = ({
     const ar = builds[0]?.arn?.split(':');
     if (ar !== undefined && id !== undefined) {
       rows.set("Build ID",
-          <a
-              href={`https://${ar[3]}.console.aws.amazon.com/codesuite/codebuild/${ar[4]}/${ar[5].replace('build', 'projects')}/${ar[5]}:${ar[6]}`}
-              target="_blank"
-          >
-            {id}
-          </a>
+        <a
+          href={`https://${ar[3]}.console.aws.amazon.com/codesuite/codebuild/${ar[4]}/${ar[5].replace('build', 'projects')}/${ar[5]}:${ar[6]}`}
+          target="_blank">
+          {id}
+        </a>
       )
     }
     const buildTime = builds[0]?.endTime;
@@ -71,37 +72,50 @@ const WidgetContent = ({
 };
 
 export const BuildLatestRunCard = ({
+  entity,
   variant,
 }: {
+  entity: Entity;
   variant?: InfoCardVariants;
 }) => {
-  const { entity } = useEntity();
-  const { buildOutput, error, loading } =  useCodeBuildBuilds(entity);
+  const { project, region } = getCodeBuildArnFromEntity(entity);
+  const { arn: iamRole } = getIAMRoleFromEntity(entity);
+
+  const { buildOutput, error, loading } =  useCodeBuildBuilds(project, region, iamRole);
 
   if(buildOutput) {
     return (
       <InfoCard title='AWS CodeBuild' variant={variant}>
-        <WidgetContent
-          builds={buildOutput}
-        />
+        <WidgetContent builds={buildOutput} />
       </InfoCard>
     );
   }
 
   return (
     <InfoCard title='AWS CodeBuild' variant={variant}>
-        {error &&
-          <ResponseErrorPanel error={error} />
-        }
+      {error &&
+        <ResponseErrorPanel error={error} />
+      }
 
-        {loading &&
-          <LinearProgress />
-        }
+      {loading &&
+        <LinearProgress />
+      }
     </InfoCard>
   )
 };
 
-/* ---------------------------------------- */
+export const AWSCodeBuildWidget = ({
+  variant,
+}: {
+  variant?: InfoCardVariants;
+}) => {
+  const { entity } = useEntity();
+   return !isAWSCodeBuildAvailable(entity) ? (
+     <MissingAnnotationEmptyState annotation={BUILD_PROJECT_ARN_ANNOTATION} />
+   ) : (
+     <BuildLatestRunCard entity={entity} variant={variant} />
+   );
+};
 
 const DeployWidgetContent = ({
   deploymentInfo,region
@@ -118,12 +132,11 @@ const DeployWidgetContent = ({
     const id = deploymentInfo?.deploymentId;
     if (id !== undefined) {
       rows.set("Deploy ID",
-          <a
-              href={`https://${region}.console.aws.amazon.com/codesuite/codedeploy/deployments/${id}?${region}`}
-              target="_blank"
-          >
-            {id}
-          </a>
+        <a
+          href={`https://${region}.console.aws.amazon.com/codesuite/codedeploy/deployments/${id}?${region}`}
+          target="_blank">
+          {id}
+        </a>
       )
     }
     const buildTime = deploymentInfo?.completeTime;
@@ -135,34 +148,28 @@ const DeployWidgetContent = ({
   }
   }
   return (
-    <StructuredMetadataTable
-      metadata = {Object.fromEntries(rows)}
-    />
+    <StructuredMetadataTable metadata = {Object.fromEntries(rows)} />
   );
 };
 
 export const DeployLatestRunCard = ({
+  entity,
   variant,
 }: {
+  entity: Entity;
   variant?: InfoCardVariants;
 }) => {
-  const { entity } = useEntity();
-  const { deploymentsInfo, error, loading } =  useCodeDeployDeployments(entity)
-  const deployARN = entity?.metadata.annotations?.[DEPLOY_GROUP_ARN_ANNOTATION] ?? '';
-  const arnElements = deployARN.split(":")
-  if (arnElements.length < 7)
-    return (<></>);
+  const { deploymentGroup, region } = getCodeDeployArnFromEntity(entity);
+  const { arn: iamRole } = getIAMRoleFromEntity(entity);
 
-  const region = arnElements[3];
-
+  const { deploymentsInfo, error, loading } =  useCodeDeployDeployments(deploymentGroup, region, iamRole)
   if(deploymentsInfo) {
     return (
       <InfoCard title='AWS CodeDeploy' variant={variant}>
         {!error && deploymentsInfo !== undefined ? (
           <DeployWidgetContent
             deploymentInfo={deploymentsInfo[0]}
-            region={region}
-          />
+            region={region} />
         ) : ( "" )}
       </InfoCard>
     );
@@ -170,17 +177,29 @@ export const DeployLatestRunCard = ({
 
   return (
     <InfoCard title='AWS CodeDeploy' variant={variant}>
-        {error &&
-          <ResponseErrorPanel error={error} />
-        }
+      {error &&
+        <ResponseErrorPanel error={error} />
+      }
 
-        {loading &&
-          <LinearProgress />
-        }
+      {loading &&
+        <LinearProgress />
+      }
     </InfoCard>
   )
 };
 
+export const AWSCodeDeployWidget = ({
+  variant,
+}: {
+  variant?: InfoCardVariants;
+}) => {
+  const { entity } = useEntity();
+   return !isAWSCodeDeployAvailable(entity) ? (
+     <MissingAnnotationEmptyState annotation={DEPLOY_GROUP_ARN_ANNOTATION} />
+   ) : (
+     <DeployLatestRunCard entity={entity} variant={variant} />
+   );
+};
 
 const PipelineWidgetContent = ({
     pipelineInfo
@@ -206,31 +225,27 @@ const PipelineWidgetContent = ({
   }
 
   return (
-    <StructuredMetadataTable
-      metadata = {Object.fromEntries(rows)}
-    />
+    <StructuredMetadataTable metadata = {Object.fromEntries(rows)} />
   );
 };
 
 
 export const PipelineLatestRunCard = ({
+  entity,
   variant,
 }: {
+  entity: Entity;
   variant?: InfoCardVariants;
 }) => {
-  const { entity } = useEntity();
-  const { pipelineInfo, error, loading } = useCodePipelineSummary(entity)
-  const pipelineARN = entity?.metadata.annotations?.[PIPELINE_ARN_ANNOTATION] ?? '';
-  const arnElements = pipelineARN.split(":")
-  if (arnElements.length < 6)
-    return (<></>);
+  const { pipelineName, region } = getCodePipelineArnFromEntity(entity);
+  const { arn: iamRole } = getIAMRoleFromEntity(entity);
 
-  const region = arnElements[3];
+  const { pipelineInfo, error, loading } = useCodePipelineSummary(pipelineName, region, iamRole)
 
   if(pipelineInfo) {
     return (
-      <InfoCard title={ <a href={`https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipelineInfo?.pipelineName}/view?${region}`}
-                target="_blank"> AWS CodePipeline: {pipelineInfo?.pipelineName} </a>} variant={variant}>
+      <InfoCard title={ <a href={`https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipelineName}/view?${region}`}
+                target="_blank"> AWS CodePipeline</a>} variant={variant}>
           {pipelineInfo &&
             <PipelineWidgetContent
               pipelineInfo={pipelineInfo}
@@ -254,6 +269,19 @@ export const PipelineLatestRunCard = ({
   )
 };
 
+export const AWSCodePipelineWidget = ({
+  variant,
+}: {
+  variant?: InfoCardVariants;
+}) => {
+  const { entity } = useEntity();
+   return !isAWSCodePipelineAvailable(entity) ? (
+     <MissingAnnotationEmptyState annotation={PIPELINE_ARN_ANNOTATION} />
+   ) : (
+     <PipelineLatestRunCard entity={entity} variant={variant} />
+   );
+};
+
 export const CodeStarCards = ({
   variant,
 }: {
@@ -262,19 +290,19 @@ export const CodeStarCards = ({
   const { entity } = useEntity();
   return(
     <>
-      { isPipelineAvailable(entity) &&
-        <Grid item sm={4}>
-          <PipelineLatestRunCard variant={variant} />
+      { isAWSCodePipelineAvailable(entity) &&
+        <Grid item lg={4} md={6} xs={12}>
+          <AWSCodePipelineWidget variant={variant} />
         </Grid>
       }
-      { isBuildAvailable(entity) &&
-        <Grid item sm={4}>
-          <BuildLatestRunCard variant={variant} />
+      { isAWSCodeBuildAvailable(entity) &&
+        <Grid item lg={4} md={6} xs={12}>
+          <AWSCodeBuildWidget variant={variant} />
         </Grid>
       }
-      { isDeployAvailable(entity) &&
-        <Grid item sm={4}>
-          <DeployLatestRunCard variant={variant} />
+      { isAWSCodeDeployAvailable(entity) &&
+        <Grid item lg={4} md={6} xs={12}>
+          <AWSCodeDeployWidget variant={variant} />
         </Grid>
       }
     </>

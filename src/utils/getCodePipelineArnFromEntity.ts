@@ -11,7 +11,19 @@
  * limitations under the License.
  */
 
-export {AWSCodeBuildWidget} from './Cards';
-export {AWSCodeDeployWidget} from './Cards';
-export {AWSCodePipelineWidget} from './Cards';
-export {CodeStarCards} from './Cards';
+import { Entity } from '@backstage/catalog-model';
+import { PIPELINE_ARN_ANNOTATION } from '../constants';
+import { getArnFromEntity } from './getArnFromEntity';
+ 
+export function getCodePipelineArnFromEntity(entity: Entity): {
+  arn: string,
+  accountId: string,
+  region: string,
+  service: string,
+  resource: string,
+  pipelineName: string,
+} {
+  const arn = getArnFromEntity(entity, PIPELINE_ARN_ANNOTATION);
+
+  return {pipelineName: arn.resource, ...arn}
+}

@@ -19,18 +19,18 @@ import {
   IAM_ROLE_ANNOTATION
 } from '../constants';
 
-export const isCodeStarAvailable = (entity: Entity) => {
+export const isAWSCodeStarAvailable = (entity: Entity) => {
   return Boolean(entity.metadata.annotations?.[IAM_ROLE_ANNOTATION]);
 }
 
-export const isBuildAvailable = (entity: Entity) => {
+export const isAWSCodeBuildAvailable = (entity: Entity) => {
   return Boolean(entity.metadata.annotations?.[BUILD_PROJECT_ARN_ANNOTATION]);
 }
 
-export const isDeployAvailable = (entity: Entity) => {
+export const isAWSCodeDeployAvailable = (entity: Entity) => {
   return Boolean(entity.metadata.annotations?.[DEPLOY_GROUP_ARN_ANNOTATION]);
 }
 
-export const isPipelineAvailable = (entity: Entity) => {
+export const isAWSCodePipelineAvailable = (entity: Entity) => {
   return Boolean(entity.metadata.annotations?.[PIPELINE_ARN_ANNOTATION]);
 }

@@ -14,35 +14,24 @@
 import {useAsyncRetry} from 'react-use';
 import {codeStarApiRef} from '../api';
 import {useApi} from '@backstage/core-plugin-api';
-import {IAM_ROLE_ANNOTATION} from '../constants';
-import {PIPELINE_ARN_ANNOTATION} from '../constants';
 import {PipelineExecutionSummary} from '@aws-sdk/client-codepipeline';
-import { Entity } from '@backstage/catalog-model';
 
-export function useCodePipelineExecutions(entity: Entity) {
+export function useCodePipelineExecutions(pipelineName: string, region: string, iamRole: string) {
   const api = useApi(codeStarApiRef);
-  const iamRole = entity?.metadata.annotations?.[IAM_ROLE_ANNOTATION] ?? '';
-  const pipelineARN = entity?.metadata.annotations?.[PIPELINE_ARN_ANNOTATION] ?? '';
+
   const {
     loading,
     value: pipelineRunsSummaries,
     error,
     retry
   } = useAsyncRetry<PipelineExecutionSummary[] | undefined>(async () => {
-    const arnElements = pipelineARN.split(":")
-    if (arnElements.length < 6)
-      return undefined;
-
-    const region = arnElements[3];
-    const pipelineName = arnElements[5];
-
     const creds = await api.generateCredentials({iamRole: iamRole});
     const pipelineRunsList = await api.getPipelineRuns({region: region, name: pipelineName, creds});
     if (pipelineRunsList?.pipelineExecutionSummaries === undefined) {
       return undefined;
     }
     return pipelineRunsList.pipelineExecutionSummaries;
-  });
+  }, []);
 
-  return {loading, pipelineRunsSummaries, error, retry} as const;
+  return {loading, pipelineRunsSummaries, region, pipelineName, error, retry} as const;
 }

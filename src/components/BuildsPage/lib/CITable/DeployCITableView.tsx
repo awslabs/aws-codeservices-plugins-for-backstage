@@ -14,88 +14,81 @@
 import React from 'react';
 import {Box, Link, Typography} from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
-import { Table, TableColumn } from '@backstage/core-components';
+import { Table } from '@backstage/core-components';
 import {DeploymentInfo} from "@aws-sdk/client-codedeploy";
-import {useEntity} from '@backstage/plugin-catalog-react';
-import {DEPLOY_GROUP_ARN_ANNOTATION} from '../../../../constants';
 import { DeploymentStatus } from '../../../DeploymentStatus';
 import { Entity } from '@backstage/catalog-model';
 import { useCodeDeployDeployments } from '../../../../hooks';
+import { getCodeDeployArnFromEntity, getIAMRoleFromEntity } from '../../../../utils';
 
-const generatedColumns: TableColumn[] = [
-  {
-    title: 'Id',
-    field: 'id',
+const generatedColumns= (region: string) => {
+  return [
+    {
+      title: 'Id',
+      field: 'id',
 
-    render: (row: Partial<DeploymentInfo>) => {
-      // eslint-disable-next-line
-      const {entity} = useEntity();
-      const deployARN = entity?.metadata.annotations?.[DEPLOY_GROUP_ARN_ANNOTATION] ?? '';
-      const arnElements = deployARN.split(":")
-      if (arnElements.length < 7)
-        return [];
-
-      const region = arnElements[3];
-      return (
-         <> <Link
-              href={`https://${region}.console.aws.amazon.com/codesuite/codedeploy/deployments/${row.deploymentId}?${region}`}
-              target="_blank">
-            {row.deploymentId}
-          </Link></>
-      );
+      render: (row: Partial<DeploymentInfo>) => {
+        return (
+          <> <Link
+                href={`https://${region}.console.aws.amazon.com/codesuite/codedeploy/deployments/${row.deploymentId}?${region}`}
+                target="_blank">
+              {row.deploymentId}
+            </Link></>
+        );
+      },
     },
-  },
-  {
-    title: 'Plaform',
-    field: '',
-    render: (row: Partial<DeploymentInfo>) => {
+    {
+      title: 'Plaform',
+      field: '',
+      render: (row: Partial<DeploymentInfo>) => {
+          return (
+            <>
+              {row.computePlatform}
+            </>
+          );
+      },
+    },
+    {
+      title: 'Creator',
+      field: 'creator',
+      render: (row: Partial<DeploymentInfo>) => {
         return (
           <>
-            {row.computePlatform}
+            {row.creator}
           </>
         );
+      },
     },
-  },
-  {
-    title: 'Creator',
-    field: 'creator',
-    render: (row: Partial<DeploymentInfo>) => {
-      return (
-        <>
-          {row.creator}
-        </>
-      );
-    },
-  },
-  {
-    title: 'Status',
-    field: 'status',
-    render: (row: Partial<DeploymentInfo>) => {
-      return (
-        <Box display="flex" alignItems="center">
-          <DeploymentStatus status={row.status} />
-        </Box>
-      );
-    },
-  },
-  {
-    title: 'Duration',
-    field: 'duration',
-    render: (row: Partial<DeploymentInfo>) => {
-      if (row.completeTime !== undefined && row.createTime !== undefined) {
-        if ( row.completeTime instanceof Date && row.createTime instanceof Date) {
+    {
+      title: 'Status',
+      field: 'status',
+      render: (row: Partial<DeploymentInfo>) => {
         return (
-          <>
-            {(row.completeTime.getTime() - row.createTime.getTime()) / 1000} Seconds
-          </>
+          <Box display="flex" alignItems="center">
+            <DeploymentStatus status={row.status} />
+          </Box>
         );
+      },
+    },
+    {
+      title: 'Duration',
+      field: 'duration',
+      render: (row: Partial<DeploymentInfo>) => {
+        if (row.completeTime !== undefined && row.createTime !== undefined) {
+          if ( row.completeTime instanceof Date && row.createTime instanceof Date) {
+          return (
+            <>
+              {(row.completeTime.getTime() - row.createTime.getTime()) / 1000} Seconds
+            </>
+          );
+        }
+        return (<></>)
       }
-      return (<></>)
-    }
-    return(<></>);
+      return(<></>);
+      },
     },
-  },
-];
+  ];
+};
 
 type Props = {
   entity: Entity;
@@ -104,7 +97,11 @@ type Props = {
 export const DeployCITableView = ({
   entity,
 }: Props) => {
-  const {loading, deploymentsInfo, retry} = useCodeDeployDeployments(entity);
+  const { deploymentGroup, region } = getCodeDeployArnFromEntity(entity);
+  const { arn: iamRole } = getIAMRoleFromEntity(entity);
+
+  const {loading, deploymentsInfo, retry} = useCodeDeployDeployments(deploymentGroup, region, iamRole);
+
   return (
     <Table
       isLoading={loading}
@@ -123,7 +120,7 @@ export const DeployCITableView = ({
           <Typography variant="h6">AWS CodeDeploy</Typography>
         </Box>
       }
-      columns={generatedColumns}
+      columns={generatedColumns(region)}
     />
   );
 };

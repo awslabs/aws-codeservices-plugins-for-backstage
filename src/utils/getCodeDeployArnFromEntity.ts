@@ -11,7 +11,25 @@
  * limitations under the License.
  */
 
-export {AWSCodeBuildWidget} from './Cards';
-export {AWSCodeDeployWidget} from './Cards';
-export {AWSCodePipelineWidget} from './Cards';
-export {CodeStarCards} from './Cards';
+import { Entity } from '@backstage/catalog-model';
+import { DEPLOY_GROUP_ARN_ANNOTATION } from '../constants';
+import { getArnFromEntity } from './getArnFromEntity';
+ 
+export function getCodeDeployArnFromEntity(entity: Entity): {
+  arn: string,
+  accountId: string,
+  region: string,
+  service: string,
+  resource: string,
+  deploymentGroup: string,
+} {
+  const arn = getArnFromEntity(entity, DEPLOY_GROUP_ARN_ANNOTATION);
+
+  const resourceParts = arn.resource.split("/");
+
+  if(resourceParts.length !== 2) {
+    throw new Error(`CodeDeploy ARN not valid: ${arn.arn}`)
+  }
+
+  return {deploymentGroup: resourceParts[1], ...arn}
+}

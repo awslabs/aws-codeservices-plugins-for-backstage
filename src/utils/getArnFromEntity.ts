@@ -11,7 +11,25 @@
  * limitations under the License.
  */
 
-export {AWSCodeBuildWidget} from './Cards';
-export {AWSCodeDeployWidget} from './Cards';
-export {AWSCodePipelineWidget} from './Cards';
-export {CodeStarCards} from './Cards';
+import { validate, parse } from '@aws-sdk/util-arn-parser';
+import { Entity } from '@backstage/catalog-model';
+ 
+export function getArnFromEntity(entity: Entity, annotation: string): {
+  arn: string,
+  accountId: string,
+  region: string,
+  service: string,
+  resource: string,
+} {
+  const arn = entity.metadata.annotations?.[annotation] ?? ''
+
+  if (!validate(arn)) {
+    throw new Error(
+      `Value for annotation ${annotation} was not a valid ARN: ${arn}`,
+    );
+  }
+
+  const parsedArn = parse(arn);
+
+  return { arn, ...parsedArn };
+}

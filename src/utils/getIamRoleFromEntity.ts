@@ -11,7 +11,16 @@
  * limitations under the License.
  */
 
-export {AWSCodeBuildWidget} from './Cards';
-export {AWSCodeDeployWidget} from './Cards';
-export {AWSCodePipelineWidget} from './Cards';
-export {CodeStarCards} from './Cards';
+import { Entity } from '@backstage/catalog-model';
+import { IAM_ROLE_ANNOTATION } from '../constants';
+import { getArnFromEntity } from './getArnFromEntity';
+ 
+export function getIAMRoleFromEntity(entity: Entity): {
+  arn: string,
+  accountId: string,
+  region: string,
+  service: string,
+  resource: string,
+} {
+  return getArnFromEntity(entity, IAM_ROLE_ANNOTATION);
+}

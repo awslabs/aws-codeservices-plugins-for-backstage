@@ -11,7 +11,25 @@
  * limitations under the License.
  */
 
-export {AWSCodeBuildWidget} from './Cards';
-export {AWSCodeDeployWidget} from './Cards';
-export {AWSCodePipelineWidget} from './Cards';
-export {CodeStarCards} from './Cards';
+import { Entity } from '@backstage/catalog-model';
+import { BUILD_PROJECT_ARN_ANNOTATION } from '../constants';
+import { getArnFromEntity } from './getArnFromEntity';
+ 
+export function getCodeBuildArnFromEntity(entity: Entity): {
+  arn: string,
+  accountId: string,
+  region: string,
+  service: string,
+  resource: string,
+  project: string,
+} {
+  const arn = getArnFromEntity(entity, BUILD_PROJECT_ARN_ANNOTATION);
+
+  const resourceParts = arn.resource.split("/");
+
+  if(resourceParts.length !== 2) {
+    throw new Error(`CodeBuild ARN not valid: ${arn.arn}`)
+  }
+
+  return {project: resourceParts[1], ...arn}
+}

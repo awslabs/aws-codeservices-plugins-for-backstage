@@ -15,81 +15,88 @@ import React from 'react';
 import { Box, Typography} from '@material-ui/core';
 import { Link } from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
-import { Table, TableColumn } from '@backstage/core-components';
-/* import {Exception } from '../../../../api/ServiceApi'; */
+import { Table } from '@backstage/core-components';
 import {Build} from "@aws-sdk/client-codebuild";
 import { BuildStatus } from '../../../BuildStatus';
 import { Entity } from '@backstage/catalog-model';
 import { useCodeBuildBuilds } from '../../../../hooks';
+import { getCodeBuildArnFromEntity, getIAMRoleFromEntity } from '../../../../utils';
 
-const generatedColumns: TableColumn[] = [
-  {
-    title: 'Builds',
-    field: 'name',
-    render: (row: Partial<Build>) => {
-      if (row.id !== undefined) {
-        const arn = row.arn?.split(':');
-        if (arn === undefined) {
-          return (<> {row.id} </>)
-        }
-        return (
-          <Link href={`https://${arn[3]}.console.aws.amazon.com/codesuite/codebuild/${arn[4]}/${arn[5].replace('build','projects')}/${arn[5]}:${arn[6]}`} 
-          target="_blank" >
-            {row.id}
-          </Link>
-        );
-      }
-      return (<> {row.id} </>);
-    },
-  },
-  {
-    title: 'Number',
-    field: 'number',
-    render: (row: Partial<Build>) => {
-      return (
-        <>
-          {row.buildNumber}
-        </>
-      );
-    },
-  },
-  {
-    title: 'Submitter',
-    field: 'submitter',
-    render: (row: Partial<Build>) => {
-      return (
-        <>
-          {row.initiator}
-        </>
-      );
-    },
-  },
-  {
-    title: 'Status',
-    field: 'status',
-    render: (row: Partial<Build>) => {
-      return (
-        <Box display="flex" alignItems="center">
-          <BuildStatus status={row.buildStatus} />
-        </Box>
-      );
-    },
-  },
-  {
-    title: 'Duration',
-    field: 'duration',
-    render: (row: Partial<Build>) => {
-      if (row.endTime !== undefined && row.startTime !== undefined) {
+const getBuildLink = (id : string | undefined, project: string, accountId: string, region : string) => {
+  if(id) {
+    return (
+      <Link href={`https://${region}.console.aws.amazon.com/codesuite/codebuild/${accountId}/projects/${project}/build/${project}:${id}/?region=${region}`} 
+      target="_blank" >
+        {id}
+      </Link>
+    );
+  }
+
+  return ('Unknown');
+};
+
+const generatedColumns= (region: string, project: string, accountId: string) => {
+  return [
+    {
+      title: 'Builds',
+      field: 'name',
+      render: (row: Partial<Build>) => {
         return (
           <>
-            {(row.endTime.getTime() - row.startTime.getTime()) / 1000} Seconds
+            {getBuildLink(row.id, project, accountId, region)}
           </>
         );
-      }
-      return(<></>);
+      },
     },
-  },
-];
+    {
+      title: 'Number',
+      field: 'number',
+      render: (row: Partial<Build>) => {
+        return (
+          <>
+            {row.buildNumber}
+          </>
+        );
+      },
+    },
+    {
+      title: 'Submitter',
+      field: 'submitter',
+      render: (row: Partial<Build>) => {
+        return (
+          <>
+            {row.initiator}
+          </>
+        );
+      },
+    },
+    {
+      title: 'Status',
+      field: 'status',
+      render: (row: Partial<Build>) => {
+        return (
+          <Box display="flex" alignItems="center">
+            <BuildStatus status={row.buildStatus} />
+          </Box>
+        );
+      },
+    },
+    {
+      title: 'Duration',
+      field: 'duration',
+      render: (row: Partial<Build>) => {
+        if (row.endTime !== undefined && row.startTime !== undefined) {
+          return (
+            <>
+              {(row.endTime.getTime() - row.startTime.getTime()) / 1000} Seconds
+            </>
+          );
+        }
+        return(<></>);
+      },
+    },
+  ];
+}
 
 type Props = {
   entity: Entity;
@@ -98,7 +105,10 @@ type Props = {
 export const BuildCITableView = ({
   entity,
 }: Props) => {
-  const {loading, buildOutput, retry} = useCodeBuildBuilds(entity);
+  const { accountId, project, region } = getCodeBuildArnFromEntity(entity);
+  const { arn: iamRole } = getIAMRoleFromEntity(entity);
+
+  const {loading, buildOutput, retry} = useCodeBuildBuilds(project, region, iamRole);
   return (
     <Table
       isLoading={loading}
@@ -117,7 +127,7 @@ export const BuildCITableView = ({
           <Typography variant="h6">AWS CodeBuild</Typography>
         </Box>
       }
-      columns={generatedColumns}
+      columns={generatedColumns(region, project, accountId)}
     />
   );
 };

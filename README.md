@@ -35,9 +35,9 @@ imports are located.
 
 ```tsx
 import {
-  CodeStarCards,
-  EntityCodeStarContent,
-  isCodeStarAvailable
+  EntityAWSCodeStarCards,
+  EntityAWSCodeStarContent,
+  isAWSCodeStarAvailable
 } from 'plugin-backstage-code-star';
 ```
 
@@ -47,8 +47,8 @@ import {
 ```tsx
 const cicdContent = (
    <EntitySwitch>
-        <EntitySwitch.Case if={isCodeStarAvailable}>
-          <EntityCodeStarContent/>
+        <EntitySwitch.Case if={isAWSCodeStarAvailable}>
+          <EntityAWSCodeStarContent/>
         </EntitySwitch.Case>
   </EntitySwitch>
 );
@@ -61,8 +61,8 @@ in the page and add the snippet below, right above it.
 ...
 const cicdCard = (
    <EntitySwitch>
-        <EntitySwitch.Case if={isCodeStarAvailable}>
-          <CodeStarCards variant="gridItem"/>
+        <EntitySwitch.Case if={isAWSCodeStarAvailable}>
+          <EntityAWSCodeStarCards variant="gridItem"/>
         </EntitySwitch.Case>
   </EntitySwitch>
 );
@@ -88,19 +88,19 @@ You can enable a subset or all of the following components:
 ```yaml
 metadata:
   annotations:
-    aws.amazon.com/build-project-arn: [YOUR_BUILD_PROJECT_ARN]
+    aws.amazon.com/codebuild-project-arn: [YOUR_BUILD_PROJECT_ARN]
 ```
 - to integrate with AWS CodeDeploy:
 ```yaml
 metadata:
   annotations:
-    aws.amazon.com/deploy-group-arn: [YOUR_APPLICATION_DEPLOY_GROUP_ARN]
+    aws.amazon.com/codedeploy-group-arn: [YOUR_APPLICATION_DEPLOY_GROUP_ARN]
 ```
 - to integrate with AWS CodePipeline:
 ```yaml
 metadata:
   annotations:
-    aws.amazon.com/pipeline-arn: [YOUR_PIPELINE_ARN]
+    aws.amazon.com/codepipeline-arn: [YOUR_PIPELINE_ARN]
 ```
 
 ## Dev Environment Setup

@@ -14,37 +14,27 @@
 import {useAsyncRetry} from 'react-use';
 import {codeStarApiRef} from '../api';
 import {useApi} from '@backstage/core-plugin-api';
-import {BUILD_PROJECT_ARN_ANNOTATION, IAM_ROLE_ANNOTATION} from '../constants';
 import {Build} from '@aws-sdk/client-codebuild';
-import { Entity } from '@backstage/catalog-model';
 
-export function useCodeBuildBuilds(entity: Entity) {
+export function useCodeBuildBuilds(project: string, region: string, iamRole: string) {
   const api = useApi(codeStarApiRef);
 
-  const iamRole = entity?.metadata.annotations?.[IAM_ROLE_ANNOTATION] ?? '';
-  const buildARN = entity?.metadata.annotations?.[BUILD_PROJECT_ARN_ANNOTATION] ?? '';
   const {
     loading,
     value: builds,
     error,
     retry,
   } = useAsyncRetry<Build[]>(async () => {
-    const arnElements = buildARN.split(":")
-    if (arnElements.length < 6)
-      return [];
-
-    const region = arnElements[3];
-    const project = arnElements[5].substring("project/".length)
-
     const creds = await api.generateCredentials({iamRole: iamRole});
     const buildIds = await api.getBuildIds({region: region, project: project, creds});
+    
     if (buildIds.ids) {
-      const output = await api.getBuilds({region: region, ids: buildIds.ids, creds})
+      const output = await api.getBuilds({region: region, ids: buildIds.ids, creds});
       return output.builds ?? [];
     }
     return [];
-  });
+  }, []);
 
   const buildOutput = builds;
-  return {loading, buildOutput, error, retry} as const;
+  return {loading, buildOutput, region, project, error, retry} as const;
 };

@@ -30,7 +30,7 @@ import {codeStarApiRef} from '../../api';
 import { entityBuildMock, entityDeployMock, entityPipelineMock } from '../../mocks/mocks';
 import { buildsResponseMock, credsMock, deployResponseMock, pipelineResponseMock } from '../../mocks/mocks';
 import { MockCodeStarClient} from '../../mocks/MockCodeStarClient'
-import { BuildLatestRunCard, DeployLatestRunCard, PipelineLatestRunCard } from './Cards';
+import { AWSCodeBuildWidget, AWSCodeDeployWidget, AWSCodePipelineWidget } from './Cards';
 
 const errorApiMock = { post: jest.fn(), error$: jest.fn() };
 
@@ -45,7 +45,7 @@ const apis: [AnyApiRef, Partial<unknown>][] = [
   [codeStarApiRef, new MockCodeStarClient()],
 ];
 
-describe('BuildLatestRunCard', () => {
+describe('AWSCodeBuildWidget', () => {
   const worker = setupServer();
   setupRequestMockHandlers(worker);
 
@@ -64,7 +64,7 @@ describe('BuildLatestRunCard', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityBuildMock}>
-            <BuildLatestRunCard />
+            <AWSCodeBuildWidget />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -79,7 +79,7 @@ describe('BuildLatestRunCard', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityPipelineMock}>
-            <BuildLatestRunCard />
+            <AWSCodeBuildWidget />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -90,9 +90,7 @@ describe('BuildLatestRunCard', () => {
   });
 });
 
-
-
-describe('DeployLatestRunCard', () => {
+describe('AWSCodeDeployWidget', () => {
   const worker = setupServer();
   setupRequestMockHandlers(worker);
 
@@ -111,7 +109,7 @@ describe('DeployLatestRunCard', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityDeployMock}>
-            <DeployLatestRunCard />
+            <AWSCodeDeployWidget />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -126,7 +124,7 @@ describe('DeployLatestRunCard', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityBuildMock}>
-            <DeployLatestRunCard />
+            <AWSCodeDeployWidget />
           </EntityProvider>
         </TestApiProvider>,
       ),
@@ -137,7 +135,7 @@ describe('DeployLatestRunCard', () => {
   });
 });
 
-describe('PipelineRunCard', () => {
+describe('AWSCodePipelineWidget', () => {
   const worker = setupServer();
   setupRequestMockHandlers(worker);
 
@@ -156,13 +154,13 @@ describe('PipelineRunCard', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityPipelineMock }>
-            <PipelineLatestRunCard />
+            <AWSCodePipelineWidget />
           </EntityProvider>
         </TestApiProvider>,
       ),
     );
     expect(
-      await rendered.findByText(`AWS CodePipeline: ${pipelineResponseMock.pipelineName}`),
+      await rendered.findByText('AWS CodePipeline'),
     ).toBeInTheDocument();
   });
 
@@ -171,13 +169,13 @@ describe('PipelineRunCard', () => {
       wrapInTestApp(
         <TestApiProvider apis={apis}>
           <EntityProvider entity={entityDeployMock}>
-            <PipelineLatestRunCard />
+            <AWSCodePipelineWidget />
           </EntityProvider>
         </TestApiProvider>,
       ),
     );
     await expect(
-      rendered.findByText(`AWS CodePipeline: ${pipelineResponseMock.pipelineName}`),
+      rendered.findByText('AWS CodePipeline'),
     ).rejects.toThrow();
   });
 });

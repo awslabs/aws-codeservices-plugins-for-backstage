@@ -14,28 +14,17 @@
 import {useAsyncRetry} from 'react-use';
 import {codeStarApiRef} from '../api';
 import {useApi} from '@backstage/core-plugin-api';
-import {IAM_ROLE_ANNOTATION} from '../constants';
-import {DEPLOY_GROUP_ARN_ANNOTATION} from '../constants';
 import {BatchGetDeploymentsCommandOutput} from '@aws-sdk/client-codedeploy';
-import { Entity } from '@backstage/catalog-model';
 
-export function useCodeDeployDeployments(entity: Entity) {
+export function useCodeDeployDeployments(deploymentGroup: string, region: string, iamRole: string) {
   const api = useApi(codeStarApiRef);
 
-  const iamRole = entity?.metadata.annotations?.[IAM_ROLE_ANNOTATION] ?? '';
-  const deployARN = entity?.metadata.annotations?.[DEPLOY_GROUP_ARN_ANNOTATION] ?? '';
   const {
     loading,
     value: deployments,
     error,
     retry,
   } = useAsyncRetry<BatchGetDeploymentsCommandOutput | undefined>(async () => {
-    const arnElements = deployARN.split(":")
-    if (arnElements.length < 7)
-      return undefined;
-
-    const region = arnElements[3];
-    const deploymentGroup = arnElements[6].split("/")
     if (deploymentGroup.length < 2)
       return undefined;
 
@@ -48,8 +37,8 @@ export function useCodeDeployDeployments(entity: Entity) {
       return undefined;
     }
     return await api.getDeployments({region: region, ids: output.deployments, creds});
-  });
+  }, []);
 
   const deploymentsInfo = deployments?.deploymentsInfo;
-  return {loading, deploymentsInfo, error, retry} as const
+  return {loading, deploymentsInfo, region, deploymentGroup, error, retry} as const
 };

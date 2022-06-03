@@ -14,30 +14,21 @@
 import React from 'react';
 import {Box, Typography, Link} from '@material-ui/core';
 import RetryIcon from '@material-ui/icons/Replay';
-import { Table, TableColumn } from '@backstage/core-components';
+import { Table } from '@backstage/core-components';
 import { PipelineExecutionSummary } from "@aws-sdk/client-codepipeline";
-import {useEntity} from '@backstage/plugin-catalog-react';
-import {PIPELINE_ARN_ANNOTATION} from '../../../../constants';
 import { PipelineStageStatus } from '../../../PipelineStageStatus';
 import { Entity } from '@backstage/catalog-model';
 import { useCodePipelineExecutions } from '../../../../hooks';
+import { getCodePipelineArnFromEntity, getIAMRoleFromEntity } from '../../../../utils';
 
-const generatedColumns: TableColumn[] = [
-  {
-    title: 'Pipeline',
-    field: 'Pipeline',
+const generatedColumns= (pipelineName: string, region: string) => {
+  return [
+    {
+      title: 'Pipeline',
+      field: 'Pipeline',
 
-    render: (row: Partial<PipelineExecutionSummary>) => {
-      if (row.pipelineExecutionId) {
-          // eslint-disable-next-line
-          const {entity} = useEntity();
-          const pipelineARN = entity?.metadata.annotations?.[PIPELINE_ARN_ANNOTATION] ?? '';
-          const arnElements = pipelineARN.split(":")
-          if (arnElements.length < 6)
-            return [];
-
-          const region = arnElements[3];
-          const pipelineName = arnElements[5]
+      render: (row: Partial<PipelineExecutionSummary>) => {
+        if (row.pipelineExecutionId) {
           return (
             <>
               <Link href={`https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipelineName}/executions/${row.pipelineExecutionId}/timeline?region=${region}`}
@@ -46,59 +37,60 @@ const generatedColumns: TableColumn[] = [
               </Link>
             </>
           );
-      }
-      return(<></>);
+        }
+        return(<></>);
+      },
     },
-  },
-  {
-    title: 'Last Run',
-    field: '',
-    render: (row: Partial<PipelineExecutionSummary>) => {
-       if (row.lastUpdateTime) {
-        return (<p>{row.lastUpdateTime.toLocaleString()}</p>)
-      }
-      return(<></>);
+    {
+      title: 'Last Run',
+      field: '',
+      render: (row: Partial<PipelineExecutionSummary>) => {
+        if (row.lastUpdateTime) {
+          return (<p>{row.lastUpdateTime.toLocaleString()}</p>)
+        }
+        return(<></>);
+      },
     },
-  },
-  {
-    title: 'Status',
-    field: 'status',
-    render: (row: Partial<PipelineExecutionSummary>) => {
-      if (row.status) {
-        return (
-          <Box display="flex" alignItems="center">
-            <PipelineStageStatus status={row?.status}/>
-          </Box>
-        );
-      }
-      return(<></>);
+    {
+      title: 'Status',
+      field: 'status',
+      render: (row: Partial<PipelineExecutionSummary>) => {
+        if (row.status) {
+          return (
+            <Box display="flex" alignItems="center">
+              <PipelineStageStatus status={row?.status}/>
+            </Box>
+          );
+        }
+        return(<></>);
+      },
     },
-  },
-  {
-    title: 'Trigger Type',
-    field: 'trigger type',
-    render: (row: Partial<PipelineExecutionSummary>) => {
-      if (row.trigger) {
-        return (
-          <>{row.trigger.triggerType}</>
-        );
-      }
-      return(<></>);
+    {
+      title: 'Trigger Type',
+      field: 'trigger type',
+      render: (row: Partial<PipelineExecutionSummary>) => {
+        if (row.trigger) {
+          return (
+            <>{row.trigger.triggerType}</>
+          );
+        }
+        return(<></>);
+      },
     },
-  },
-  {
-    title: 'Trigger Detail',
-    field: 'trigger detail',
-    render: (row: Partial<PipelineExecutionSummary>) => {
-      if (row.trigger) {
-        return (
-          <>{row.trigger.triggerDetail}</>
-        );
-      }
-      return(<></>);
-    },
-  }
-];
+    {
+      title: 'Trigger Detail',
+      field: 'trigger detail',
+      render: (row: Partial<PipelineExecutionSummary>) => {
+        if (row.trigger) {
+          return (
+            <>{row.trigger.triggerDetail}</>
+          );
+        }
+        return(<></>);
+      },
+    }
+  ];
+};
 
 type Props = {
   entity: Entity,
@@ -107,27 +99,30 @@ type Props = {
 export const PipelineCITableView = ({
   entity,
 }: Props) => {
-    const {loading,  pipelineRunsSummaries, retry} = useCodePipelineExecutions(entity);
-    return (
-      <Table
-        isLoading={loading}
-        actions={[
-          {
-            icon: () => <RetryIcon />,
-            tooltip: 'Refresh Data',
-            isFreeAction: true,
-            onClick: () => retry(),
-          },
-        ]}
-        data={pipelineRunsSummaries ?? []}
-        title={
-          <Box display="flex" alignItems="center">
-            <Box mr={2} />
-            <Typography variant="h6">AWS CodePipeline</Typography>
-          </Box>
-        }
-        columns={generatedColumns}
-      />
-    );
-  };
+  const { pipelineName, region } = getCodePipelineArnFromEntity(entity);
+  const { arn: iamRole } = getIAMRoleFromEntity(entity);
+
+  const {loading,  pipelineRunsSummaries, retry} = useCodePipelineExecutions(pipelineName, region, iamRole);
+  return (
+    <Table
+      isLoading={loading}
+      actions={[
+        {
+          icon: () => <RetryIcon />,
+          tooltip: 'Refresh Data',
+          isFreeAction: true,
+          onClick: () => retry(),
+        },
+      ]}
+      data={pipelineRunsSummaries ?? []}
+      title={
+        <Box display="flex" alignItems="center">
+          <Box mr={2} />
+          <Typography variant="h6">AWS CodePipeline</Typography>
+        </Box>
+      }
+      columns={generatedColumns(pipelineName, region)}
+    />
+  );
+};
 

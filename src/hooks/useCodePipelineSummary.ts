@@ -14,29 +14,17 @@
 import {useAsyncRetry} from 'react-use';
 import {codeStarApiRef} from '../api';
 import {useApi} from '@backstage/core-plugin-api';
-import {IAM_ROLE_ANNOTATION} from '../constants';
-import {PIPELINE_ARN_ANNOTATION} from '../constants';
 import {GetPipelineStateOutput} from '@aws-sdk/client-codepipeline';
-import { Entity } from '@backstage/catalog-model';
 
-export function useCodePipelineSummary(entity: Entity) {
+export function useCodePipelineSummary(pipelineName: string, region: string, iamRole: string) {
   const api = useApi(codeStarApiRef);
 
-  const iamRole = entity?.metadata.annotations?.[IAM_ROLE_ANNOTATION] ?? '';
-  const pipelineARN = entity?.metadata.annotations?.[PIPELINE_ARN_ANNOTATION] ?? '';
   const {
     loading,
     value: pipelineInfo,
     error,
     retry
   } = useAsyncRetry<GetPipelineStateOutput | undefined>(async () => {
-    const arnElements = pipelineARN.split(":")
-    if (arnElements.length < 6)
-      return undefined;
-
-    const region = arnElements[3];
-    const pipelineName = arnElements[5]
-
     const creds = await api.generateCredentials({iamRole: iamRole})
     // eslint-disable-next-line
     const pipelineInfo = await api.getPipelineState({region: region, name: pipelineName, creds});
@@ -44,7 +32,7 @@ export function useCodePipelineSummary(entity: Entity) {
       return undefined;
     }
     return pipelineInfo;
-  });
+  }, []);
 
-  return {loading, pipelineInfo, error, retry} as const;
+  return {loading, pipelineInfo, region, pipelineName, error, retry} as const;
 };

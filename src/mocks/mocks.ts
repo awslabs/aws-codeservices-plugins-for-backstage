@@ -15,10 +15,27 @@ export const entityAllMock = {
   metadata: {
     namespace: 'default',
     annotations: {
-      'aws.amazon.com/iam-role-arn': 'some-arn',
+      'aws.amazon.com/iam-role-arn': 'arn:aws:iam::111111111:role/DummyRole',
       'aws.amazon.com/codebuild-project-arn': 'arn:aws:codebuild:us-west-2:11111111:project/hello-world',
       'aws.amazon.com/codedeploy-group-arn': 'arn:aws:codedeploy:us-west-2:11111111:deploymentgroup:hello-world/hello-world-group',
       'aws.amazon.com/codepipeline-arn': 'arn:aws:codepipeline:us-west-2:111111:test-pipeline'
+    },
+    name: 'sample-service',
+    generation: 1,
+  },
+  apiVersion: 'backstage.io/v1alpha1',
+  kind: 'Component',
+  spec: {
+    type: 'service',
+    owner: 'david@roadie.io',
+    lifecycle: 'experimental',
+  },
+};
+
+export const entityNoneMock = {
+  metadata: {
+    namespace: 'default',
+    annotations: {
     },
     name: 'sample-service',
     generation: 1,
@@ -36,7 +53,7 @@ export const entityBuildMock = {
   metadata: {
     namespace: 'default',
     annotations: {
-      'aws.amazon.com/iam-role-arn': 'some-arn',
+      'aws.amazon.com/iam-role-arn': 'arn:aws:iam::111111111:role/DummyRole',
       'aws.amazon.com/codebuild-project-arn': 'arn:aws:codebuild:us-west-2:11111111:project/hello-world',
     },
     name: 'sample-service',
@@ -55,7 +72,7 @@ export const entityDeployMock = {
   metadata: {
     namespace: 'default',
     annotations: {
-      'aws.amazon.com/iam-role-arn': 'some-arn',
+      'aws.amazon.com/iam-role-arn': 'arn:aws:iam::111111111:role/DummyRole',
       'aws.amazon.com/codedeploy-group-arn': 'arn:aws:codedeploy:us-west-2:11111111:deploymentgroup:hello-world/hello-world-group',
     },
     name: 'sample-service',
@@ -74,7 +91,7 @@ export const entityPipelineMock = {
   metadata: {
     namespace: 'default',
     annotations: {
-      'aws.amazon.com/iam-role-arn': 'some-arn',
+      'aws.amazon.com/iam-role-arn': 'arn:aws:iam::111111111:role/DummyRole',
       'aws.amazon.com/codepipeline-arn': 'arn:aws:codepipeline:us-west-2:111111:test-pipeline'
     },
     name: 'sample-service',
@@ -565,7 +582,7 @@ export const pipelineRunsResponseMock = {
 
 export const pipelineResponseMock = {
   created: 1446137312.204,
-  pipelineName: "MyFirstPipeline",
+  pipelineName: "test-pipeline",
   pipelineVersion: 1,
   stageStates: [
     {

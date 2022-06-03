@@ -11,20 +11,6 @@
  * limitations under the License.
  */
 
-export {
-  codeStarPlugin,
-  codeStarPlugin as plugin,
-  EntityCodeStarContent,
-} from './plugin';
-export {BuildLatestRunCard} from './components/Cards';
-export {DeployLatestRunCard} from './components/Cards';
-export {PipelineLatestRunCard} from './components/Cards';
-export {CodeStarCards} from './components/Cards';
-export {
-  isCodeStarAvailable,
-  isCodeStarAvailable as isPluginApplicableToEntity,
-} from './components/Flags';
-export {
-  Router,
-} from './components/Router';
+export * from './plugin';
+export * from './components/Flags';
 export * from './api';
