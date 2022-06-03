@@ -23,8 +23,11 @@ import { codeStarApiRef } from '../src';
 import { MockCodeStarClient } from '../src/mocks/MockCodeStarClient';
 import { entityAllMock, entityBuildMock, entityDeployMock, entityNoneMock, entityPipelineMock } from '../src/mocks/mocks';
 import { CITable } from '../src/components/BuildsPage/lib/CITable';
-import { AWSCodeBuildWidget, AWSCodeDeployWidget, AWSCodePipelineWidget, CodeStarCards } from '../src/components/Cards/Cards';
+import { CodeStarCards } from '../src/components/CodeStarCards/CodeStarCards';
 import { Grid } from '@material-ui/core';
+import { AWSCodeBuildWidget } from '../src/components/CodeBuildWidget/CodeBuildWidget';
+import { AWSCodeDeployWidget } from '../src/components/CodeDeployWidget/CodeDeployWidget';
+import { AWSCodePipelineWidget } from '../src/components/CodePipelineWidget/CodePipelineWidget';
 
 const apis: [AnyApiRef, Partial<unknown>][] = [
   [codeStarApiRef, new MockCodeStarClient()],
