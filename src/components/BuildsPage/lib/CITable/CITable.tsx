@@ -23,7 +23,7 @@ export const CITable = () => {
   const { entity } = useEntity();
 
   return (
-    <>
+    <Grid container spacing={3}>
       { isAWSCodePipelineAvailable(entity) &&
         <Grid item sm={12}>
             <PipelineCITableView entity={entity} />
@@ -39,6 +39,6 @@ export const CITable = () => {
           <DeployCITableView entity={entity} />
         </Grid>
       }
-    </>
+    </Grid>
   );
 };
