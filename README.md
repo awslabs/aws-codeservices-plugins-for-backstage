@@ -47,25 +47,28 @@ import {
 ```tsx
 const cicdContent = (
    <EntitySwitch>
-        <EntitySwitch.Case if={isAWSCodeStarAvailable}>
-          <EntityAWSCodeStarContent/>
-        </EntitySwitch.Case>
+      <EntitySwitch.Case if={isAWSCodeStarAvailable}>
+        <EntityAWSCodeStarContent/>
+      </EntitySwitch.Case>
   </EntitySwitch>
 );
 ```
 
-- Find the section for `cicdCard` in the `EntityPage.tsx` file. If it does not exist, find `errorContnet`
-in the page and add the snippet below, right above it.
+- Find the section for `overviewContent` in the `EntityPage.tsx` file and add the `EntityAWSCodeStarCards` element under `{entityWarningContent}`:
 
 ```tsx
 ...
-const cicdCard = (
-   <EntitySwitch>
-        <EntitySwitch.Case if={isAWSCodeStarAvailable}>
-          <EntityAWSCodeStarCards variant="gridItem"/>
-        </EntitySwitch.Case>
-  </EntitySwitch>
-);
+const overviewContent = (
+  <Grid container spacing={3} alignItems="stretch">
+    {entityWarningContent}
+
+    <EntityAWSCodeStarCards/>
+
+    <Grid item md={6}>
+      <EntityAboutCard variant="gridItem" />
+    </Grid>
+    [...]
+}
 ```
 
 ### Configuring the Components
