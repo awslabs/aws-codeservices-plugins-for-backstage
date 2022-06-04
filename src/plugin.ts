@@ -62,7 +62,7 @@ export const EntityAWSCodeBuildCard = codeStarPlugin.provide(
   createComponentExtension({
     name: "EntityAWSCodeBuildCard",
     component: {
-      lazy: () => import('./components/CodeStarCards').then(m => m.AWSCodeBuildWidget),
+      lazy: () => import('./components/CodeBuildWidget').then(m => m.AWSCodeBuildWidget),
     },
   }),
 );
@@ -71,7 +71,7 @@ export const EntityAWSCodeDeployCard = codeStarPlugin.provide(
   createComponentExtension({
     name: "EntityAWSCodeDeployCard",
     component: {
-      lazy: () => import('./components/CodeStarCards').then(m => m.AWSCodeDeployWidget),
+      lazy: () => import('./components/CodeDeployWidget').then(m => m.AWSCodeDeployWidget),
     },
   }),
 );
@@ -80,7 +80,7 @@ export const EntityAWSCodePipelineCard = codeStarPlugin.provide(
   createComponentExtension({
     name: "EntityAWSCodePipelineCard",
     component: {
-      lazy: () => import('./components/CodeStarCards').then(m => m.AWSCodePipelineWidget),
+      lazy: () => import('./components/CodePipelineWidget').then(m => m.AWSCodePipelineWidget),
     },
   }),
 );
