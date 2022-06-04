@@ -30,23 +30,29 @@ import { BuildStatus } from '../BuildStatus';
 import { isAWSCodeBuildAvailable } from '../Flags';
 
 const WidgetContent = ({
+  project,
+  region,
+  accountId,
   builds,
 }: {
+  project: string,
+  region: string,
+  accountId: string,
   builds?: Build[],
 }) => {
   const rows = new Map<string, any>()
   if (builds && builds.length > 0) {
     rows.set("Status", <>
-          <BuildStatus status={builds[0].buildStatus}/>
-        </>
+        <BuildStatus status={builds[0].buildStatus}/>
+      </>
     )
 
-    const id = builds[0]?.id?.split(':');
-    const ar = builds[0]?.arn?.split(':');
-    if (ar !== undefined && id !== undefined) {
+    const id = builds[0]?.id;
+
+    if (id) {
       rows.set("Build ID",
         <a
-          href={`https://${ar[3]}.console.aws.amazon.com/codesuite/codebuild/${ar[4]}/${ar[5].replace('build', 'projects')}/${ar[5]}:${ar[6]}`}
+          href={`https://${region}.console.aws.amazon.com/codesuite/codebuild/${accountId}/projects/${project}/build/${id}/?region=${region}`}
           target="_blank">
           {id}
         </a>
@@ -61,9 +67,7 @@ const WidgetContent = ({
     }
   }
   return (
-    <StructuredMetadataTable
-      metadata = {Object.fromEntries(rows)}
-    />
+    <StructuredMetadataTable metadata = {Object.fromEntries(rows)} />
   );
 };
 
@@ -74,7 +78,7 @@ const BuildLatestRunCard = ({
   entity: Entity;
   variant?: InfoCardVariants;
 }) => {
-  const { project, region } = getCodeBuildArnFromEntity(entity);
+  const { accountId, project, region } = getCodeBuildArnFromEntity(entity);
   const { arn: iamRole } = getIAMRoleFromEntity(entity);
 
   const { buildOutput, error, loading } =  useCodeBuildBuilds(project, region, iamRole);
@@ -82,7 +86,7 @@ const BuildLatestRunCard = ({
   if(buildOutput) {
     return (
       <InfoCard title='AWS CodeBuild' variant={variant}>
-        <WidgetContent builds={buildOutput} />
+        <WidgetContent project={project} region={region} accountId={accountId} builds={buildOutput} />
       </InfoCard>
     );
   }

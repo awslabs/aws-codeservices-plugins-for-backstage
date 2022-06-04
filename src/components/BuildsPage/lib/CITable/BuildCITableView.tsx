@@ -25,7 +25,7 @@ import { getCodeBuildArnFromEntity, getIAMRoleFromEntity } from '../../../../uti
 const getBuildLink = (id : string | undefined, project: string, accountId: string, region : string) => {
   if(id) {
     return (
-      <Link href={`https://${region}.console.aws.amazon.com/codesuite/codebuild/${accountId}/projects/${project}/build/${project}:${id}/?region=${region}`} 
+      <Link href={`https://${region}.console.aws.amazon.com/codesuite/codebuild/${accountId}/projects/${project}/build/${id}/?region=${region}`} 
       target="_blank" >
         {id}
       </Link>

@@ -147,7 +147,7 @@ export const buildsResponseMock = {
         privilegedMode: false,
         type: "LINUX_CONTAINER"
       },
-      id: "hello-world-792ebbad-1dbb-4594-8206-5a09ed4330b6",
+      id: "hello-world:792ebbad-1dbb-4594-8206-5a09ed4330b6",
       initiator: "nimak",
       logs: {
         cloudWatchLogs: {
