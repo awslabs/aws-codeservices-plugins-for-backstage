@@ -23,7 +23,7 @@ import { setupServer } from 'msw/node';
 import React from 'react';
 import { codeStarApiRef } from '../../api';
 import { MockCodeStarClient } from '../../mocks/MockCodeStarClient';
-import { buildsResponseMock, entityBuildMock, entityPipelineMock, pipelineResponseMock } from '../../mocks/mocks';
+import { entityBuildMock, entityPipelineMock, pipelineResponseMock } from '../../mocks/mocks';
 import { AWSCodeBuildWidget } from './CodeBuildWidget';
 
 const apis: [AnyApiRef, Partial<unknown>][] = [
@@ -45,7 +45,7 @@ describe('AWSCodeBuildWidget', () => {
       ),
     );
     expect(
-      await rendered.findByText(buildsResponseMock.builds[0].id),
+      await rendered.findByText('Deploy2Project-KpLyLCIGYbKE'),
     ).toBeInTheDocument();
   });
 

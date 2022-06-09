@@ -21,15 +21,22 @@ export function getCodeDeployArnFromEntity(entity: Entity): {
   region: string,
   service: string,
   resource: string,
-  deploymentGroup: string,
+  deploymentGroupName: string,
+  applicationName: string,
 } {
   const arn = getArnFromEntity(entity, DEPLOY_GROUP_ARN_ANNOTATION);
 
-  const resourceParts = arn.resource.split("/");
+  const resourceParts = arn.resource.split(":");
 
   if(resourceParts.length !== 2) {
     throw new Error(`CodeDeploy ARN not valid: ${arn.arn}`)
   }
 
-  return {deploymentGroup: resourceParts[1], ...arn}
+  const resourceNameParts = resourceParts[1].split("/");
+
+  if(resourceNameParts.length !== 2) {
+    throw new Error(`CodeDeploy ARN not valid: ${arn.arn}`)
+  }
+
+  return {applicationName: resourceNameParts[0], deploymentGroupName: resourceNameParts[1], ...arn}
 }

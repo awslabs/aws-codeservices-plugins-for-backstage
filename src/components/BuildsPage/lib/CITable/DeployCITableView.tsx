@@ -19,7 +19,7 @@ import {DeploymentInfo} from "@aws-sdk/client-codedeploy";
 import { DeploymentStatus } from '../../../DeploymentStatus';
 import { Entity } from '@backstage/catalog-model';
 import { useCodeDeployDeployments } from '../../../../hooks';
-import { getCodeDeployArnFromEntity, getIAMRoleFromEntity } from '../../../../utils';
+import { formatTime, getCodeDeployArnFromEntity, getIAMRoleFromEntity } from '../../../../utils';
 
 const generatedColumns= (region: string) => {
   return [
@@ -49,14 +49,21 @@ const generatedColumns= (region: string) => {
       },
     },
     {
-      title: 'Creator',
+      title: 'Initiating event',
       field: 'creator',
       render: (row: Partial<DeploymentInfo>) => {
-        return (
-          <>
-            {row.creator}
-          </>
-        );
+        switch(row.creator) {
+          case 'user':
+            return 'User initiated';
+          case 'codeDeployRollback':
+            return 'CodeDeploy rollback';
+          case 'CodeDeployAutoUpdate':
+            return 'CodeDeploy auto-update';
+          default:
+            break;
+        }
+        
+        return 'Unknown';
       },
     },
     {
@@ -71,22 +78,15 @@ const generatedColumns= (region: string) => {
       },
     },
     {
-      title: 'Duration',
-      field: 'duration',
-      render: (row: Partial<DeploymentInfo>) => {
-        if (row.completeTime !== undefined && row.createTime !== undefined) {
-          if ( row.completeTime instanceof Date && row.createTime instanceof Date) {
-          return (
-            <>
-              {(row.completeTime.getTime() - row.createTime.getTime()) / 1000} Seconds
-            </>
-          );
-        }
-        return (<></>)
-      }
-      return(<></>);
-      },
+      title: 'Start time',
+      field: 'startTime',
+      render: (row: Partial<DeploymentInfo>) => (formatTime(row.createTime)),
     },
+    {
+      title: 'End time',
+      field: 'endTime',
+      render: (row: Partial<DeploymentInfo>) => (formatTime(row.completeTime)),
+    }
   ];
 };
 
@@ -97,10 +97,10 @@ type Props = {
 export const DeployCITableView = ({
   entity,
 }: Props) => {
-  const { deploymentGroup, region } = getCodeDeployArnFromEntity(entity);
+  const { applicationName, deploymentGroupName, region } = getCodeDeployArnFromEntity(entity);
   const { arn: iamRole } = getIAMRoleFromEntity(entity);
 
-  const {loading, deploymentsInfo, retry} = useCodeDeployDeployments(deploymentGroup, region, iamRole);
+  const {loading, deployments, retry} = useCodeDeployDeployments(applicationName, deploymentGroupName, region, iamRole);
 
   return (
     <Table
@@ -113,11 +113,11 @@ export const DeployCITableView = ({
           onClick: () => retry(),
         },
       ]}
-      data={deploymentsInfo ?? []}
+      data={deployments ?? []}
       title={
         <Box display="flex" alignItems="center">
           <Box mr={2} />
-          <Typography variant="h6">AWS CodeDeploy</Typography>
+          <Typography variant="h6">AWS CodeDeploy Deployment Group</Typography>
         </Box>
       }
       columns={generatedColumns(region)}

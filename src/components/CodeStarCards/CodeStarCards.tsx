@@ -31,17 +31,17 @@ export const CodeStarCards = ({
   return(
     <>
       { isAWSCodePipelineAvailable(entity) &&
-        <Grid item lg={4} md={6} xs={12}>
+        <Grid item md={6} xs={12}>
           <AWSCodePipelineWidget variant={variant} />
         </Grid>
       }
       { isAWSCodeBuildAvailable(entity) &&
-        <Grid item lg={4} md={6} xs={12}>
+        <Grid item md={6} xs={12}>
           <AWSCodeBuildWidget variant={variant} />
         </Grid>
       }
       { isAWSCodeDeployAvailable(entity) &&
-        <Grid item lg={4} md={6} xs={12}>
+        <Grid item md={6} xs={12}>
           <AWSCodeDeployWidget variant={variant} />
         </Grid>
       }

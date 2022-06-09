@@ -18,7 +18,7 @@ import {
   StatusAborted,
   StatusError,
 } from '@backstage/core-components';
-import { ActionExecutionStatus } from '@aws-sdk/client-codepipeline';
+import { StageExecutionStatus } from '@aws-sdk/client-codepipeline';
 
 export const PipelineStageStatus = ({
   status,
@@ -26,25 +26,37 @@ export const PipelineStageStatus = ({
   status: string | undefined;
 }) => {
   switch (status) {
-    case ActionExecutionStatus.InProgress:
+    case StageExecutionStatus.InProgress:
       return (
         <>
           <StatusRunning /> In progress
         </>
       );
-    case ActionExecutionStatus.Failed:
+    case StageExecutionStatus.Failed:
       return (
         <>
           <StatusError /> Failed
         </>
       );
-    case ActionExecutionStatus.Abandoned:
+    case StageExecutionStatus.Cancelled:
       return (
         <>
-          <StatusError /> Abandoned
+          <StatusAborted /> Cancelled
         </>
       );
-    case ActionExecutionStatus.Succeeded:
+    case StageExecutionStatus.Stopped:
+      return (
+        <>
+          <StatusAborted /> Stopped
+        </>
+      );
+    case StageExecutionStatus.Stopping:
+      return (
+        <>
+          <StatusAborted /> Stopping
+        </>
+      );
+    case StageExecutionStatus.Succeeded:
       return (
         <>
           <StatusOK /> Succeeded

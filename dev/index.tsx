@@ -40,7 +40,14 @@ createDevApp()
     element: (
     <TestApiProvider apis={apis}>
       <EntityProvider entity={entityBuildMock}>
-        <AWSCodeBuildWidget />
+        <Grid container spacing={3}>
+          <Grid item md={12}>
+            <AWSCodeBuildWidget />
+          </Grid>
+          <Grid item md={12}>
+            <AWSCodeBuildWidget buildHistoryLength={0} />
+          </Grid>
+        </Grid>
       </EntityProvider>
     </TestApiProvider>
     ),
@@ -51,7 +58,14 @@ createDevApp()
     element: (
     <TestApiProvider apis={apis}>
       <EntityProvider entity={entityDeployMock}>
-        <AWSCodeDeployWidget />
+        <Grid container spacing={3}>
+          <Grid item md={12}>
+            <AWSCodeDeployWidget />
+          </Grid>
+          <Grid item md={12}>
+            <AWSCodeDeployWidget deploymentHistoryLength={0} />
+          </Grid>
+        </Grid>
       </EntityProvider>
     </TestApiProvider>
     ),

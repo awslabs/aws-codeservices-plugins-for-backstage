@@ -20,7 +20,8 @@ import {Build} from "@aws-sdk/client-codebuild";
 import { BuildStatus } from '../../../BuildStatus';
 import { Entity } from '@backstage/catalog-model';
 import { useCodeBuildBuilds } from '../../../../hooks';
-import { getCodeBuildArnFromEntity, getIAMRoleFromEntity } from '../../../../utils';
+import { formatTime, getCodeBuildArnFromEntity, getIAMRoleFromEntity } from '../../../../utils';
+import { getDurationFromDates } from "../../../../utils/getDuration";
 
 const getBuildLink = (id : string | undefined, project: string, accountId: string, region : string) => {
   if(id) {
@@ -38,37 +39,17 @@ const getBuildLink = (id : string | undefined, project: string, accountId: strin
 const generatedColumns= (region: string, project: string, accountId: string) => {
   return [
     {
-      title: 'Builds',
+      title: 'ID',
       field: 'name',
-      render: (row: Partial<Build>) => {
-        return (
-          <>
-            {getBuildLink(row.id, project, accountId, region)}
-          </>
-        );
-      },
+      render: (row: Partial<Build>) => (getBuildLink(row.id, project, accountId, region)),
     },
     {
       title: 'Number',
-      field: 'number',
-      render: (row: Partial<Build>) => {
-        return (
-          <>
-            {row.buildNumber}
-          </>
-        );
-      },
+      field: 'buildNumber',
     },
     {
       title: 'Submitter',
-      field: 'submitter',
-      render: (row: Partial<Build>) => {
-        return (
-          <>
-            {row.initiator}
-          </>
-        );
-      },
+      field: 'initiator',
     },
     {
       title: 'Status',
@@ -86,14 +67,15 @@ const generatedColumns= (region: string, project: string, accountId: string) => 
       field: 'duration',
       render: (row: Partial<Build>) => {
         if (row.endTime !== undefined && row.startTime !== undefined) {
-          return (
-            <>
-              {(row.endTime.getTime() - row.startTime.getTime()) / 1000} Seconds
-            </>
-          );
+          return getDurationFromDates(row.startTime, row.endTime);
         }
         return(<></>);
       },
+    },
+    {
+      title: 'Completed',
+      field: 'completed',
+      render: (row: Partial<Build>) => (formatTime(row.endTime)),
     },
   ];
 }
@@ -105,10 +87,10 @@ type Props = {
 export const BuildCITableView = ({
   entity,
 }: Props) => {
-  const { accountId, project, region } = getCodeBuildArnFromEntity(entity);
+  const { accountId, projectName, region } = getCodeBuildArnFromEntity(entity);
   const { arn: iamRole } = getIAMRoleFromEntity(entity);
 
-  const {loading, buildOutput, retry} = useCodeBuildBuilds(project, region, iamRole);
+  const {loading, builds, retry} = useCodeBuildBuilds(projectName, region, iamRole);
   return (
     <Table
       isLoading={loading}
@@ -120,14 +102,14 @@ export const BuildCITableView = ({
           onClick: () => retry(),
         },
       ]}
-      data={buildOutput ?? []}
+      data={builds ?? []}
       title={
         <Box display="flex" alignItems="center">
           <Box mr={2} />
-          <Typography variant="h6">AWS CodeBuild</Typography>
+          <Typography variant="h6">AWS CodeBuild Project</Typography>
         </Box>
       }
-      columns={generatedColumns(region, project, accountId)}
+      columns={generatedColumns(region, projectName, accountId)}
     />
   );
 };
