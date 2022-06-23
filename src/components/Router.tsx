@@ -15,13 +15,13 @@ import React from 'react';
 import { Route, Routes } from 'react-router';
 import { useEntity } from '@backstage/plugin-catalog-react';
 import { MissingAnnotationEmptyState } from '@backstage/core-components';
-import { isAWSCodeStarAvailable } from './Flags';
+import { isAWSCodeSuiteAvailable } from './Flags';
 import { IAM_ROLE_ANNOTATION } from '../constants';
 import { CITable } from './BuildsPage/lib/CITable';
 
 export const Router = () => {
   const { entity } = useEntity();
-  if (!isAWSCodeStarAvailable(entity)) {
+  if (!isAWSCodeSuiteAvailable(entity)) {
     return <MissingAnnotationEmptyState annotation={IAM_ROLE_ANNOTATION} />;
   }
 

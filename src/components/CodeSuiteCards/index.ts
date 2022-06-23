@@ -11,4 +11,4 @@
  * limitations under the License.
  */
 
-export {CodeStarCards} from './CodeStarCards';
+export {CodeSuiteCards} from './CodeSuiteCards';

@@ -19,7 +19,7 @@ import {
   IAM_ROLE_ANNOTATION
 } from '../constants';
 
-export const isAWSCodeStarAvailable = (entity: Entity) => {
+export const isAWSCodeSuiteAvailable = (entity: Entity) => {
   return Boolean(entity.metadata.annotations?.[IAM_ROLE_ANNOTATION]);
 }
 

@@ -21,13 +21,13 @@ import {
 import { render } from '@testing-library/react';
 import { setupServer } from 'msw/node';
 import React from 'react';
-import { codeStarApiRef } from '../../api';
-import { MockCodeStarClient } from '../../mocks/MockCodeStarClient';
+import { codeSuiteApiRef } from '../../api';
+import { MockCodeSuiteClient } from '../../mocks/MockCodeSuiteClient';
 import { deployResponseMock, entityBuildMock, entityDeployMock, pipelineResponseMock } from '../../mocks/mocks';
 import { AWSCodeDeployWidget } from './CodeDeployWidget';
 
 const apis: [AnyApiRef, Partial<unknown>][] = [
-  [codeStarApiRef, new MockCodeStarClient()],
+  [codeSuiteApiRef, new MockCodeSuiteClient()],
 ];
 
 describe('AWSCodeDeployWidget', () => {

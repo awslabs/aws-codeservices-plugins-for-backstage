@@ -27,8 +27,8 @@ import {CodePipelineClient, GetPipelineStateCommand, GetPipelineStateOutput} fro
 import {ListPipelineExecutionsCommand, ListPipelineExecutionsCommandOutput} from "@aws-sdk/client-codepipeline";
 
 
-export const codeStarApiRef = createApiRef<CodeStarApi>({
-  id: 'plugin.codestar.service2',
+export const codeSuiteApiRef = createApiRef<CodeSuiteApi>({
+  id: 'plugin.codesuite.service2',
 });
 
 export interface Credentials {
@@ -38,7 +38,7 @@ export interface Credentials {
   Expiration: string;
 };
 
-export interface CodeStarApi {
+export interface CodeSuiteApi {
   getProject(options: {region: string, project: string, creds: Credentials}): Promise<BatchGetProjectsCommandOutput>;
   getBuildIds(options: {region: string, project: string, creds: Credentials}): Promise<ListBuildsForProjectCommandOutput>;
   getBuilds(options: {region: string, ids: string[], creds: Credentials}): Promise<BatchGetBuildsCommandOutput>;
@@ -53,7 +53,7 @@ export interface CodeStarApi {
   generateCredentials(options: {iamRole: string}): Promise<Credentials>;
 };
 
-export class CodeStarClient implements CodeStarApi {
+export class CodeSuiteClient implements CodeSuiteApi {
   private readonly discoveryApi: DiscoveryApi;
 
   constructor(options: {

@@ -1,13 +1,13 @@
-# AWS CodeStar Plugins for Backstage
+# AWS CodeSuite Plugins for Backstage
 
-[![CI](https://github.com/awslabs/aws-codestar-plugins-for-backstage/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/awslabs/aws-codestar-plugins-for-backstage/actions/workflows/ci.yml)
+[![CI](https://github.com/awslabs/aws-codesuite-plugins-for-backstage/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/awslabs/aws-codesuite-plugins-for-backstage/actions/workflows/ci.yml)
 
-The plugin adds latest status cards as well as expanded history for CI/CD runs of your `AWS Code*` services to your Backstage deployment including:
+The plugin adds latest status cards as well as expanded history for CI/CD runs of your `AWS CodeSuite` services to your Backstage deployment including:
 - AWS CodeBuild
 - AWS CodePipeline
 - AWS CodeDeploy
 
-You can track the status of your application's build, deploy, and pipelines in `AWS Code*`. Through the selection of which annotations you want to add to your component, you can also customize which views you would like to get in your integration with Backstage.
+You can track the status of your application's build, deploy, and pipelines in `AWS CodeSuite`. Through the selection of which annotations you want to add to your component, you can also customize which views you would like to get in your integration with Backstage.
 
 Card Views:
 ![card image](./pics/code-cards.png)
@@ -35,9 +35,9 @@ imports are located.
 
 ```tsx
 import {
-  EntityAWSCodeStarCards,
-  EntityAWSCodeStarContent,
-  isAWSCodeStarAvailable
+  EntityAWSCodeSuiteCards,
+  EntityAWSCodeSuiteContent,
+  isAWSCodeSuiteAvailable
 } from 'plugin-backstage-code-star';
 ```
 
@@ -47,14 +47,14 @@ import {
 ```tsx
 const cicdContent = (
    <EntitySwitch>
-      <EntitySwitch.Case if={isAWSCodeStarAvailable}>
-        <EntityAWSCodeStarContent/>
+      <EntitySwitch.Case if={isAWSCodeSuiteAvailable}>
+        <EntityAWSCodeSuiteContent/>
       </EntitySwitch.Case>
   </EntitySwitch>
 );
 ```
 
-- Find the section for `overviewContent` in the `EntityPage.tsx` file and add the `EntityAWSCodeStarCards` element under `{entityWarningContent}`:
+- Find the section for `overviewContent` in the `EntityPage.tsx` file and add the `EntityAWSCodeSuiteCards` element under `{entityWarningContent}`:
 
 ```tsx
 ...
@@ -62,7 +62,7 @@ const overviewContent = (
   <Grid container spacing={3} alignItems="stretch">
     {entityWarningContent}
 
-    <EntityAWSCodeStarCards/>
+    <EntityAWSCodeSuiteCards/>
 
     <Grid item md={6}>
       <EntityAboutCard variant="gridItem" />

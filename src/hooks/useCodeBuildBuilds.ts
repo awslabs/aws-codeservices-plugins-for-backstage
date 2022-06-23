@@ -12,12 +12,12 @@
  */
 
 import {useAsyncRetry} from 'react-use';
-import {codeStarApiRef} from '../api';
+import {codeSuiteApiRef} from '../api';
 import {useApi} from '@backstage/core-plugin-api';
 import {Build, Project} from '@aws-sdk/client-codebuild';
 
 export function useCodeBuildBuilds(projectName: string, region: string, iamRole: string) {
-  const api = useApi(codeStarApiRef);
+  const api = useApi(codeSuiteApiRef);
 
   const {
     loading,

@@ -20,20 +20,20 @@ import {
   discoveryApiRef,
   identityApiRef,
 } from '@backstage/core-plugin-api';
-import {CodeStarClient, codeStarApiRef} from './api';
+import {CodeSuiteClient, codeSuiteApiRef} from './api';
 
 export const rootRouteRef = createRouteRef({
-  id: 'aws-codestar',
+  id: 'aws-codesuite',
 });
 
-export const codeStarPlugin = createPlugin({
-  id: 'aws-codestar',
+export const codeSuitePlugin = createPlugin({
+  id: 'aws-codesuite',
   apis: [
     createApiFactory({
-      api: codeStarApiRef,
+      api: codeSuiteApiRef,
       deps: {discoveryApi: discoveryApiRef, identityApi: identityApiRef},
       factory: ({discoveryApi, identityApi}) =>
-        new CodeStarClient({discoveryApi, identityApi}),
+        new CodeSuiteClient({discoveryApi, identityApi}),
     }),
   ],
   routes: {
@@ -41,24 +41,24 @@ export const codeStarPlugin = createPlugin({
   },
 });
 
-export const EntityAWSCodeStarContent = codeStarPlugin.provide(
+export const EntityAWSCodeSuiteContent = codeSuitePlugin.provide(
   createRoutableExtension({
-    name: "EntityAWSCodeStarContent",
+    name: "EntityAWSCodeSuiteContent",
     component: () => import('./components/Router').then(m => m.Router),
     mountPoint: rootRouteRef,
   }),
 );
 
-export const EntityAWSCodeStarCards = codeStarPlugin.provide(
+export const EntityAWSCodeSuiteCards = codeSuitePlugin.provide(
   createComponentExtension({
-    name: "EntityAWSCodeStarCards",
+    name: "EntityAWSCodeSuiteCards",
     component: {
-      lazy: () => import('./components/CodeStarCards').then(m => m.CodeStarCards),
+      lazy: () => import('./components/CodeSuiteCards').then(m => m.CodeSuiteCards),
     },
   }),
 );
 
-export const EntityAWSCodeBuildCard = codeStarPlugin.provide(
+export const EntityAWSCodeBuildCard = codeSuitePlugin.provide(
   createComponentExtension({
     name: "EntityAWSCodeBuildCard",
     component: {
@@ -67,7 +67,7 @@ export const EntityAWSCodeBuildCard = codeStarPlugin.provide(
   }),
 );
 
-export const EntityAWSCodeDeployCard = codeStarPlugin.provide(
+export const EntityAWSCodeDeployCard = codeSuitePlugin.provide(
   createComponentExtension({
     name: "EntityAWSCodeDeployCard",
     component: {
@@ -76,7 +76,7 @@ export const EntityAWSCodeDeployCard = codeStarPlugin.provide(
   }),
 );
 
-export const EntityAWSCodePipelineCard = codeStarPlugin.provide(
+export const EntityAWSCodePipelineCard = codeSuitePlugin.provide(
   createComponentExtension({
     name: "EntityAWSCodePipelineCard",
     component: {

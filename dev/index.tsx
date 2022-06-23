@@ -12,25 +12,25 @@
  */
 
 import { createDevApp } from '@backstage/dev-utils';
-import { codeStarPlugin } from '../src/plugin';
+import { codeSuitePlugin } from '../src/plugin';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import { TestApiProvider } from '@backstage/test-utils';
 import React from 'react';
 import {
   AnyApiRef,
 } from '@backstage/core-plugin-api';
-import { codeStarApiRef } from '../src';
-import { MockCodeStarClient } from '../src/mocks/MockCodeStarClient';
+import { codeSuiteApiRef } from '../src';
+import { MockCodeSuiteClient } from '../src/mocks/MockCodeSuiteClient';
 import { entityAllMock, entityBuildMock, entityDeployMock, entityNoneMock, entityPipelineMock } from '../src/mocks/mocks';
 import { CITable } from '../src/components/BuildsPage/lib/CITable';
-import { CodeStarCards } from '../src/components/CodeStarCards/CodeStarCards';
+import { CodeSuiteCards } from '../src/components/CodeSuiteCards/CodeSuiteCards';
 import { Grid } from '@material-ui/core';
 import { AWSCodeBuildWidget } from '../src/components/CodeBuildWidget/CodeBuildWidget';
 import { AWSCodeDeployWidget } from '../src/components/CodeDeployWidget/CodeDeployWidget';
 import { AWSCodePipelineWidget } from '../src/components/CodePipelineWidget/CodePipelineWidget';
 
 const apis: [AnyApiRef, Partial<unknown>][] = [
-  [codeStarApiRef, new MockCodeStarClient()],
+  [codeSuiteApiRef, new MockCodeSuiteClient()],
 ];
 
 createDevApp()
@@ -88,7 +88,7 @@ createDevApp()
     <TestApiProvider apis={apis}>
       <EntityProvider entity={entityAllMock}>
         <Grid container spacing={3} alignItems="stretch">
-          <CodeStarCards />
+          <CodeSuiteCards />
         </Grid>
       </EntityProvider>
     </TestApiProvider>
@@ -118,4 +118,4 @@ createDevApp()
     </TestApiProvider>
     ),
   })
-  .registerPlugin(codeStarPlugin).render();
+  .registerPlugin(codeSuitePlugin).render();

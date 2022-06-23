@@ -11,10 +11,10 @@
  * limitations under the License.
  */
 
-import {codeStarPlugin} from './plugin';
+import {codeSuitePlugin} from './plugin';
 
 describe('spinnaker', () => {
   it('should export plugin', () => {
-    expect(codeStarPlugin).toBeDefined();
+    expect(codeSuitePlugin).toBeDefined();
   });
 });

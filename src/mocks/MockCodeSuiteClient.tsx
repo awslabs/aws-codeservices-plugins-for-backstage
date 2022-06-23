@@ -12,13 +12,13 @@
  */
 
 import {
-  CodeStarApi,
+  CodeSuiteApi,
   Credentials
 } from '../api';
 
 import { buildsResponseMock, credsMock, deploymentGroupResponseMock, deployResponseMock, pipelineResponseMock, pipelineRunsResponseMock, projectResponseMock } from './mocks';
 
-export class MockCodeStarClient implements CodeStarApi {
+export class MockCodeSuiteClient implements CodeSuiteApi {
   async generateCredentials({} : {iamRole: string}): Promise<Credentials> {
     return new Promise((resolve) => { resolve(credsMock) } )
   }

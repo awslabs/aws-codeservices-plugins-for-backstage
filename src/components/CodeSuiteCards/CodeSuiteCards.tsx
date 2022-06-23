@@ -22,7 +22,7 @@ import { AWSCodeDeployWidget } from '../CodeDeployWidget/CodeDeployWidget';
 import { AWSCodePipelineWidget } from '../CodePipelineWidget/CodePipelineWidget';
 import { isAWSCodeBuildAvailable, isAWSCodeDeployAvailable, isAWSCodePipelineAvailable } from '../Flags';
 
-export const CodeStarCards = ({
+export const CodeSuiteCards = ({
   variant,
 }: {
   variant?: InfoCardVariants;

@@ -11,6 +11,6 @@
  * limitations under the License.
  */
 
-export {CodeStarClient, codeStarApiRef} from './ServiceApi';
-export type {CodeStarApi} from './ServiceApi';
+export {CodeSuiteClient, codeSuiteApiRef} from './ServiceApi';
+export type {CodeSuiteApi} from './ServiceApi';
 export type {Credentials} from './ServiceApi';

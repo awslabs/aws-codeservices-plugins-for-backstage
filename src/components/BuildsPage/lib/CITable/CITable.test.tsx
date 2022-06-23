@@ -27,7 +27,7 @@ import {
 import { setupServer } from 'msw/node';
 import { EntityProvider } from '@backstage/plugin-catalog-react';
 import {
-  codeStarApiRef,
+  codeSuiteApiRef,
 } from '../../../../api';
 import {
   entityBuildMock,
@@ -37,7 +37,7 @@ import {
   pipelineRunsResponseMock,
   deployResponseMock
 } from '../../../../mocks/mocks';
-import {MockCodeStarClient} from '../../../../mocks/MockCodeStarClient'
+import {MockCodeSuiteClient} from '../../../../mocks/MockCodeSuiteClient'
 import { CITable } from './CITable';
 
 const errorApiMock = { post: jest.fn(), error$: jest.fn() };
@@ -49,7 +49,7 @@ const config = {
 const apis: [AnyApiRef, Partial<unknown>][] = [
   [configApiRef, config],
   [errorApiRef, errorApiMock],
-  [codeStarApiRef, new MockCodeStarClient()],
+  [codeSuiteApiRef, new MockCodeSuiteClient()],
 ];
 
 describe('CITable', () => {
