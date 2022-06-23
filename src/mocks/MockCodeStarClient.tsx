@@ -16,11 +16,15 @@ import {
   Credentials
 } from '../api';
 
-import { buildsResponseMock, credsMock, deployResponseMock, pipelineResponseMock, pipelineRunsResponseMock } from './mocks';
+import { buildsResponseMock, credsMock, deploymentGroupResponseMock, deployResponseMock, pipelineResponseMock, pipelineRunsResponseMock, projectResponseMock } from './mocks';
 
 export class MockCodeStarClient implements CodeStarApi {
   async generateCredentials({} : {iamRole: string}): Promise<Credentials> {
     return new Promise((resolve) => { resolve(credsMock) } )
+  }
+
+  async getProject({}: {region: string, project: string, creds: Credentials}): Promise<any> {
+    return new Promise((resolve) => { resolve(projectResponseMock) })
   }
 
   async getBuildIds({} : {region: string, project: string, creds: Credentials}): Promise<any> {
@@ -29,6 +33,10 @@ export class MockCodeStarClient implements CodeStarApi {
 
   async getBuilds({}: {region: string, ids: string[], creds: Credentials}): Promise<any> {
     return new Promise((resolve) => { resolve(buildsResponseMock) })
+  }
+
+  async getDeploymentGroup({}: {region: string, appName: string, deploymentGroupName: string, creds: Credentials}): Promise<any>{
+    return new Promise((resolve) => { resolve(deploymentGroupResponseMock) })
   }
 
   async getDeploymentIds({}: {region: string, appName: string, deploymentGroupName: string, creds: Credentials}): Promise<any>{

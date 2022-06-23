@@ -11,8 +11,10 @@
  * limitations under the License.
  */
 
- export * from './getArnFromEntity'
- export * from './getCodeBuildArnFromEntity'
- export * from './getCodeDeployArnFromEntity'
- export * from './getCodePipelineArnFromEntity'
- export * from './getIamRoleFromEntity'
+export * from './getArnFromEntity'
+export * from './getCodeBuildArnFromEntity'
+export * from './getCodeDeployArnFromEntity'
+export * from './getCodePipelineArnFromEntity'
+export * from './getIamRoleFromEntity'
+export * from './getDuration'
+export * from './formatTime'

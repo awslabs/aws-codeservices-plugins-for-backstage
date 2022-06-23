@@ -11,84 +11,155 @@
  * limitations under the License.
  */
 
-import { DeploymentInfo } from "@aws-sdk/client-codedeploy";
+import { DeploymentGroupInfo, DeploymentInfo, DeploymentType } from "@aws-sdk/client-codedeploy";
 import { Entity } from '@backstage/catalog-model';
 import {
   InfoCard,
   InfoCardVariants,
   MissingAnnotationEmptyState,
   ResponseErrorPanel,
-  StructuredMetadataTable
+  Table,
+  TableColumn
 } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { LinearProgress } from "@material-ui/core";
+import { Box, Grid, LinearProgress, Link } from "@material-ui/core";
 import React from 'react';
 import { DEPLOY_GROUP_ARN_ANNOTATION } from '../../constants';
 import { useCodeDeployDeployments } from '../../hooks';
-import { getCodeDeployArnFromEntity, getIAMRoleFromEntity } from '../../utils';
-import { DeploymentStatus } from '../DeploymentStatus';
+import { formatTime, getCodeDeployArnFromEntity, getIAMRoleFromEntity } from '../../utils';
+import { AboutField } from "../AboutField";
+import { DeploymentStatus } from "../DeploymentStatus";
 import { isAWSCodeDeployAvailable } from '../Flags';
 
-const DeployWidgetContent = ({
-  deploymentInfo,region
-}: {
-  deploymentInfo?: DeploymentInfo,
-  region: string
-}) => {
-  const rows = new Map<string, any>()
-  if (deploymentInfo) {
-    rows.set("Status",<>
-        <DeploymentStatus status={deploymentInfo.status} />
-      </>
-    )
-    const id = deploymentInfo?.deploymentId;
-    if (id !== undefined) {
-      rows.set("Deploy ID",
-        <a
-          href={`https://${region}.console.aws.amazon.com/codesuite/codedeploy/deployments/${id}?${region}`}
-          target="_blank">
-          {id}
-        </a>
-      )
+const DeploymentHistoryTable = ({ region, deployments }: { region: string, deployments: DeploymentInfo[] }) => {
+  const columns: TableColumn[] = [
+    {
+      title: 'Deployment ID',
+      field: 'id',
+      render: (row: Partial<DeploymentInfo>) => {
+        return (<Link href={`https://${region}.console.aws.amazon.com/codesuite/codedeploy/deployments/${row.deploymentId}?region=${region}`} 
+          target="_blank" >
+          {row.deploymentId}
+        </Link>)
+      }
+    },
+    {
+      title: 'Status',
+      field: 'deploymentStatus',
+      render: (row: Partial<DeploymentInfo>) => (<DeploymentStatus status={row.status}/>)
+    },
+    {
+      title: 'Start time',
+      field: 'startTime',
+      render: (row: Partial<DeploymentInfo>) => (formatTime(row.createTime)),
     }
-    const buildTime = deploymentInfo?.completeTime;
-    if (buildTime !== undefined) {
-      if (buildTime instanceof Date) {
-      // make this duration or something later.
-      rows.set("Completed", `${buildTime.toDateString()}:${buildTime.toTimeString()}`);
-    }
-  }
-  }
+  ];
+
   return (
-    <StructuredMetadataTable metadata = {Object.fromEntries(rows)} />
+    <div>
+      <Table
+        options={{ paging: false, search: false, toolbar: false, padding: 'dense' }}
+        data={deployments}
+        columns={columns}
+      />
+    </div>
+  );
+};
+
+const deploymentGroupDeploymentType = (deploymentGroup: DeploymentGroupInfo) => {
+  if(deploymentGroup.deploymentStyle) {
+    switch(deploymentGroup.deploymentStyle.deploymentType) {
+      case DeploymentType.BLUE_GREEN:
+        return "Blue/Green";
+      case DeploymentType.IN_PLACE:
+        return "In-place"
+      default:
+        break;
+    }
+  }
+
+  return 'None';
+};
+
+const deploymentGroupRollback = (deploymentGroup: DeploymentGroupInfo) => {
+  if(deploymentGroup.autoRollbackConfiguration?.enabled) {
+    return "Yes";
+  }
+
+  return 'No';
+};
+
+const DeployWidgetContent = ({
+  deploymentGroup,
+  deployments,
+  region,
+  deploymentHistoryLength,
+}: {
+  deploymentGroup: DeploymentGroupInfo;
+  deployments: DeploymentInfo[];
+  region: string;
+  deploymentHistoryLength: number;
+}) => {
+  const deploymentGroupUrl = `https://${region}.console.aws.amazon.com/codesuite/codedeploy/applications/${deploymentGroup.applicationName}/deployment-groups/${deploymentGroup.deploymentGroupName}?region=${region}`;
+
+  return (
+    <InfoCard title='AWS CodeDeploy Deployment Group' noPadding>
+      <Box sx={{ m: 2 }}>
+        <Grid container>
+          <AboutField 
+            label="Deployment group name"
+            gridSizes={{ md: 12 }}>
+              <Link href={deploymentGroupUrl} 
+              target="_blank" >
+              {deploymentGroup.deploymentGroupName}
+            </Link>
+          </AboutField>
+          <AboutField 
+            label="Compute platform"
+            value={deploymentGroup.computePlatform} 
+            gridSizes={{ xs: 12, sm: 6, lg: 4 }}/>
+          <AboutField 
+            label="Deployment type"
+            value={deploymentGroupDeploymentType(deploymentGroup)} 
+            gridSizes={{ xs: 12, sm: 6, lg: 4 }}/>
+          <AboutField 
+            label="Rollback enabled"
+            value={deploymentGroupRollback(deploymentGroup)} 
+            gridSizes={{ xs: 12, sm: 6, lg: 4 }}/>
+        </Grid>
+      </Box>
+      { deploymentHistoryLength > 0 &&
+      <DeploymentHistoryTable region={region} deployments={deployments.slice(0, deploymentHistoryLength) ?? []}/>
+      }
+    </InfoCard>
   );
 };
 
 const DeployLatestRunCard = ({
   entity,
   variant,
+  deploymentHistoryLength,
 }: {
   entity: Entity;
   variant?: InfoCardVariants;
+  deploymentHistoryLength: number;
 }) => {
-  const { deploymentGroup, region } = getCodeDeployArnFromEntity(entity);
+  const { applicationName, deploymentGroupName, region } = getCodeDeployArnFromEntity(entity);
   const { arn: iamRole } = getIAMRoleFromEntity(entity);
 
-  const { deploymentsInfo, error, loading } =  useCodeDeployDeployments(deploymentGroup, region, iamRole)
-  if(deploymentsInfo) {
+  const { deploymentGroup, deployments, error, loading } =  useCodeDeployDeployments(applicationName, deploymentGroupName, region, iamRole)
+  if(deploymentGroup) {
     return (
-      <InfoCard title='AWS CodeDeploy' variant={variant}>
-        {!error && deploymentsInfo !== undefined ? (
-          <DeployWidgetContent
-            deploymentInfo={deploymentsInfo[0]}
-            region={region} />
-        ) : ( "" )}
-      </InfoCard>
+      <DeployWidgetContent
+        deploymentGroup={deploymentGroup}
+        deployments={deployments ?? []}
+        region={region} 
+        deploymentHistoryLength={deploymentHistoryLength}/>
     );
   }
 
   return (
-    <InfoCard title='AWS CodeDeploy' variant={variant}>
+    <InfoCard title='AWS CodeDeploy Deployment Group' variant={variant}>
       {error &&
         <ResponseErrorPanel error={error} />
       }
@@ -102,13 +173,15 @@ const DeployLatestRunCard = ({
 
 export const AWSCodeDeployWidget = ({
   variant,
+  deploymentHistoryLength = 3,
 }: {
   variant?: InfoCardVariants;
+  deploymentHistoryLength?: number;
 }) => {
   const { entity } = useEntity();
   return !isAWSCodeDeployAvailable(entity) ? (
     <MissingAnnotationEmptyState annotation={DEPLOY_GROUP_ARN_ANNOTATION} />
   ) : (
-    <DeployLatestRunCard entity={entity} variant={variant} />
+    <DeployLatestRunCard entity={entity} variant={variant} deploymentHistoryLength={deploymentHistoryLength} />
   );
 };

@@ -45,7 +45,7 @@ describe('AWSCodePipelineWidget', () => {
       ),
     );
     expect(
-      await rendered.findByText('AWS CodePipeline'),
+      await rendered.findByText('test-pipeline'),
     ).toBeInTheDocument();
   });
 

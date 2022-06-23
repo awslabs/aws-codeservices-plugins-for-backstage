@@ -11,49 +11,80 @@
  * limitations under the License.
  */
 
-import { GetPipelineStateOutput } from "@aws-sdk/client-codepipeline";
+import { GetPipelineStateOutput, StageState } from "@aws-sdk/client-codepipeline";
 import { Entity } from '@backstage/catalog-model';
 import {
   InfoCard,
   InfoCardVariants,
   MissingAnnotationEmptyState,
   ResponseErrorPanel,
-  StructuredMetadataTable
+  Table,
+  TableColumn
 } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { LinearProgress } from "@material-ui/core";
+import { Box, Grid, LinearProgress, Link } from "@material-ui/core";
 import React from 'react';
 import { PIPELINE_ARN_ANNOTATION } from '../../constants';
 import { useCodePipelineSummary } from '../../hooks';
 import { getCodePipelineArnFromEntity, getIAMRoleFromEntity } from '../../utils';
+import { AboutField } from "../AboutField";
 import { isAWSCodePipelineAvailable } from '../Flags';
-import { PipelineStageStatus } from '../PipelineStageStatus';
+import { PipelineStageStatus } from "../PipelineStageStatus";
 
-const PipelineWidgetContent = ({
-    pipelineInfo
-  }: {
-    pipelineInfo: GetPipelineStateOutput,
-    region?: string,
-}) => {
-  const rows = new Map<string, any>()
-  if(pipelineInfo.stageStates !== undefined) {
-    for (const element of pipelineInfo.stageStates) {
-      if (element.actionStates === undefined || element.actionStates.length <= 0) continue;
-      rows.set(element.stageName || "undefined" ,
-          <>
-            <a
-                href={element.actionStates[0].entityUrl }
-                target="_blank">
-            {element.actionStates[0].latestExecution?.actionExecutionId}
-            </a>
-            <div><PipelineStageStatus status={element.actionStates[0].latestExecution?.status} /></div>
-            </>
-      )
+const PipelineStageTable = ({ stages }: { stages: StageState[] }) => {
+  const columns: TableColumn[] = [
+    {
+      title: 'Stage',
+      field: 'id',
+      render: (row: Partial<StageState>) => {
+        return row.stageName;
+      }
+    },
+    {
+      title: 'Status',
+      field: 'deploymentStatus',
+      render: (row: Partial<StageState>) => (<PipelineStageStatus status={row.latestExecution?.status}/>)
     }
-  }
+  ];
 
   return (
-    <StructuredMetadataTable metadata = {Object.fromEntries(rows)} />
+    <div>
+      <Table
+        options={{ paging: false, search: false, toolbar: false, padding: 'dense' }}
+        data={stages}
+        columns={columns}
+      />
+    </div>
+  );
+};
+
+const PipelineWidgetContent = ({
+  pipelineState,
+  region,
+  accountId,
+}: {
+  pipelineState: GetPipelineStateOutput,
+  region: string,
+  accountId: string,
+}) => {
+  const pipelineUrl = `https://${region}.console.aws.amazon.com/codesuite/codebuild/${accountId}/projects/${pipelineState.pipelineName}/?region=${region}`;
+
+  return (
+    <InfoCard title='AWS CodePipeline' noPadding>
+      <Box sx={{ m: 2 }}>
+        <Grid container>
+          <AboutField 
+            label="Pipeline Name"
+            gridSizes={{ md: 12 }}>
+              <Link href={pipelineUrl} 
+                target="_blank" >
+                {pipelineState.pipelineName}
+              </Link>
+          </AboutField>
+        </Grid>
+      </Box>
+      <PipelineStageTable stages={pipelineState.stageStates ?? []} />
+    </InfoCard>
   );
 };
 
@@ -64,34 +95,30 @@ const PipelineLatestRunCard = ({
   entity: Entity;
   variant?: InfoCardVariants;
 }) => {
-  const { pipelineName, region } = getCodePipelineArnFromEntity(entity);
+  const { pipelineName, region, accountId } = getCodePipelineArnFromEntity(entity);
   const { arn: iamRole } = getIAMRoleFromEntity(entity);
 
   const { pipelineInfo, error, loading } = useCodePipelineSummary(pipelineName, region, iamRole)
 
   if(pipelineInfo) {
     return (
-      <InfoCard title={ <a href={`https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipelineName}/view?${region}`}
-                target="_blank"> AWS CodePipeline</a>} variant={variant}>
-          {pipelineInfo &&
-            <PipelineWidgetContent
-              pipelineInfo={pipelineInfo}
-              region={region}
-            />
-          }
-      </InfoCard>
+      <PipelineWidgetContent
+        pipelineState={pipelineInfo}
+        region={region}
+        accountId={accountId}
+      />
     );
   }
 
   return (
     <InfoCard title='AWS CodePipeline' variant={variant}>
-        {error &&
-          <ResponseErrorPanel error={error} />
-        }
+      {error &&
+        <ResponseErrorPanel error={error} />
+      }
 
-        {loading &&
-          <LinearProgress />
-        }
+      {loading &&
+        <LinearProgress />
+      }
     </InfoCard>
   )
 };

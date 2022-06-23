@@ -16,11 +16,11 @@ import {
   DiscoveryApi,
   IdentityApi,
 } from '@backstage/core-plugin-api';
-import {CodeBuildClient} from "@aws-sdk/client-codebuild";
+import {BatchGetProjectsCommand, BatchGetProjectsCommandOutput, CodeBuildClient} from "@aws-sdk/client-codebuild";
 import {ListBuildsForProjectCommand, ListBuildsForProjectCommandOutput} from "@aws-sdk/client-codebuild";
 import {BatchGetBuildsCommand, BatchGetBuildsCommandOutput} from "@aws-sdk/client-codebuild";
 
-import {CodeDeployClient} from "@aws-sdk/client-codedeploy";
+import {BatchGetDeploymentGroupsCommand, BatchGetDeploymentGroupsCommandOutput, CodeDeployClient} from "@aws-sdk/client-codedeploy";
 import {ListDeploymentsCommand, ListDeploymentsCommandOutput} from "@aws-sdk/client-codedeploy";
 import {BatchGetDeploymentsCommand, BatchGetDeploymentsCommandOutput} from "@aws-sdk/client-codedeploy";
 import {CodePipelineClient, GetPipelineStateCommand, GetPipelineStateOutput} from "@aws-sdk/client-codepipeline";
@@ -39,11 +39,14 @@ export interface Credentials {
 };
 
 export interface CodeStarApi {
+  getProject(options: {region: string, project: string, creds: Credentials}): Promise<BatchGetProjectsCommandOutput>;
   getBuildIds(options: {region: string, project: string, creds: Credentials}): Promise<ListBuildsForProjectCommandOutput>;
   getBuilds(options: {region: string, ids: string[], creds: Credentials}): Promise<BatchGetBuildsCommandOutput>;
 
+  getDeploymentGroup(options: {region: string, appName: string, deploymentGroupName: string, creds: Credentials}): Promise<BatchGetDeploymentGroupsCommandOutput>;
   getDeploymentIds(options: {region: string, appName: string, deploymentGroupName: string, creds: Credentials}): Promise<ListDeploymentsCommandOutput>;
   getDeployments(options: {region: string, ids: string[], creds: Credentials}): Promise<BatchGetDeploymentsCommandOutput>;
+
   getPipelineState(options: {region: string, name: string, creds: Credentials}): Promise<GetPipelineStateOutput>
   getPipelineRuns(options: {region: string, name: string, creds: Credentials}): Promise<ListPipelineExecutionsCommandOutput>
 
@@ -66,6 +69,19 @@ export class CodeStarClient implements CodeStarApi {
     )}/credentials`;
     const reqBody = JSON.stringify({RoleArn: iamRole});
     return await (await fetch(url, {method: 'POST', body: reqBody})).json();
+  }
+
+  async getProject({region, project, creds}: {region: string, project: string, creds: Credentials}): Promise<BatchGetProjectsCommandOutput> {
+    const client = new CodeBuildClient({
+      region: region,
+      credentials: {
+        accessKeyId: creds.AccessKeyId,
+        secretAccessKey: creds.SecretAccessKey,
+        sessionToken: creds.SessionToken
+      }
+    });
+    const command = new BatchGetProjectsCommand({names: [project]});
+    return await client.send(command)
   }
 
   async getBuildIds({region, project, creds}: {region: string, project: string, creds: Credentials}): Promise<ListBuildsForProjectCommandOutput> {
@@ -91,6 +107,19 @@ export class CodeStarClient implements CodeStarApi {
       }
     });
     const command = new BatchGetBuildsCommand({ids: ids});
+    return await client.send(command)
+  }
+
+  async getDeploymentGroup({region, appName, deploymentGroupName, creds}: {region: string, appName: string, deploymentGroupName: string, creds: Credentials}): Promise<BatchGetDeploymentGroupsCommandOutput> {
+    const client = new CodeDeployClient({
+      region: region,
+      credentials: {
+        accessKeyId: creds.AccessKeyId,
+        secretAccessKey: creds.SecretAccessKey,
+        sessionToken: creds.SessionToken
+      }
+    });
+    const command = new BatchGetDeploymentGroupsCommand({applicationName: appName, deploymentGroupNames: [deploymentGroupName]});
     return await client.send(command)
   }
 

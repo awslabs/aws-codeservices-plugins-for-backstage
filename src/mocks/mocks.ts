@@ -113,6 +113,73 @@ export const credsMock = {
   Expiration: "some-expiration"
 };
 
+export const projectResponseMock = {
+  "projects": [
+      {
+          "name": "Deploy2Project-KpLyLCIGYbKE",
+          "arn": "arn:aws:codebuild:us-west-2:785487814634:project/Deploy2Project-KpLyLCIGYbKE",
+          "source": {
+              "type": "CODEPIPELINE",
+              "buildspec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"build\": {\n      \"commands\": [\n        \"pip3 install --upgrade --user awscli\",\n        \"aws proton --region $AWS_DEFAULT_REGION update-service-instance --deployment-type CURRENT_VERSION --name $service_instance_name --service-name $service_name --spec file://rendered_service.yaml\",\n        \"aws proton --region $AWS_DEFAULT_REGION wait service-instance-deployed --name $service_instance_name --service-name $service_name\"\n      ]\n    }\n  }\n}",
+              "insecureSsl": false
+          },
+          "artifacts": {
+              "type": "CODEPIPELINE",
+              "name": "Deploy2Project-KpLyLCIGYbKE",
+              "packaging": "NONE",
+              "encryptionDisabled": false
+          },
+          "cache": {
+              "type": "NO_CACHE"
+          },
+          "environment": {
+              "type": "LINUX_CONTAINER",
+              "image": "aws/codebuild/amazonlinux2-x86_64-standard:3.0",
+              "computeType": "BUILD_GENERAL1_SMALL",
+              "environmentVariables": [
+                  {
+                      "name": "service_name",
+                      "value": "codepipeline-demo",
+                      "type": "PLAINTEXT"
+                  },
+                  {
+                      "name": "service_instance_name",
+                      "value": "prod",
+                      "type": "PLAINTEXT"
+                  }
+              ],
+              "privilegedMode": false,
+              "imagePullCredentialsType": "CODEBUILD"
+          },
+          "serviceRole": "arn:aws:iam::785487814634:role/AWSProton-codepipeline-de-cloudform-DeploymentRole-1P0MVDGMT0IGM",
+          "timeoutInMinutes": 60,
+          "queuedTimeoutInMinutes": 480,
+          "encryptionKey": "arn:aws:kms:us-west-2:785487814634:key/d37f7299-9412-485e-b467-33a05e8e9622",
+          "tags": [
+              {
+                  "key": "proton:service",
+                  "value": "arn:aws:proton:us-west-2:785487814634:service/codepipeline-demo"
+              },
+              {
+                  "key": "proton:account",
+                  "value": "785487814634"
+              },
+              {
+                  "key": "proton:template",
+                  "value": "arn:aws:proton:us-west-2:785487814634:service-template/apprunner-image-buildpack"
+              }
+          ],
+          "created": "2022-05-20T13:58:29.342000-06:00",
+          "lastModified": "2022-05-20T13:58:29.342000-06:00",
+          "badge": {
+              "badgeEnabled": false
+          },
+          "projectVisibility": "PRIVATE"
+      }
+  ],
+  "projectsNotFound": []
+};
+
 export const buildsResponseMock = {
   $metadata: {
     httpStatusCode: 200,
@@ -138,7 +205,7 @@ export const buildsResponseMock = {
       },
       currentPhase: "COMPLETED",
       encryptionKey: "arn:aws:kms:us-west-2:461868971318:alias/aws/s3",
-      endTime: new Date("2022-04-13T23:32:08.397Z"),
+      endTime: new Date("2022-04-13T23:34:38.397Z"),
       environment: {
         computeType: "BUILD_GENERAL1_SMALL",
         environmentVariables: [],
@@ -147,7 +214,7 @@ export const buildsResponseMock = {
         privilegedMode: false,
         type: "LINUX_CONTAINER"
       },
-      id: "hello-world-792ebbad-1dbb-4594-8206-5a09ed4330b6",
+      id: "hello-world:792ebbad-1dbb-4594-8206-5a09ed4330b6",
       initiator: "nimak",
       logs: {
         cloudWatchLogs: {
@@ -497,6 +564,75 @@ export const buildsResponseMock = {
   buildsNotFound: []
 }
 
+export const deploymentGroupResponseMock = {
+  deploymentGroupsInfo: [
+      {
+          applicationName: "AppECS-test-cluster-test-service",
+          deploymentGroupId: "2ac1ab26-1ca9-48ca-a2ef-b6d9138c2ae6",
+          deploymentGroupName: "DgpECS-test-cluster-test-service",
+          deploymentConfigName: "CodeDeployDefault.ECSAllAtOnce",
+          ec2TagFilters: [],
+          onPremisesInstanceTagFilters: [],
+          autoScalingGroups: [],
+          serviceRoleArn: "arn:aws:iam::785487814634:role/codedeploy-ecs",
+          triggerConfigurations: [],
+          autoRollbackConfiguration: {
+              enabled: true,
+              events: [
+                  "DEPLOYMENT_STOP_ON_REQUEST",
+                  "DEPLOYMENT_FAILURE"
+              ]
+          },
+          deploymentStyle: {
+              deploymentType: "BLUE_GREEN",
+              deploymentOption: "WITH_TRAFFIC_CONTROL"
+          },
+          outdatedInstancesStrategy: "UPDATE",
+          blueGreenDeploymentConfiguration: {
+              terminateBlueInstancesOnDeploymentSuccess: {
+                  action: "TERMINATE",
+                  terminationWaitTimeInMinutes: 60
+              },
+              deploymentReadyOption: {
+                  actionOnTimeout: "CONTINUE_DEPLOYMENT",
+                  waitTimeInMinutes: 0
+              }
+          },
+          loadBalancerInfo: {
+              targetGroupPairInfoList: [
+                  {
+                      targetGroups: [
+                          {
+                              name: "tg-test-c-test-service-1"
+                          },
+                          {
+                              name: "tg-test-c-test-service-2"
+                          }
+                      ],
+                      prodTrafficRoute: {
+                          listenerArns: [
+                              "arn:aws:elasticloadbalancing:us-west-2:785487814634:listener/app/test-lb/ed4e449e173219d9/fc95e8f9f80ced8e"
+                          ]
+                      },
+                      testTrafficRoute: {
+                          listenerArns: [
+                              "arn:aws:elasticloadbalancing:us-west-2:785487814634:listener/app/test-lb/ed4e449e173219d9/a59b4d24b6331feb"
+                          ]
+                      }
+                  }
+              ]
+          },
+          computePlatform: "ECS",
+          ecsServices: [
+              {
+                  serviceName: "test-service",
+                  clusterName: "test-cluster"
+              }
+          ]
+      }
+  ],
+  errorMessage: ""
+}
 
 export const deployResponseMock = {
   $metadata: {
@@ -506,6 +642,34 @@ export const deployResponseMock = {
     totalRetryDelay: 0
   },
   deploymentsInfo: [
+    {
+      applicationName: "java-app-deploy",
+      deploymentGroupName: "java-app-deploy",
+      deploymentConfigName: "CodeDeployDefault.LambdaAllAtOnce",
+      deploymentId: "2-3XYZ56D",
+      revision: {
+        revisionType: "S3",
+        s3Location: {
+          bucket: "bucket-name",
+          key: "folder/object.json",
+          bundleType: "JSON"
+        }
+      },
+      status: "InProgress",
+      createTime: subtractHours(1),
+      creator: "user",
+      ignoreApplicationStopFailures: false,
+      updateOutdatedInstancesOnly: false,
+      rollbackInfo: {},
+      deploymentStyle: {
+        deploymentType: "BLUE_GREEN",
+        deploymentOption: "WITH_TRAFFIC_CONTROL"
+      },
+      instanceTerminationWaitTimeStarted: false,
+      fileExistsBehavior: "DISALLOW",
+      deploymentStatusMessages: [],
+      computePlatform: "Lambda"
+    },
     {
       applicationName: "java-app-deploy",
       deploymentGroupName: "java-app-deploy",
@@ -524,8 +688,8 @@ export const deployResponseMock = {
         code: "INVALID_REVISION",
         message: "The AppSpec file cannot be located in the specified S3 bucket. Verify your AppSpec file is present and that the name and key value pair specified for your S3 bucket are correct. The S3 bucket must be in your current region"
       },
-      createTime: "2022-04-13T12:09:00.080000-05:00",
-      completeTime: "2022-04-13T21:39:21.365Z",
+      createTime: new Date("2022-04-13T11:09:00.080000-05:00"),
+      completeTime: new Date("2022-04-13T21:39:21.365Z"),
       creator: "user",
       ignoreApplicationStopFailures: false,
       updateOutdatedInstancesOnly: false,
@@ -554,10 +718,10 @@ export const pipelineRunsResponseMock = {
   nextToken: undefined,
   pipelineExecutionSummaries: [
     {
-      lastUpdateTime: "2022-05-03T00:52:45.631Z",
+      lastUpdateTime: new Date("2022-05-03T00:52:45.631Z"),
       pipelineExecutionId: 'e6c91a02-d844-4663-ad62-b719608f8fc5',
       sourceRevisions: [Array],
-      startTime: "2022-05-03T00:51:35.229Z",
+      startTime: new Date("2022-05-03T00:51:35.229Z"),
       status: 'InProgress',
       stopTrigger: undefined,
       trigger: {
@@ -566,10 +730,10 @@ export const pipelineRunsResponseMock = {
       }
     },
     {
-      lastUpdateTime: "2022-04-15T17:55:04.950Z",
+      lastUpdateTime: new Date("2022-04-15T17:55:04.950Z"),
       pipelineExecutionId: '17baba6f-22f6-4f6d-8d37-96321a35f77e',
       sourceRevisions: [Array],
-      startTime: "2022-04-15T17:45:51.244Z",
+      startTime: new Date("2022-04-15T17:45:51.244Z"),
       status: 'Failed',
       stopTrigger: undefined,
       trigger: {
@@ -597,6 +761,10 @@ export const pipelineResponseMock = {
           }
         }
       ],
+      latestExecution: {
+        pipelineExecutionId: "e8e9ca8f-bacf-4878-8887-05a6ccec0019",
+        status: "Succeeded"
+      },
       stageName: "Source"
     },
     {
@@ -617,8 +785,20 @@ export const pipelineResponseMock = {
       inboundTransitionState: {
         enabled: true
       },
+      latestExecution: {
+        pipelineExecutionId: "e8e9ca8f-bacf-4878-8887-05a6ccec0019",
+        status: "Succeeded"
+      },
       stageName: "Beta"
     }
   ],
   updated: 1446137312.204
+}
+
+function subtractHours(numOfHours: number, date = new Date()) {
+  const dateCopy = new Date(date.getTime());
+
+  dateCopy.setHours(dateCopy.getHours() - numOfHours);
+
+  return dateCopy;
 }

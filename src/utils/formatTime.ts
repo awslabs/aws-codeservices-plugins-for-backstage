@@ -11,25 +11,10 @@
  * limitations under the License.
  */
 
-import { Entity } from '@backstage/catalog-model';
-import { BUILD_PROJECT_ARN_ANNOTATION } from '../constants';
-import { getArnFromEntity } from './getArnFromEntity';
- 
-export function getCodeBuildArnFromEntity(entity: Entity): {
-  arn: string,
-  accountId: string,
-  region: string,
-  service: string,
-  resource: string,
-  projectName: string,
-} {
-  const arn = getArnFromEntity(entity, BUILD_PROJECT_ARN_ANNOTATION);
-
-  const resourceParts = arn.resource.split("/");
-
-  if(resourceParts.length !== 2) {
-    throw new Error(`CodeBuild ARN not valid: ${arn.arn}`)
+export function formatTime(date: Date | undefined): string {
+  if(date) {
+    return date.toLocaleString();
   }
 
-  return {projectName: resourceParts[1], ...arn}
+  return '-';
 }

@@ -14,27 +14,36 @@
 import {useAsyncRetry} from 'react-use';
 import {codeStarApiRef} from '../api';
 import {useApi} from '@backstage/core-plugin-api';
-import {Build} from '@aws-sdk/client-codebuild';
+import {Build, Project} from '@aws-sdk/client-codebuild';
 
-export function useCodeBuildBuilds(project: string, region: string, iamRole: string) {
+export function useCodeBuildBuilds(projectName: string, region: string, iamRole: string) {
   const api = useApi(codeStarApiRef);
 
   const {
     loading,
-    value: builds,
+    value,
     error,
     retry,
-  } = useAsyncRetry<Build[]>(async () => {
+  } = useAsyncRetry<{project: Project, builds: Build[]}>(async () => {
     const creds = await api.generateCredentials({iamRole: iamRole});
-    const buildIds = await api.getBuildIds({region: region, project: project, creds});
+    const project = await api.getProject({region: region, project: projectName, creds})
+    const buildIds = await api.getBuildIds({region: region, project: projectName, creds});
+
+    let builds : Build[] = [];
     
     if (buildIds.ids) {
       const output = await api.getBuilds({region: region, ids: buildIds.ids, creds});
-      return output.builds ?? [];
+      builds = output.builds ?? [];
     }
-    return [];
+
+    if(project.projects) {
+      if(project.projects.length === 1) {
+        return {project: project.projects[0], builds}
+      }
+    }
+    
+    throw new Error('CodeBuild project could not be retrieved')
   }, []);
 
-  const buildOutput = builds;
-  return {loading, buildOutput, region, project, error, retry} as const;
+  return {loading, builds: value?.builds, project: value?.project, region, error, retry} as const;
 };

@@ -19,7 +19,7 @@ import { PipelineExecutionSummary } from "@aws-sdk/client-codepipeline";
 import { PipelineStageStatus } from '../../../PipelineStageStatus';
 import { Entity } from '@backstage/catalog-model';
 import { useCodePipelineExecutions } from '../../../../hooks';
-import { getCodePipelineArnFromEntity, getIAMRoleFromEntity } from '../../../../utils';
+import { formatTime, getCodePipelineArnFromEntity, getIAMRoleFromEntity } from '../../../../utils';
 
 const generatedColumns= (pipelineName: string, region: string) => {
   return [
@@ -44,12 +44,7 @@ const generatedColumns= (pipelineName: string, region: string) => {
     {
       title: 'Last Run',
       field: '',
-      render: (row: Partial<PipelineExecutionSummary>) => {
-        if (row.lastUpdateTime) {
-          return (<p>{row.lastUpdateTime.toLocaleString()}</p>)
-        }
-        return(<></>);
-      },
+      render: (row: Partial<PipelineExecutionSummary>) => (formatTime(row.lastUpdateTime)),
     },
     {
       title: 'Status',

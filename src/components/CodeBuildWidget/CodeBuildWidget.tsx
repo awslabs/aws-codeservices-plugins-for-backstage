@@ -11,84 +11,175 @@
  * limitations under the License.
  */
 
-import { Build } from "@aws-sdk/client-codebuild";
+import { Build, Project } from "@aws-sdk/client-codebuild";
 import { Entity } from '@backstage/catalog-model';
 import {
   InfoCard,
   InfoCardVariants,
   MissingAnnotationEmptyState,
   ResponseErrorPanel,
-  StructuredMetadataTable
+  Table,
+  TableColumn
 } from '@backstage/core-components';
 import { useEntity } from '@backstage/plugin-catalog-react';
-import { LinearProgress } from "@material-ui/core";
+import { Box, Grid, LinearProgress, Link } from "@material-ui/core";
 import React from 'react';
 import { BUILD_PROJECT_ARN_ANNOTATION } from '../../constants';
 import { useCodeBuildBuilds } from '../../hooks';
-import { getCodeBuildArnFromEntity, getIAMRoleFromEntity } from '../../utils';
-import { BuildStatus } from '../BuildStatus';
+import { formatTime, getCodeBuildArnFromEntity, getIAMRoleFromEntity } from '../../utils';
+import { getDurationFromDates } from "../../utils/getDuration";
+import { AboutField } from "../AboutField";
+import { BuildStatus } from "../BuildStatus";
 import { isAWSCodeBuildAvailable } from '../Flags';
 
-const WidgetContent = ({
-  builds,
-}: {
-  builds?: Build[],
-}) => {
-  const rows = new Map<string, any>()
-  if (builds && builds.length > 0) {
-    rows.set("Status", <>
-          <BuildStatus status={builds[0].buildStatus}/>
-        </>
-    )
-
-    const id = builds[0]?.id?.split(':');
-    const ar = builds[0]?.arn?.split(':');
-    if (ar !== undefined && id !== undefined) {
-      rows.set("Build ID",
-        <a
-          href={`https://${ar[3]}.console.aws.amazon.com/codesuite/codebuild/${ar[4]}/${ar[5].replace('build', 'projects')}/${ar[5]}:${ar[6]}`}
-          target="_blank">
-          {id}
-        </a>
-      )
-    }
-    const buildTime = builds[0]?.endTime;
-    if (buildTime) {
-      // make this duration or something later.
-      if (buildTime instanceof Date) {
-        rows.set("Completed", `${buildTime.toDateString()}:${buildTime.toTimeString()}`);
+const BuildHistoryTable = ({ region, accountId, project, builds }: { region: string, accountId: string, project: string | undefined, builds: Build[] }) => {
+  const columns: TableColumn[] = [
+    {
+      title: 'Build run',
+      field: 'id',
+      render: (row: Partial<Build>) => {
+        return (<Link href={`https://${region}.console.aws.amazon.com/codesuite/codebuild/${accountId}/projects/${project}/build/${project}:${row.id}/?region=${region}`} 
+          target="_blank" >
+          #{row.buildNumber}
+        </Link>)
       }
+    },
+    {
+      title: 'Status',
+      field: 'deploymentStatus',
+      render: (row: Partial<Build>) => (<BuildStatus status={row.buildStatus}/>)
+    },
+    {
+      title: 'Duration',
+      field: 'duration',
+      render: (row: Partial<Build>) => {
+        if(row.startTime && row.endTime) {
+          return getDurationFromDates(row.startTime, row.endTime);
+        }
+
+        return "";
+      },
+    }
+  ];
+
+  return (
+    <div>
+      <Table
+        options={{ paging: false, search: false, toolbar: false, padding: 'dense' }}
+        data={builds}
+        columns={columns}
+      />
+    </div>
+  );
+};
+
+const projectMostRecentBuildStatus = (builds: Build[]) => {
+  if(builds.length > 0) {
+    return (
+      <BuildStatus status={builds[0].buildStatus}/>
+    );
+  }
+
+  return <></>;
+};
+
+const projectMostRecentBuildExecuted = (builds: Build[]) => {
+  if(builds.length > 0) {
+    const build = builds.find(el => el.startTime)
+
+    if(build) {
+      return formatTime(build.startTime);
     }
   }
+
+  return <></>;
+};
+
+const projectMostRecentBuildDuration = (builds: Build[]) => {
+  if(builds.length > 0) {
+    const build = builds.find(el => (el.startTime && el.endTime))
+
+    if(build) {
+      return getDurationFromDates(build.startTime, build.endTime);
+    }
+  }
+
+  return <></>;
+};
+
+const WidgetContent = ({
+  project,
+  region,
+  accountId,
+  builds,
+  buildHistoryLength,
+}: {
+  project: Project;
+  region: string;
+  accountId: string;
+  builds: Build[];
+  buildHistoryLength: number;
+}) => {
+  const projectUrl = `https://${region}.console.aws.amazon.com/codesuite/codebuild/${accountId}/projects/${project.name}/?region=${region}`;
+
   return (
-    <StructuredMetadataTable
-      metadata = {Object.fromEntries(rows)}
-    />
+    <InfoCard title='AWS CodeBuild Project'>
+      <Box sx={{ m: 2 }}>
+        <Grid container>
+          <AboutField 
+            label="Project Name"
+            gridSizes={{ md: 12 }}>
+              <Link href={projectUrl} 
+          target="_blank" >
+          {project.name}
+        </Link>
+          </AboutField>
+          <AboutField 
+            label="Most recent build" 
+            gridSizes={{ xs: 12, sm: 6, lg: 4 }}>
+              {projectMostRecentBuildStatus(builds)}
+          </AboutField>
+          <AboutField 
+            label="Last executed" 
+            gridSizes={{ xs: 12, sm: 6, lg: 4 }}>
+              {projectMostRecentBuildExecuted(builds)}
+          </AboutField>
+          <AboutField 
+            label="Duration" 
+            gridSizes={{ xs: 12, sm: 6, lg: 4 }}>
+              {projectMostRecentBuildDuration(builds)}
+          </AboutField>
+        </Grid>
+      </Box>
+      { buildHistoryLength > 0 &&
+      <BuildHistoryTable region={region} accountId={accountId} project={project.name} builds={builds.slice(0, buildHistoryLength) ?? []}/>
+      }
+    </InfoCard>
   );
 };
 
 const BuildLatestRunCard = ({
   entity,
+  buildHistoryLength,
   variant,
 }: {
   entity: Entity;
+  buildHistoryLength: number;
   variant?: InfoCardVariants;
 }) => {
-  const { project, region } = getCodeBuildArnFromEntity(entity);
+  const { accountId, projectName, region } = getCodeBuildArnFromEntity(entity);
   const { arn: iamRole } = getIAMRoleFromEntity(entity);
 
-  const { buildOutput, error, loading } =  useCodeBuildBuilds(project, region, iamRole);
+  const { project, builds, error, loading } = useCodeBuildBuilds(projectName, region, iamRole);
 
-  if(buildOutput) {
+  if(project && builds) {
     return (
-      <InfoCard title='AWS CodeBuild' variant={variant}>
-        <WidgetContent builds={buildOutput} />
-      </InfoCard>
+      <WidgetContent project={project} region={region} accountId={accountId} builds={builds ?? []} buildHistoryLength={buildHistoryLength} />
     );
   }
 
   return (
-    <InfoCard title='AWS CodeBuild' variant={variant}>
+    <InfoCard title='AWS CodeBuild Project' variant={variant}>
       {error &&
         <ResponseErrorPanel error={error} />
       }
@@ -102,13 +193,15 @@ const BuildLatestRunCard = ({
 
 export const AWSCodeBuildWidget = ({
   variant,
+  buildHistoryLength = 3,
 }: {
   variant?: InfoCardVariants;
+  buildHistoryLength?: number;
 }) => {
   const { entity } = useEntity();
    return !isAWSCodeBuildAvailable(entity) ? (
      <MissingAnnotationEmptyState annotation={BUILD_PROJECT_ARN_ANNOTATION} />
    ) : (
-     <BuildLatestRunCard entity={entity} variant={variant} />
+     <BuildLatestRunCard entity={entity} buildHistoryLength={buildHistoryLength} variant={variant} />
    );
 };

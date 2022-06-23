@@ -14,31 +14,39 @@
 import {useAsyncRetry} from 'react-use';
 import {codeStarApiRef} from '../api';
 import {useApi} from '@backstage/core-plugin-api';
-import {BatchGetDeploymentsCommandOutput} from '@aws-sdk/client-codedeploy';
+import {DeploymentGroupInfo, DeploymentInfo} from '@aws-sdk/client-codedeploy';
 
-export function useCodeDeployDeployments(deploymentGroup: string, region: string, iamRole: string) {
+export function useCodeDeployDeployments(applicationName: string, deploymentGroupName: string, region: string, iamRole: string) {
   const api = useApi(codeStarApiRef);
 
   const {
     loading,
-    value: deployments,
+    value,
     error,
     retry,
-  } = useAsyncRetry<BatchGetDeploymentsCommandOutput | undefined>(async () => {
-    if (deploymentGroup.length < 2)
-      return undefined;
-
-    const application = deploymentGroup[0]
-    const groupName = deploymentGroup[1]
-
+  } = useAsyncRetry<{deploymentGroup: DeploymentGroupInfo, deployments: DeploymentInfo[]}>(async () => {
     const creds = await api.generateCredentials({iamRole: iamRole});
-    const output = await api.getDeploymentIds({region: region, appName: application, deploymentGroupName: groupName, creds});
-    if (output.deployments === undefined) {
-      return undefined;
+
+    const deploymentGroup = await api.getDeploymentGroup({region: region, appName: applicationName, deploymentGroupName: deploymentGroupName, creds});
+    const deploymentIds = await api.getDeploymentIds({region: region, appName: applicationName, deploymentGroupName: deploymentGroupName, creds});
+    let deployments : DeploymentInfo[] = [];
+
+    if(deploymentIds.deployments) {
+      const deploymentInfo = await api.getDeployments({region: region, ids: deploymentIds.deployments, creds});
+
+      if(deploymentInfo.deploymentsInfo) {
+        deployments = deploymentInfo.deploymentsInfo
+
+        deployments = deployments.sort((a, b) => (b.createTime!.getTime() - a.createTime!.getTime()))
+      }
     }
-    return await api.getDeployments({region: region, ids: output.deployments, creds});
+
+    if(deploymentGroup.deploymentGroupsInfo) {
+      return {deploymentGroup: deploymentGroup.deploymentGroupsInfo[0], deployments};
+    }
+
+    throw new Error('Deployment group undefined')
   }, []);
 
-  const deploymentsInfo = deployments?.deploymentsInfo;
-  return {loading, deploymentsInfo, region, deploymentGroup, error, retry} as const
+  return {loading, deploymentGroup: value?.deploymentGroup, deployments: value?.deployments, region, applicationName, deploymentGroupName, error, retry} as const
 };

@@ -24,14 +24,10 @@ export function useCodePipelineSummary(pipelineName: string, region: string, iam
     value: pipelineInfo,
     error,
     retry
-  } = useAsyncRetry<GetPipelineStateOutput | undefined>(async () => {
+  } = useAsyncRetry<GetPipelineStateOutput>(async () => {
     const creds = await api.generateCredentials({iamRole: iamRole})
     // eslint-disable-next-line
-    const pipelineInfo = await api.getPipelineState({region: region, name: pipelineName, creds});
-    if (pipelineInfo.stageStates === undefined) {
-      return undefined;
-    }
-    return pipelineInfo;
+    return await api.getPipelineState({region: region, name: pipelineName, creds});
   }, []);
 
   return {loading, pipelineInfo, region, pipelineName, error, retry} as const;
