@@ -1,0 +1,18 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: daily
+    open-pull-requests-limit: 20
+    commit-message:
+      prefix: "chore: "
+    ignore:
+      # Let backstage-cli do these version bumps
+      - dependency-name: '@backstage*'
+      # Keep React in sync with the peer dependencies in the Backstage deps
+      - dependency-name: 'react*'
+      - dependency-name: '@types/react'
+      # Version 5.0.0 has a breaking change
+      - dependency-name: 'yn'
