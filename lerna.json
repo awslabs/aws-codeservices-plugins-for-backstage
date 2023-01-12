@@ -1,0 +1,16 @@
+{
+  "version": "0.1.3",
+  "packages": ["plugins/*"],
+  "command": {
+    "version": {
+      "allowBranch": "main",
+      "conventionalCommits": true,
+      "createRelease": "github",
+      "exact": true,
+      "message": "chore(release): version bump %s",
+      "yes": true
+    }
+  },
+  "npmClient": "yarn",
+  "useWorkspaces": true
+}
