@@ -60,7 +60,7 @@
     "@types/supertest": "^2.0.8",
     "msw": "^0.35.0",
     "react": "^17.0.2",
-    "supertest": "^4.0.2",
+    "supertest": "^6.3.3",
     "winston": "^3.2.1"
   },
   "files": [
