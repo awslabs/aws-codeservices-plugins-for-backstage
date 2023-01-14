@@ -65,8 +65,8 @@ const serviceEntityPage = (
             <EntityAWSCodePipelineOverviewCard />
           </Grid>
         </EntitySwitch.Case>
-        {/* ... */}
       </EntitySwitch>
+      {/* ... */}
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -112,8 +112,8 @@ const serviceEntityPage = (
             <EntityAWSCodeBuildProjectOverviewCard />
           </Grid>
         </EntitySwitch.Case>
-        {/* ... */}
       </EntitySwitch>
+      {/* ... */}
     </EntityLayout.Route>
   </EntityLayout>
 );
@@ -159,8 +159,8 @@ const serviceEntityPage = (
             <EntityAWSCodeDeployDeploymentGroupOverviewCard />
           </Grid>
         </EntitySwitch.Case>
-        {/* ... */}
       </EntitySwitch>
+      {/* ... */}
     </EntityLayout.Route>
   </EntityLayout>
 );
