@@ -33,9 +33,14 @@ export function useCodeDeployDeployments(arn: string) {
     if (deploymentInfo.deploymentsInfo) {
       deployments = deploymentInfo.deploymentsInfo;
 
-      deployments = deployments.sort(
-        (a, b) => b.createTime!.getTime() - a.createTime!.getTime()
-      );
+      deployments = deployments.sort((a, b) => {
+        if (a.createTime && b.createTime) {
+          return (
+            new Date(b.createTime).getTime() - new Date(a.createTime).getTime()
+          );
+        }
+        return 0;
+      });
     }
 
     if (deploymentGroup.deploymentGroupsInfo) {

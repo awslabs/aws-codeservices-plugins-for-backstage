@@ -37,3 +37,14 @@ export function getDurationFromDates(
 
   return "Unknown";
 }
+
+export function getDurationFromStringDates(
+  start: Date | undefined,
+  end: Date | undefined
+): string {
+  if (start && end) {
+    return getDuration(new Date(end).getTime() - new Date(start).getTime());
+  }
+
+  return "Unknown";
+}
