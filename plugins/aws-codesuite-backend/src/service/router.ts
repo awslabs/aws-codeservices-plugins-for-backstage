@@ -74,7 +74,7 @@ export async function createRouter(
     res.status(200).json(executions);
   });
 
-  router.get("/codebuild/deployments", async (req, res) => {
+  router.get("/codedeploy/deployments", async (req, res) => {
     const arn = req.query.arn?.toString();
     const executions = await awsCodeDeployApi.getDeployments(arn || "");
     res.status(200).json(executions);
