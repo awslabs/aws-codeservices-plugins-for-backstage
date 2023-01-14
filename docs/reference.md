@@ -109,7 +109,7 @@ const serviceEntityPage = (
       <EntitySwitch>
         <EntitySwitch.Case if={isAWSCodeBuildProjectAvailable}>
           <Grid item sm={6}>
-            <EntityAWSCodeBuildOverviewCard />
+            <EntityAWSCodeBuildProjectOverviewCard />
           </Grid>
         </EntitySwitch.Case>
         {/* ... */}
@@ -156,7 +156,7 @@ const serviceEntityPage = (
       <EntitySwitch>
         <EntitySwitch.Case if={isAWSCodeDeployDeploymentGroupAvailable}>
           <Grid item sm={6}>
-            <EntityAWSCodeDeployOverviewCard />
+            <EntityAWSCodeDeployDeploymentGroupOverviewCard />
           </Grid>
         </EntitySwitch.Case>
         {/* ... */}
