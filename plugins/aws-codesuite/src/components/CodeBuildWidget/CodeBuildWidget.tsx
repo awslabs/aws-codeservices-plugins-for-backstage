@@ -27,7 +27,7 @@ import React from "react";
 import { AWS_CODEBUILD_PROJECT_ARN_ANNOTATION } from "../../constants";
 import { useCodeBuildBuilds } from "../../hooks";
 import { formatTime, getCodeBuildArnFromEntity } from "../../utils";
-import { getDurationFromDates } from "../../utils/getDuration";
+import { getDurationFromStringDates } from "../../utils/getDuration";
 import { AboutField } from "../AboutField";
 import { BuildStatus } from "../BuildStatus";
 import { isAWSCodeBuildProjectAvailable } from "../Flags";
@@ -68,7 +68,7 @@ const BuildHistoryTable = ({
       field: "duration",
       render: (row: Partial<Build>) => {
         if (row.startTime && row.endTime) {
-          return getDurationFromDates(row.startTime, row.endTime);
+          return getDurationFromStringDates(row.startTime, row.endTime);
         }
 
         return "";
@@ -117,7 +117,7 @@ const projectMostRecentBuildDuration = (builds: Build[]) => {
     const build = builds.find((el) => el.startTime && el.endTime);
 
     if (build) {
-      return getDurationFromDates(build.startTime, build.endTime);
+      return getDurationFromStringDates(build.startTime, build.endTime);
     }
   }
 
@@ -186,9 +186,9 @@ const BuildLatestRunCard = ({
   buildHistoryLength: number;
   variant?: InfoCardVariants;
 }) => {
-  const { accountId, projectName, region } = getCodeBuildArnFromEntity(entity);
+  const { accountId, region, arn } = getCodeBuildArnFromEntity(entity);
 
-  const { project, builds, error, loading } = useCodeBuildBuilds(projectName);
+  const { project, builds, error, loading } = useCodeBuildBuilds(arn);
 
   if (project && builds) {
     return (
