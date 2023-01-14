@@ -20,9 +20,13 @@ import {
   configApiRef,
   createRoutableExtension,
 } from "@backstage/core-plugin-api";
-import { awsCodeBuildApiRef } from "./api/AwsCodeBuildApi";
+import {
+  awsCodeDeployApiRef,
+  awsCodeBuildApiRef,
+  awsCodePipelineApiRef,
+} from "./api";
 import { AwsCodeBuildApiClient } from "./api/AwsCodeBuildApiClient";
-import { awsCodePipelineApiRef } from "./api/AwsCodePipelineApi";
+import { AwsCodeDeployApiClient } from "./api/AwsCodeDeployApiClient";
 import { AwsCodePipelineApiClient } from "./api/AwsCodePipelineApiClient";
 
 export const rootRouteRef = createRouteRef({
@@ -43,6 +47,12 @@ export const codeSuitePlugin = createPlugin({
       deps: { configApi: configApiRef, identityApi: identityApiRef },
       factory: ({ configApi, identityApi }) =>
         new AwsCodeBuildApiClient({ configApi, identityApi }),
+    }),
+    createApiFactory({
+      api: awsCodeDeployApiRef,
+      deps: { configApi: configApiRef, identityApi: identityApiRef },
+      factory: ({ configApi, identityApi }) =>
+        new AwsCodeDeployApiClient({ configApi, identityApi }),
     }),
   ],
   routes: {
