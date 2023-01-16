@@ -1,7 +1,7 @@
 {
   "name": "@aws/aws-codesuite-plugin-for-backstage",
   "description": "AWS CodeSuite Plugin for Backstage",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "license": "Apache-2.0",
