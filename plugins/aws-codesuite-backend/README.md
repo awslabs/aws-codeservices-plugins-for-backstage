@@ -1,6 +1,7 @@
 # AWS CodeSuite backend plugin for Backstage
 
 This backend plugin for Backstage adds functionality to interact with AWS CodeSuite services such as [AWS CodePipeline](https://aws.amazon.com/codepipeline/), [AWS CodeBuild](https://aws.amazon.com/codebuild/) and [AWS CodeDeploy](https://aws.amazon.com/codedeploy/).
+
 - A scaffolder action to create an AWS CodeSuite service.
 
 ![AWS CodePipeline CICD tab](../../docs/images/codepipeline-tab.png "AWS CodePipeline CICD tab")
