@@ -40,7 +40,7 @@ export class MockCodeDeployService implements AwsCodeDeployApi {
           ec2TagFilters: [],
           onPremisesInstanceTagFilters: [],
           autoScalingGroups: [],
-          serviceRoleArn: "arn:aws:iam::785487814634:role/codedeploy-ecs",
+          serviceRoleArn: "arn:aws:iam::111111111111:role/codedeploy-ecs",
           triggerConfigurations: [],
           autoRollbackConfiguration: {
             enabled: true,
@@ -74,12 +74,12 @@ export class MockCodeDeployService implements AwsCodeDeployApi {
                 ],
                 prodTrafficRoute: {
                   listenerArns: [
-                    "arn:aws:elasticloadbalancing:us-west-2:785487814634:listener/app/test-lb/ed4e449e173219d9/fc95e8f9f80ced8e",
+                    "arn:aws:elasticloadbalancing:us-west-2:111111111111:listener/app/test-lb/ed4e449e173219d9/fc95e8f9f80ced8e",
                   ],
                 },
                 testTrafficRoute: {
                   listenerArns: [
-                    "arn:aws:elasticloadbalancing:us-west-2:785487814634:listener/app/test-lb/ed4e449e173219d9/a59b4d24b6331feb",
+                    "arn:aws:elasticloadbalancing:us-west-2:111111111111:listener/app/test-lb/ed4e449e173219d9/a59b4d24b6331feb",
                   ],
                 },
               },

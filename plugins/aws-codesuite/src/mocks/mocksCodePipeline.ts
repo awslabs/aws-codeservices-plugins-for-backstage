@@ -103,7 +103,7 @@ export class MockCodePipelineService implements AwsCodePipelineApi {
         trigger: {
           triggerType: "Webhook",
           triggerDetail:
-            "arn:aws:codestar-connections:us-west-2:785487814634:connection/4dde5c82-51d6-4ea9-918e-03aed6971ff3",
+            "arn:aws:codestar-connections:us-west-2:111111111111:connection/4dde5c82-51d6-4ea9-918e-03aed6971ff3",
         },
       },
       {

@@ -70,25 +70,25 @@ export class MockCodeBuildService implements AwsCodeBuildApi {
             imagePullCredentialsType: "CODEBUILD",
           },
           serviceRole:
-            "arn:aws:iam::785487814634:role/AWSProton-codepipeline-de-cloudform-DeploymentRole-1P0MVDGMT0IGM",
+            "arn:aws:iam::111111111111:role/AWSProton-codepipeline-de-cloudform-DeploymentRole-1P0MVDGMT0IGM",
           timeoutInMinutes: 60,
           queuedTimeoutInMinutes: 480,
           encryptionKey:
-            "arn:aws:kms:us-west-2:785487814634:key/d37f7299-9412-485e-b467-33a05e8e9622",
+            "arn:aws:kms:us-west-2:111111111111:key/d37f7299-9412-485e-b467-33a05e8e9622",
           tags: [
             {
               key: "proton:service",
               value:
-                "arn:aws:proton:us-west-2:785487814634:service/codepipeline-demo",
+                "arn:aws:proton:us-west-2:111111111111:service/codepipeline-demo",
             },
             {
               key: "proton:account",
-              value: "785487814634",
+              value: "111111111111",
             },
             {
               key: "proton:template",
               value:
-                "arn:aws:proton:us-west-2:785487814634:service-template/apprunner-image-buildpack",
+                "arn:aws:proton:us-west-2:111111111111:service-template/apprunner-image-buildpack",
             },
           ],
           created: new Date("2022-05-20T13:58:29.342000-06:00"),
