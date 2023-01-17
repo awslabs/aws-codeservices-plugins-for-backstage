@@ -1,0 +1,23 @@
+version: 0.2
+phases:
+  build:
+    commands:
+      - export Image_ID=$${CODEBUILD_BUILD_ARN}
+      - aws ecs describe-task-definition --task-definition ${name} | jq -r --arg IMAGE_TAG "$Image_ID" '.taskDefinition | {containerDefinitions, requiresCompatibilities, cpu, memory, networkMode, executionRoleArn, taskRoleArn, family} | with_entries( select( .value != null ) ) | .containerDefinitions[0].environment[0].value=$IMAGE_TAG' > taskdef.json
+      - |
+        cat << EOF > appspec.yml
+        version: 0.0
+        Resources:
+          - TargetService:
+              Type: AWS::ECS::Service
+              Properties:
+                TaskDefinition: <TASK_DEFINITION>
+                LoadBalancerInfo:
+                  ContainerName: "nginx"
+                  ContainerPort: 8080
+                PlatformVersion: "1.4.0"
+        EOF
+artifacts:
+  files:
+    - appspec.yml
+    - taskdef.json
