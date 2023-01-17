@@ -127,6 +127,26 @@ export class MockCodePipelineService implements AwsCodePipelineApi {
             "arn:aws:sts::1234567890:assumed-role/ServiceRole/DummyRole",
         },
       },
+      {
+        lastUpdateTime: new Date("2022-04-15T17:55:04.950Z"),
+        pipelineExecutionId: "17baba6f-22f6-4f6d-8d37-96321a35f77e",
+        sourceRevisions: [
+          {
+            actionName: "Source",
+            revisionId: "CXkyGc4T_6.0ZrS3vwWYfF1NHHYqGtmh",
+            revisionSummary:
+              "Amazon S3 version id: CXkyGc4T_6.0ZrS3vwWYfF1NHHYqGtmh",
+          },
+        ],
+        startTime: new Date("2022-04-15T17:45:51.244Z"),
+        status: "Succeeded",
+        stopTrigger: undefined,
+        trigger: {
+          triggerType: "StartPipelineExecution",
+          triggerDetail:
+            "arn:aws:sts::1234567890:assumed-role/ServiceRole/DummyRole",
+        },
+      },
     ];
   }
 }

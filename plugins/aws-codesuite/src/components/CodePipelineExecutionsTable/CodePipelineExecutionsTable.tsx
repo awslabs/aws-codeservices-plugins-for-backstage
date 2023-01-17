@@ -42,6 +42,9 @@ const renderTrigger = (
         case "SourceAction":
           commitMessage = sourceRevision.revisionSummary || "";
           break;
+        case "Source":
+          commitMessage = sourceRevision.revisionSummary || "";
+          break;
         case "Checkout": {
           const summary = JSON.parse(sourceRevision.revisionSummary || "{}");
 
