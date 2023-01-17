@@ -37,8 +37,7 @@ export class MockCodeBuildService implements AwsCodeBuildApi {
           arn,
           source: {
             type: "CODEPIPELINE",
-            buildspec:
-              '{\n  "version": "0.2",\n  "phases": {\n    "build": {\n      "commands": [\n        "pip3 install --upgrade --user awscli",\n        "aws proton --region $AWS_DEFAULT_REGION update-service-instance --deployment-type CURRENT_VERSION --name $service_instance_name --service-name $service_name --spec file://rendered_service.yaml",\n        "aws proton --region $AWS_DEFAULT_REGION wait service-instance-deployed --name $service_instance_name --service-name $service_name"\n      ]\n    }\n  }\n}',
+            buildspec: "dummy",
             insecureSsl: false,
           },
           artifacts: {
@@ -75,22 +74,6 @@ export class MockCodeBuildService implements AwsCodeBuildApi {
           queuedTimeoutInMinutes: 480,
           encryptionKey:
             "arn:aws:kms:us-west-2:111111111111:key/d37f7299-9412-485e-b467-33a05e8e9622",
-          tags: [
-            {
-              key: "proton:service",
-              value:
-                "arn:aws:proton:us-west-2:111111111111:service/codepipeline-demo",
-            },
-            {
-              key: "proton:account",
-              value: "111111111111",
-            },
-            {
-              key: "proton:template",
-              value:
-                "arn:aws:proton:us-west-2:111111111111:service-template/apprunner-image-buildpack",
-            },
-          ],
           created: new Date("2022-05-20T13:58:29.342000-06:00"),
           lastModified: new Date("2022-05-20T13:58:29.342000-06:00"),
           badge: {
@@ -471,8 +454,7 @@ export class MockCodeBuildService implements AwsCodeBuildApi {
         serviceRole:
           "arn:aws:iam::111111111111:role/service-role/codebuild-hello-world-service-role",
         source: {
-          buildspec:
-            'version: 0.2\n\n#env:\n  #variables:\n     # key: "value"\n     # key: "value"\n  #parameter-store:\n     # key: "value"\n     # key: "value"\n  #secrets-manager:\n     # key: secret-id:json-key:version-stage:version-id\n     # key: secret-id:json-key:version-stage:version-id\n  #exported-variables:\n     # - variable\n     # - variable\n  #git-credential-helper: yes\n#batch:\n  #fast-fail: true\n  #build-list:\n  #build-matrix:\n  #build-graph:\nphases:\n  install:\n    #If you use the Ubuntu standard image 2.0 or later, you must specify runtime-versions.\n    #If you specify runtime-versions and use an image other than Ubuntu standard image 2.0, the build fails.\n    #runtime-versions:\n      # name: version\n      # name: version\n    commands:\n      - wget -c https://dl.google.com/go/go1.14.2.linux-amd64.tar.gz -O - | sudo tar -xz -C /usr/local\n      - export PATH=$PATH:/usr/local/go/bin\n      - go version\n  pre_build:\n    commands:\n      - go get -u github.com/aws/aws-lambda-go/lambda\n  build:\n    commands:\n      - ./lambda-build.sh\n      - stat hello.zip\n  #post_build:\n    #commands:\n      # - command\n      # - command\n#reports:\n  #report-name-or-arn:\n    #files:\n      # - location\n      # - location\n    #base-directory: location\n    #discard-paths: yes\n    #file-format: JunitXml | CucumberJson\nartifacts:\n  files:\n    - hello.zip\n    # - location\n  #name: $(date +%Y-%m-%d)\n  #discard-paths: yes\n  #base-directory: location\n#cache:\n  #paths:\n    # - paths',
+          buildspec: "dummy",
           gitCloneDepth: 1,
           gitSubmodulesConfig: {
             fetchSubmodules: false,
