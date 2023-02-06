@@ -71,13 +71,11 @@ const PipelineStageTable = ({ stages }: { stages: StageState[] }) => {
 const PipelineWidgetContent = ({
   pipelineState,
   region,
-  accountId,
 }: {
   pipelineState: GetPipelineStateOutput;
   region: string;
-  accountId: string;
 }) => {
-  const pipelineUrl = `https://${region}.console.aws.amazon.com/codesuite/codebuild/${accountId}/projects/${pipelineState.pipelineName}/?region=${region}`;
+  const pipelineUrl = `https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipelineState.pipelineName}/view?region=${region}`;
 
   return (
     <InfoCard title="AWS CodePipeline" noPadding>
@@ -102,17 +100,13 @@ const PipelineLatestRunCard = ({
   entity: Entity;
   variant?: InfoCardVariants;
 }) => {
-  const { region, accountId, arn } = getCodePipelineArnFromEntity(entity);
+  const { region, arn } = getCodePipelineArnFromEntity(entity);
 
   const { pipelineInfo, error, loading } = useCodePipelineSummary(arn);
 
   if (pipelineInfo) {
     return (
-      <PipelineWidgetContent
-        pipelineState={pipelineInfo}
-        region={region}
-        accountId={accountId}
-      />
+      <PipelineWidgetContent pipelineState={pipelineInfo} region={region} />
     );
   }
 
