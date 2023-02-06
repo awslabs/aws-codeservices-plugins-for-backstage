@@ -50,7 +50,7 @@ const BuildHistoryTable = ({
       render: (row: Partial<Build>) => {
         return (
           <Link
-            href={`https://${region}.console.aws.amazon.com/codesuite/codebuild/${accountId}/projects/${project}/build/${project}:${row.id}/?region=${region}`}
+            href={`https://${region}.console.aws.amazon.com/codesuite/codebuild/${accountId}/projects/${project}/build/${row.id}/?region=${region}`}
             target="_blank"
           >
             #{row.buildNumber}
