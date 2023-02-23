@@ -34,7 +34,13 @@ import { AboutField } from "../AboutField";
 import { isAWSCodePipelineAvailable } from "../Flags";
 import { PipelineStageStatus } from "../PipelineStageStatus";
 
-const PipelineStageTable = ({ stages, paging }: { stages: StageState[], paging: boolean }) => {
+const PipelineStageTable = ({
+  stages,
+  paging,
+}: {
+  stages: StageState[];
+  paging: boolean;
+}) => {
   const columns: TableColumn[] = [
     {
       title: "Stage",
@@ -90,7 +96,10 @@ const PipelineWidgetContent = ({
           </AboutField>
         </Grid>
       </Box>
-      <PipelineStageTable stages={pipelineState.stageStates ?? []} paging={paging}  />
+      <PipelineStageTable
+        stages={pipelineState.stageStates ?? []}
+        paging={paging}
+      />
     </InfoCard>
   );
 };
@@ -110,7 +119,11 @@ const PipelineLatestRunCard = ({
 
   if (pipelineInfo) {
     return (
-      <PipelineWidgetContent pipelineState={pipelineInfo} region={region} paging={paging} />
+      <PipelineWidgetContent
+        pipelineState={pipelineInfo}
+        region={region}
+        paging={paging}
+      />
     );
   }
 
@@ -129,7 +142,7 @@ export const AWSCodePipelineWidget = ({
 }: {
   variant?: InfoCardVariants;
   paging?: boolean;
-},) => {
+}) => {
   const { entity } = useEntity();
   return !isAWSCodePipelineAvailable(entity) ? (
     <MissingAnnotationEmptyState annotation={AWS_CODEPIPELINE_ARN_ANNOTATION} />
