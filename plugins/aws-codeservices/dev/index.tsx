@@ -12,7 +12,7 @@
  */
 
 import { createDevApp } from "@backstage/dev-utils";
-import { codeSuitePlugin } from "../src/plugin";
+import { codeServicesPlugin } from "../src/plugin";
 import { EntityProvider } from "@backstage/plugin-catalog-react";
 import { TestApiProvider } from "@backstage/test-utils";
 import React from "react";
@@ -104,5 +104,5 @@ createDevApp()
       </TestApiProvider>
     ),
   })
-  .registerPlugin(codeSuitePlugin)
+  .registerPlugin(codeServicesPlugin)
   .render();

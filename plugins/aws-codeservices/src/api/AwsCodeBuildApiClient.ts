@@ -12,14 +12,14 @@
  */
 
 import {
-  GetPipelineStateOutput,
-  PipelineExecutionSummary,
-} from "@aws-sdk/client-codepipeline";
+  BatchGetProjectsCommandOutput,
+  Build,
+} from "@aws-sdk/client-codebuild";
 import { IdentityApi, ConfigApi } from "@backstage/core-plugin-api";
 import { ResponseError } from "@backstage/errors";
-import { AwsCodePipelineApi } from ".";
+import { AwsCodeBuildApi } from ".";
 
-export class AwsCodePipelineApiClient implements AwsCodePipelineApi {
+export class AwsCodeBuildApiClient implements AwsCodeBuildApi {
   private readonly configApi: ConfigApi;
   private readonly identityApi: IdentityApi;
 
@@ -31,32 +31,28 @@ export class AwsCodePipelineApiClient implements AwsCodePipelineApi {
     this.identityApi = options.identityApi;
   }
 
-  async getPipelineState({
+  async getProject({
     arn,
   }: {
     arn: string;
-  }): Promise<GetPipelineStateOutput> {
+  }): Promise<BatchGetProjectsCommandOutput> {
     const queryString = new URLSearchParams();
     queryString.append("arn", arn);
 
-    const urlSegment = `pipelineState?${queryString}`;
+    const urlSegment = `project?${queryString}`;
 
-    const service = await this.get<GetPipelineStateOutput>(urlSegment);
+    const service = await this.get<BatchGetProjectsCommandOutput>(urlSegment);
 
     return service;
   }
 
-  async listPipelineExecutions({
-    arn,
-  }: {
-    arn: string;
-  }): Promise<PipelineExecutionSummary[]> {
+  async listBuilds({ arn }: { arn: string }): Promise<Build[]> {
     const queryString = new URLSearchParams();
     queryString.append("arn", arn);
 
-    const urlSegment = `pipelineExecutions?${queryString}`;
+    const urlSegment = `builds?${queryString}`;
 
-    const service = await this.get<PipelineExecutionSummary[]>(urlSegment);
+    const service = await this.get<Build[]>(urlSegment);
 
     return service;
   }
@@ -64,7 +60,7 @@ export class AwsCodePipelineApiClient implements AwsCodePipelineApi {
   private async get<T>(path: string): Promise<T> {
     const baseUrl = `${await this.configApi.getString(
       "backend.baseUrl"
-    )}/api/aws-codesuite-backend/codepipeline/}`;
+    )}/api/aws-codeservices-backend/codebuild/}`;
 
     const url = new URL(path, baseUrl);
 

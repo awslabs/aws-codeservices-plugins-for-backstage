@@ -1,6 +1,6 @@
 {
-  "name": "@aws/aws-codesuite-backend-plugin-for-backstage",
-  "description": "AWS CodeSuite Backend Plugin for Backstage",
+  "name": "@aws/aws-codeservices-backend-plugin-for-backstage",
+  "description": "AWS Code Services Backend Plugin for Backstage",
   "version": "0.1.2",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -16,11 +16,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "github:awslabs/aws-codesuite-plugins-for-backstage",
-    "directory": "plugins/aws-codesuite-backend"
+    "url": "github:awslabs/aws-codeservices-plugins-for-backstage",
+    "directory": "plugins/aws-codeservices-backend"
   },
   "bugs": {
-    "url": "https://github.com/awslabs/aws-codesuite-plugins-for-backstage/issues"
+    "url": "https://github.com/awslabs/aws-codeservices-plugins-for-backstage/issues"
   },
   "backstage": {
     "role": "backend-plugin"

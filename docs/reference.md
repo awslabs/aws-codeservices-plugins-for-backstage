@@ -1,6 +1,6 @@
-# AWS CodeSuite plugins for Backstage reference
+# AWS Code Services plugins for Backstage reference
 
-This document covers the configuration options for the AWS CodeSuite plugins for Backstage. To install the CodeSuite plugins into your Backstage application, see the [AWS CodeSuite plugins for Backstage installation guide](install.md).
+This document covers the configuration options for the AWS Code Services plugins for Backstage. To install the Code Services plugins into your Backstage application, see the [AWS Code Services plugins for Backstage installation guide](install.md).
 
 ## AWS CodePipeline CI/CD content
 
@@ -15,7 +15,7 @@ To add this component to the entity page of your application make the following 
 import {
   EntityAWSCodePipelineContent,
   isAWSCodePipelineAvailable,
-} from '@aws/aws-codesuite-plugin-for-backstage';
+} from '@aws/aws-codeservices-plugin-for-backstage';
 
 // For example in the CI/CD section
 const cicdContent = (
@@ -53,7 +53,7 @@ To add this component to the entity page of your application make the following 
 import {
   EntityAWSCodePipelineOverviewCard,
   isAWSCodePipelineAvailable,
-} from "@aws/aws-codesuite-plugin-for-backstage";
+} from "@aws/aws-codeservices-plugin-for-backstage";
 
 const serviceEntityPage = (
   <EntityLayout>
@@ -100,7 +100,7 @@ To add this component to the entity page of your application make the following 
 import {
   EntityAWSCodeBuildOverviewCard,
   isAWSCodeBuildProjectAvailable,
-} from "@aws/aws-codesuite-plugin-for-backstage";
+} from "@aws/aws-codeservices-plugin-for-backstage";
 
 const serviceEntityPage = (
   <EntityLayout>
@@ -147,7 +147,7 @@ To add this component to the entity page of your application make the following 
 import {
   EntityAWSCodeDeployOverviewCard,
   isAWSCodeDeployDeploymentGroupAvailable,
-} from "@aws/aws-codesuite-plugin-for-backstage";
+} from "@aws/aws-codeservices-plugin-for-backstage";
 
 const serviceEntityPage = (
   <EntityLayout>

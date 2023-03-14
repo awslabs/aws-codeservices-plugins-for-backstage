@@ -1,10 +1,10 @@
-# AWS CodeSuite plugins for Backstage installation guide
+# AWS Code Services plugins for Backstage installation guide
 
-This document covers the installation of the AWS CodeSuite plugins for Backstage into your Backstage application.
+This document covers the installation of the AWS Code Services plugins for Backstage into your Backstage application.
 
 <!-- toc -->
 
-- [AWS CodeSuite plugins for Backstage installation guide](#aws-codesuite-plugins-for-backstage-installation-guide)
+- [AWS Code Services plugins for Backstage installation guide](#aws-codeservices-plugins-for-backstage-installation-guide)
   - [Prerequisites](#prerequisites)
   - [AWS credentials](#aws-credentials)
   - [IAM permissions](#iam-permissions)
@@ -17,9 +17,9 @@ These instructions assume you already have a working Backstage application that 
 
 ## AWS credentials
 
-By default, the AWS CodeSuite backend plugin relies on the [default behavior of the AWS SDK for Javascript](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/modules/_aws_sdk_credential_provider_node.html) to determine the AWS credentials that it uses to authenticate an identity to use with AWS APIs.
+By default, the AWS Code Services backend plugin relies on the [default behavior of the AWS SDK for Javascript](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/modules/_aws_sdk_credential_provider_node.html) to determine the AWS credentials that it uses to authenticate an identity to use with AWS APIs.
 
-The AWS CodeSuite backend plugin that runs in your Backstage app searches for credentials in the following order:
+The AWS Code Services backend plugin that runs in your Backstage app searches for credentials in the following order:
 
 1. Environment variables (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`)
 1. SSO credentials from the token cache
@@ -32,7 +32,7 @@ We recommend that you don't hard-code long lived AWS credentials in your product
 
 Instead, we recommend that you use short lived AWS credentials for your production Backstage application by deploying it to Amazon ECS, Amazon Elastic Kubernetes Service (Amazon EKS), or Amazon EC2. For more information about deploying Backstage to Amazon EKS using a Helm chart or to Amazon ECS on AWS Fargate using the AWS Cloud Development Kit (CDK), see [Deploying Backstage](https://backstage.io/docs/deployment/) in the Backstage documentation.
 
-To use multiple AWS accounts with your Backstage app or to explicitly configure credentials for an AWS account, you can configure AWS accounts in your Backstage app's configuration. For example, to configure an AWS account to use with the AWS CodeSuite backend plugin which requires using an IAM role to retrieve credentials, add the following to your Backstage app-config.yaml file.
+To use multiple AWS accounts with your Backstage app or to explicitly configure credentials for an AWS account, you can configure AWS accounts in your Backstage app's configuration. For example, to configure an AWS account to use with the AWS Code Services backend plugin which requires using an IAM role to retrieve credentials, add the following to your Backstage app-config.yaml file.
 
 ```yaml
 aws:
@@ -45,7 +45,7 @@ For more account configuration examples, see the [Backstage integration-aws-node
 
 ## IAM permissions
 
-The AWS CodeSuite backend plugin requires the AWS identity that it uses to have the following IAM permissions for populating the entity components:
+The AWS Code Services backend plugin requires the AWS identity that it uses to have the following IAM permissions for populating the entity components:
 
 ```json
 {
@@ -71,16 +71,16 @@ The AWS CodeSuite backend plugin requires the AWS identity that it uses to have 
 
 ## Install the backend plugin
 
-Install the AWS CodeSuite backend plugin package in your Backstage app:
+Install the AWS Code Services backend plugin package in your Backstage app:
 
 ```shell
-yarn workspace backend add @aws/aws-codesuite-backend-plugin-for-backstage
+yarn workspace backend add @aws/aws-codeservices-backend-plugin-for-backstage
 ```
 
-Create a file `packages/backend/src/plugins/awsCodeSuite.ts` with the following content:
+Create a file `packages/backend/src/plugins/awsCodeServices.ts` with the following content:
 
 ```typescript
-import { createRouter } from "@aws/aws-codesuite-backend-plugin-for-backstage";
+import { createRouter } from "@aws/aws-codeservices-backend-plugin-for-backstage";
 import { PluginEnvironment } from "../types";
 
 export default async function createPlugin(env: PluginEnvironment) {
@@ -102,7 +102,7 @@ index 70bc66b..1e624ae 100644
  import proxy from './plugins/proxy';
  import techdocs from './plugins/techdocs';
  import search from './plugins/search';
-+import awsCodeSuite from './plugins/awsCodeSuite';
++import awsCodeServices from './plugins/awsCodeServices';
  import { PluginEnvironment } from './types';
  import { ServerPermissionClient } from '@backstage/plugin-permission-node';
 
@@ -110,7 +110,7 @@ index 70bc66b..1e624ae 100644
    const techdocsEnv = useHotMemoize(module, () => createEnv('techdocs'));
    const searchEnv = useHotMemoize(module, () => createEnv('search'));
    const appEnv = useHotMemoize(module, () => createEnv('app'));
-+  const awsCodeSuiteEnv = useHotMemoize(module, () => createEnv('aws-codesuite-backend'));
++  const awsCodeServicesEnv = useHotMemoize(module, () => createEnv('aws-codeservices-backend'));
 
    const apiRouter = Router();
    apiRouter.use('/catalog', await catalog(catalogEnv));
@@ -118,21 +118,21 @@ index 70bc66b..1e624ae 100644
    apiRouter.use('/techdocs', await techdocs(techdocsEnv));
    apiRouter.use('/proxy', await proxy(proxyEnv));
    apiRouter.use('/search', await search(searchEnv));
-+  apiRouter.use('/aws-codesuite-backend', await awsCodeSuite(awsCodeSuiteEnv));
++  apiRouter.use('/aws-codeservices-backend', await awsCodeServices(awsCodeServicesEnv));
 
    // Add backends ABOVE this line; this 404 handler is the catch-all fallback
    apiRouter.use(notFoundHandler());
 ```
 
 Verify that the backend plugin is running in your Backstage app. You should receive `{"status":"ok"}` when accessing this URL:
-`https://<your backstage app>/api/aws-codesuite-backend/health`.
+`https://<your backstage app>/api/aws-codeservices-backend/health`.
 
 ## Install the frontend UI plugin
 
-Install the AWS CodeSuite frontend UI plugin package in your Backstage app:
+Install the AWS Code Services frontend UI plugin package in your Backstage app:
 
 ```shell
-yarn workspace app add @aws/aws-codesuite-plugin-for-backstage
+yarn workspace app add @aws/aws-codeservices-plugin-for-backstage
 ```
 
-To understand how to add the UI components to your Backstage app see [AWS CodeSuite plugins for Backstage reference](./reference.md).
+To understand how to add the UI components to your Backstage app see [AWS Code Services plugins for Backstage reference](./reference.md).
