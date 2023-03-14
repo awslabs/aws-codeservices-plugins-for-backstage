@@ -1,8 +1,8 @@
-# AWS CodeSuite plugins for Backstage
+# AWS Code Services plugins for Backstage
 
-[![CI](https://github.com/awslabs/aws-codesuite-plugins-for-backstage/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/awslabs/aws-codesuite-plugins-for-backstage/actions/workflows/ci.yml)
+[![CI](https://github.com/awslabs/aws-codeservices-plugins-for-backstage/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/awslabs/aws-codeservices-plugins-for-backstage/actions/workflows/ci.yml)
 
-This repository contains a set of Backstage plugins for interacting with AWS CodeSuite services, which includes:
+This repository contains a set of Backstage plugins for interacting with the AWS Code Services suite of services, which includes:
 
 - [AWS CodePipeline](https://aws.amazon.com/codepipeline/)
 - [AWS CodeBuild](https://aws.amazon.com/codebuild/)
@@ -17,17 +17,17 @@ The plugins provide:
 
 ## Installation
 
-See [AWS CodeSuite plugins for Backstage installation guide](./docs/install.md).
+See [AWS Code Services plugins for Backstage installation guide](./docs/install.md).
 
 ## Usage
 
-For information about using the CodeSuite plugins, see the following documents:
+For information about using the Code Services plugins, see the following documents:
 
-- [AWS CodeSuite plugins for Backstage reference](./docs/reference.md)
+- [AWS Code Services plugins for Backstage reference](./docs/reference.md)
 
 ## Development
 
-For information about developing the CodeSuite plugins locally, see [Developing the AWS CodeSuite plugins for Backstage](./docs/developing.md).
+For information about developing the Code Services plugins locally, see [Developing the AWS Code Services plugins for Backstage](./docs/developing.md).
 
 ## Security
 

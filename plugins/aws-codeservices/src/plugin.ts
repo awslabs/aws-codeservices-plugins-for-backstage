@@ -30,11 +30,11 @@ import { AwsCodeDeployApiClient } from "./api/AwsCodeDeployApiClient";
 import { AwsCodePipelineApiClient } from "./api/AwsCodePipelineApiClient";
 
 export const rootRouteRef = createRouteRef({
-  id: "aws-codesuite",
+  id: "aws-codeservices",
 });
 
-export const codeSuitePlugin = createPlugin({
-  id: "aws-codesuite",
+export const codeServicesPlugin = createPlugin({
+  id: "aws-codeservices",
   apis: [
     createApiFactory({
       api: awsCodePipelineApiRef,
@@ -60,7 +60,7 @@ export const codeSuitePlugin = createPlugin({
   },
 });
 
-export const EntityAWSCodeBuildProjectOverviewCard = codeSuitePlugin.provide(
+export const EntityAWSCodeBuildProjectOverviewCard = codeServicesPlugin.provide(
   createComponentExtension({
     name: "EntityAWSCodeBuildCard",
     component: {
@@ -73,7 +73,7 @@ export const EntityAWSCodeBuildProjectOverviewCard = codeSuitePlugin.provide(
 );
 
 export const EntityAWSCodeDeployDeploymentGroupOverviewCard =
-  codeSuitePlugin.provide(
+  codeServicesPlugin.provide(
     createComponentExtension({
       name: "EntityAWSCodeDeployCard",
       component: {
@@ -85,7 +85,7 @@ export const EntityAWSCodeDeployDeploymentGroupOverviewCard =
     })
   );
 
-export const EntityAWSCodePipelineOverviewCard = codeSuitePlugin.provide(
+export const EntityAWSCodePipelineOverviewCard = codeServicesPlugin.provide(
   createComponentExtension({
     name: "EntityAWSCodePipelineCard",
     component: {
@@ -97,7 +97,7 @@ export const EntityAWSCodePipelineOverviewCard = codeSuitePlugin.provide(
   })
 );
 
-export const EntityAWSCodePipelineContent = codeSuitePlugin.provide(
+export const EntityAWSCodePipelineContent = codeServicesPlugin.provide(
   createRoutableExtension({
     name: "EntityAWSCodePipelineContent",
     component: () => import("./components/Router").then((m) => m.Router),
