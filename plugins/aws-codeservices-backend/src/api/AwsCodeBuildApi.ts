@@ -90,7 +90,7 @@ export class AwsCodeBuildApi {
 
     return new CodeBuildClient({
       region: region,
-      customUserAgent: "aws-codesuite-plugin-for-backstage",
+      customUserAgent: "aws-codeservices-plugin-for-backstage",
       credentialDefaultProvider: () => credentialProvider.sdkCredentialProvider,
     });
   }

@@ -103,7 +103,7 @@ export class AwsCodeDeployApi {
 
     return new CodeDeployClient({
       region: region,
-      customUserAgent: "aws-codesuite-plugin-for-backstage",
+      customUserAgent: "aws-codeservices-plugin-for-backstage",
       credentialDefaultProvider: () => credentialProvider.sdkCredentialProvider,
     });
   }

@@ -12,14 +12,14 @@
  */
 
 import {
-  BatchGetProjectsCommandOutput,
-  Build,
-} from "@aws-sdk/client-codebuild";
+  BatchGetDeploymentGroupsCommandOutput,
+  BatchGetDeploymentsCommandOutput,
+} from "@aws-sdk/client-codedeploy";
 import { IdentityApi, ConfigApi } from "@backstage/core-plugin-api";
 import { ResponseError } from "@backstage/errors";
-import { AwsCodeBuildApi } from ".";
+import { AwsCodeDeployApi } from ".";
 
-export class AwsCodeBuildApiClient implements AwsCodeBuildApi {
+export class AwsCodeDeployApiClient implements AwsCodeDeployApi {
   private readonly configApi: ConfigApi;
   private readonly identityApi: IdentityApi;
 
@@ -31,36 +31,36 @@ export class AwsCodeBuildApiClient implements AwsCodeBuildApi {
     this.identityApi = options.identityApi;
   }
 
-  async getProject({
+  async getDeploymentGroup({
     arn,
   }: {
     arn: string;
-  }): Promise<BatchGetProjectsCommandOutput> {
+  }): Promise<BatchGetDeploymentGroupsCommandOutput> {
     const queryString = new URLSearchParams();
     queryString.append("arn", arn);
 
-    const urlSegment = `project?${queryString}`;
+    const urlSegment = `deploymentGroup?${queryString}`;
 
-    const service = await this.get<BatchGetProjectsCommandOutput>(urlSegment);
-
-    return service;
+    return await this.get<BatchGetDeploymentGroupsCommandOutput>(urlSegment);
   }
 
-  async listBuilds({ arn }: { arn: string }): Promise<Build[]> {
+  async getDeployments({
+    arn,
+  }: {
+    arn: string;
+  }): Promise<BatchGetDeploymentsCommandOutput> {
     const queryString = new URLSearchParams();
     queryString.append("arn", arn);
 
-    const urlSegment = `builds?${queryString}`;
+    const urlSegment = `deployments?${queryString}`;
 
-    const service = await this.get<Build[]>(urlSegment);
-
-    return service;
+    return await this.get<BatchGetDeploymentsCommandOutput>(urlSegment);
   }
 
   private async get<T>(path: string): Promise<T> {
     const baseUrl = `${await this.configApi.getString(
       "backend.baseUrl"
-    )}/api/aws-codesuite-backend/codebuild/}`;
+    )}/api/aws-codeservices-backend/codedeploy/}`;
 
     const url = new URL(path, baseUrl);
 

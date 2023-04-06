@@ -28,7 +28,7 @@ export interface ServerOptions {
 export async function startStandaloneServer(
   options: ServerOptions
 ): Promise<Server> {
-  const logger = options.logger.child({ service: "aws-codesuite-backend" });
+  const logger = options.logger.child({ service: "aws-codeservices-backend" });
   logger.debug("Starting application server...");
   const config = await loadBackendConfig({ logger, argv: process.argv });
   const router = await createRouter({
@@ -38,7 +38,7 @@ export async function startStandaloneServer(
 
   let service = createServiceBuilder(module)
     .setPort(options.port)
-    .addRouter("/aws-codesuite-backend", router);
+    .addRouter("/aws-codeservices-backend", router);
   if (options.enableCors) {
     service = service.enableCors({ origin: "http://localhost:3000" });
   }

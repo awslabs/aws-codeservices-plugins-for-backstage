@@ -1,10 +1,10 @@
 {
-  "name": "aws-codesuite-plugins-for-backstage",
-  "description": "AWS CodeSuite Plugins for Backstage",
+  "name": "aws-codeservices-plugins-for-backstage",
+  "description": "AWS Code Services Plugins for Backstage",
   "version": "0.0.0",
   "repository": {
     "type": "git",
-    "url": "github:awslabs/aws-codesuite-plugins-for-backstage"
+    "url": "github:awslabs/aws-codeservices-plugins-for-backstage"
   },
   "license": "Apache-2.0",
   "author": {
@@ -27,8 +27,8 @@
     "prettier:check": "prettier --check .",
     "prettier:fix": "prettier --write .",
     "ci": "lerna bootstrap && tsc && backstage-cli repo build --all && backstage-cli test --watchAll=false && backstage-cli repo lint && prettier --check .",
-    "start:frontend": "yarn workspace @aws/aws-codesuite-plugin-for-backstage start",
-    "start:backend": "yarn workspace @aws/aws-codesuite-backend-plugin-for-backstage start",
+    "start:frontend": "yarn workspace @aws/aws-codeservices-plugin-for-backstage start",
+    "start:backend": "yarn workspace @aws/aws-codeservices-backend-plugin-for-backstage start",
     "bump-version": "lerna version",
     "publish-version": "lerna publish from-package --yes --no-verify-access"
   },
