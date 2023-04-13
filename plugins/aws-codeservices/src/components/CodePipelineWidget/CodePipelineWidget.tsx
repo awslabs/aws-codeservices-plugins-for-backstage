@@ -34,7 +34,13 @@ import { AboutField } from "../AboutField";
 import { isAWSCodePipelineAvailable } from "../Flags";
 import { PipelineStageStatus } from "../PipelineStageStatus";
 
-const PipelineStageTable = ({ stages }: { stages: StageState[] }) => {
+const PipelineStageTable = ({
+  stages,
+  paging,
+}: {
+  stages: StageState[];
+  paging: boolean;
+}) => {
   const columns: TableColumn[] = [
     {
       title: "Stage",
@@ -56,7 +62,7 @@ const PipelineStageTable = ({ stages }: { stages: StageState[] }) => {
     <div>
       <Table
         options={{
-          paging: false,
+          paging: paging,
           search: false,
           toolbar: false,
           padding: "dense",
@@ -71,9 +77,11 @@ const PipelineStageTable = ({ stages }: { stages: StageState[] }) => {
 const PipelineWidgetContent = ({
   pipelineState,
   region,
+  paging,
 }: {
   pipelineState: GetPipelineStateOutput;
   region: string;
+  paging: boolean;
 }) => {
   const pipelineUrl = `https://${region}.console.aws.amazon.com/codesuite/codepipeline/pipelines/${pipelineState.pipelineName}/view?region=${region}`;
 
@@ -88,7 +96,10 @@ const PipelineWidgetContent = ({
           </AboutField>
         </Grid>
       </Box>
-      <PipelineStageTable stages={pipelineState.stageStates ?? []} />
+      <PipelineStageTable
+        stages={pipelineState.stageStates ?? []}
+        paging={paging}
+      />
     </InfoCard>
   );
 };
@@ -96,9 +107,11 @@ const PipelineWidgetContent = ({
 const PipelineLatestRunCard = ({
   entity,
   variant,
+  paging,
 }: {
   entity: Entity;
   variant?: InfoCardVariants;
+  paging: boolean;
 }) => {
   const { region, arn } = getCodePipelineArnFromEntity(entity);
 
@@ -106,7 +119,11 @@ const PipelineLatestRunCard = ({
 
   if (pipelineInfo) {
     return (
-      <PipelineWidgetContent pipelineState={pipelineInfo} region={region} />
+      <PipelineWidgetContent
+        pipelineState={pipelineInfo}
+        region={region}
+        paging={paging}
+      />
     );
   }
 
@@ -121,13 +138,15 @@ const PipelineLatestRunCard = ({
 
 export const AWSCodePipelineWidget = ({
   variant,
+  paging = false,
 }: {
   variant?: InfoCardVariants;
+  paging?: boolean;
 }) => {
   const { entity } = useEntity();
   return !isAWSCodePipelineAvailable(entity) ? (
     <MissingAnnotationEmptyState annotation={AWS_CODEPIPELINE_ARN_ANNOTATION} />
   ) : (
-    <PipelineLatestRunCard entity={entity} variant={variant} />
+    <PipelineLatestRunCard entity={entity} variant={variant} paging={paging} />
   );
 };
