@@ -1,4 +1,4 @@
-# AWS Code Services backend plugin for Backstage
+# AWS Code Services frontend plugin for Backstage
 
 This frontend UI plugin for Backstage adds functionality to interact with AWS Code Services services such as [AWS CodePipeline](https://aws.amazon.com/codepipeline/), [AWS CodeBuild](https://aws.amazon.com/codebuild/) and [AWS CodeDeploy](https://aws.amazon.com/codedeploy/).
 
