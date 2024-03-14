@@ -1,3 +1,9 @@
+## DEPRECATED
+
+This repository is no longer being maintained, the functionality is being migrated to a new project that will allow us to better scale our efforts regarding Backstage plugins.
+
+Please see https://github.com/awslabs/backstage-plugins-for-aws
+
 # AWS Code Services plugins for Backstage
 
 [![CI](https://github.com/awslabs/aws-codeservices-plugins-for-backstage/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/awslabs/aws-codeservices-plugins-for-backstage/actions/workflows/ci.yml)
